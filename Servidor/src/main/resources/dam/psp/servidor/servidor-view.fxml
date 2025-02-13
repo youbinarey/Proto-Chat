@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.servidor.ServidorController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.servidor.controller.ServidorController">
    <children>
       <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="210.0" text="SERVIDOR" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="20.0" />
       <TextArea fx:id="logTextArea" editable="false" layoutX="46.0" layoutY="229.0" prefHeight="163.0" prefWidth="508.0" AnchorPane.topAnchor="229.0" />

@@ -1,4 +1,4 @@
-package dam.psp.servidor;
+package dam.psp.servidor.controller;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

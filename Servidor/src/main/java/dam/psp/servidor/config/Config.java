@@ -1,2 +1,9 @@
-package dam.psp.servidor.config;public class Config {
+package dam.psp.servidor.config;
+
+/**
+ * Clase que almacena la configuración de la conexión.
+ */
+public class Config {
+    public static final String SERVER_IP = "localhost";
+    public static final int SERVER_PORT = 9999;
 }
