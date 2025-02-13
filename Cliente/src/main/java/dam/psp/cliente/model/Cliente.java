@@ -2,7 +2,10 @@ package dam.psp.cliente.model;
 
 import dam.psp.cliente.config.Config;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.net.Socket;
 
 
@@ -23,6 +26,19 @@ public class Cliente {
     public void clienteJoin(){
 
         try (Socket socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT)) {
+
+            //ENVIAR MENSAJE AL SERVIDOR
+            PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+            out.println("Hola desde el cliente " + nombre);
+
+            //RECIBIR MENSAJE DEL SERVIDOR
+            BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            String respuesta;
+            while ((respuesta = in.readLine()) != null) {
+                System.out.println("Servidor: " + respuesta);
+            }
+
+
 
         } catch (IOException e) {
             System.err.println("Error al conectar con el servidor " + e.getMessage());
