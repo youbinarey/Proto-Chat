@@ -11,43 +11,34 @@ import java.net.Socket;
 
 public class Servidor {
 
-    private static Servidor servidor;
     private ServerSocket serverSocket;
     private final int PUERTO = Config.SERVER_PORT;
     private String logs;
 
-    private Servidor(){
+    public Servidor(){
         try {
             serverSocket = new ServerSocket(PUERTO);
            logs ="";
-
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
         }
     }
 
-    public static Servidor getInstance(){
-        if(servidor == null){
-            servidor = new Servidor();
-        }
-        return servidor;
-    }
 
-    public void servidorUp() {
+
+    public void servidorUp() throws IOException {
 
         addActivity("Servidor iniciado en el puerto " + PUERTO);
         showActivity();
 
         while (true) {
-            try {
+            try (
                 Socket clienteSocket = serverSocket.accept();
+                BufferedReader in = new BufferedReader((new InputStreamReader(clienteSocket.getInputStream())));
+                PrintWriter out = new PrintWriter(clienteSocket.getOutputStream(), true)){
+
                 addActivity("Cliente conectado desde la IP " + clienteSocket.getInetAddress());
                 showActivity();
-
-
-                BufferedReader in = new BufferedReader((new InputStreamReader(clienteSocket.getInputStream())));
-
-                PrintWriter out = new PrintWriter(clienteSocket.getOutputStream(), true);
 
                 String mensaje;
                 while ((mensaje = in.readLine()) != null) {
@@ -73,7 +64,7 @@ public class Servidor {
 
 
     public static void main(String[] args) {
-        Servidor servidor = Servidor.getInstance();
+        Servidor servidor = new Servidor();
         servidor.servidorUp();
     }
 
