@@ -1,8 +1,14 @@
 package dam.psp.cliente.model;
 
 
-public class Paquete {
-    private String nombreCliente;
+import java.io.Serial;
+import java.io.Serializable;
+
+public class Paquete implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+    private String remitente;
+    private String destinatario;
     private String ip;
     private String mensajeCliente;
     private TipoPaquete tipo;
@@ -11,12 +17,28 @@ public class Paquete {
 
     }
 
-    public String getNombreCliente() {
-        return nombreCliente;
+    public Paquete(String remitente, String destinatario, String ip, String mensajeCliente, TipoPaquete tipo) {
+        this.remitente = remitente;
+        this.destinatario = destinatario;
+        this.ip = ip;
+        this.mensajeCliente = mensajeCliente;
+        this.tipo = tipo;
     }
 
-    public void setNombreCliente(String nombreCliente) {
-        this.nombreCliente = nombreCliente;
+    public String getRemitente() {
+        return remitente;
+    }
+
+    public void setRemitente(String remitente) {
+        this.remitente = remitente;
+    }
+
+    public String getDestinatario() {
+        return destinatario;
+    }
+
+    public void setDestinatario(String destinatario) {
+        this.destinatario = destinatario;
     }
 
     public String getIp() {
@@ -42,9 +64,6 @@ public class Paquete {
     public void setTipo(TipoPaquete tipo) {
         this.tipo = tipo;
     }
-
-
-
 }
 
 

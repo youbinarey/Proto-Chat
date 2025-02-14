@@ -1,11 +1,11 @@
 package dam.psp.servidor.model;
 
+
+import dam.psp.cliente.model.Paquete;
 import dam.psp.servidor.config.Config;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -26,34 +26,47 @@ public class Servidor {
 
 
 
-    public void servidorUp() throws IOException {
+    public void servidorUp()  {
 
         addActivity("Servidor iniciado en el puerto " + PUERTO);
         showActivity();
 
-        while (true) {
-            try (
-                Socket clienteSocket = serverSocket.accept();
-                BufferedReader in = new BufferedReader((new InputStreamReader(clienteSocket.getInputStream())));
-                PrintWriter out = new PrintWriter(clienteSocket.getOutputStream(), true)){
+            try {
+                Socket clienteSocket = serverSocket.accept(); // Aceptar conexion
 
-                addActivity("Cliente conectado desde la IP " + clienteSocket.getInetAddress());
-                showActivity();
+                ObjectOutputStream out = new ObjectOutputStream(clienteSocket.getOutputStream());// Inicializar out
 
-                String mensaje;
-                while ((mensaje = in.readLine()) != null) {
-                    addActivity(clienteSocket.getInetAddress() +": "+ mensaje);
-                    showActivity();
-                    out.println("SEVER_STATUS: OK");
+                ObjectInputStream in = new ObjectInputStream(clienteSocket.getInputStream());// Inicializar in
+
+            // recibir y enviar paquetes
+                while (true) {
+                    try {
+                        // Leer el paquete del cliente
+                        Paquete paqueteRecibido = (Paquete) in.readObject();
+                        System.out.println("Paquete recibido: " + paqueteRecibido.getTipo().toString());
+
+                        // Procesar el paquete y enviar una respuesta
+                        paqueteRecibido.setRemitente("Servidor");
+                        paqueteRecibido.setMensajeCliente("ConexionExitosa");
+                        out.writeObject(paqueteRecibido);
+                        out.flush();
+                    } catch (IOException e) {
+                        System.err.println("Error al recibir/enviar datos: " + e.getMessage());
+                        break;
+                    } catch (ClassNotFoundException e) {
+                        System.err.println("Error de deserialización: " + e.getMessage());
+                        break;
+                    }
                 }
+
+                // Cerrar la conexión con el cliente
                 clienteSocket.close();
+                addActivity("Cliente desconectado: " + clienteSocket.getInetAddress().getHostAddress());
             } catch (IOException e) {
-                System.err.println("Error al conectar con el cliente " + e.getMessage());
+                System.err.println("Error al aceptar conexión del cliente: " + e.getMessage());
             }
-        }
-
-
     }
+
     private void addActivity(String activity){
         logs += activity + "\n";
     }

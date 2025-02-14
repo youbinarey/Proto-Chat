@@ -107,6 +107,16 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- DEPENDENCIA JAR PAQUETE -->
+        <dependency>
+            <groupId>local</groupId>
+            <artifactId>paquete</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/libs/Paquete.jar</systemPath>
+        </dependency>
+
     </dependencies>
 
     <build>

@@ -1,8 +1,12 @@
-package dam.psp.cliente.controller;
+package dam.psp.cliente.model;
 
 public enum TipoPaquete {
     CONECTAR,
-    ENVIAR,
-    RECIBIR,
+    MENSAJE,
+    PING,
+    ARCHIVO,
+    NOTIFICACION,
+    ERROR,
+    AUTENTICACION,
     DESCONECTAR
 }

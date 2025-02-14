@@ -93,3 +93,10 @@ chat, todo ello gestionado por el servidor que redistribuirá los mensajes a tod
     - El sistema gestiona errores como fallos en la conexión o intentos de enviar mensajes vacíos.[❌]
 
 ---
+
+
+# NOTAS
+- Empaquetar jar   
+```bash
+jar cvf Paquete.jar .\dam\psp\cliente\model\Paquete.class .\dam\psp\cliente\model\TipoPaquete.class
+```
