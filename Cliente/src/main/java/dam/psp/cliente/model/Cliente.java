@@ -7,10 +7,11 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.util.Scanner;
 
 
 public class Cliente {
-    private String nombre;
+    private String nombre = "Cliente1";
 
     public Cliente(String nombre) {
         this.nombre = nombre;
@@ -29,7 +30,14 @@ public class Cliente {
 
             //ENVIAR MENSAJE AL SERVIDOR
             PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-            out.println("Hola desde el cliente " + nombre);
+
+            Scanner sc = new Scanner(System.in);
+            String input;
+            while(!(input = sc.nextLine()).equals("\n")){
+                out.println(input);
+            }
+
+
 
             //RECIBIR MENSAJE DEL SERVIDOR
             BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -37,8 +45,6 @@ public class Cliente {
             while ((respuesta = in.readLine()) != null) {
                 System.out.println("Servidor: " + respuesta);
             }
-
-
 
         } catch (IOException e) {
             System.err.println("Error al conectar con el servidor " + e.getMessage());

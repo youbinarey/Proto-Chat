@@ -41,7 +41,7 @@ public class Servidor {
         while (true) {
             try {
                 Socket clienteSocket = serverSocket.accept();
-                addActivity("Cliente conectado desde la IP " + clienteSocket.getInetAddress().getCanonicalHostName());
+                addActivity("Cliente conectado desde la IP " + clienteSocket.getInetAddress());
                 showActivity();
 
 
@@ -50,7 +50,7 @@ public class Servidor {
 
                 String mensaje;
                 while ((mensaje = in.readLine()) != null) {
-                    addActivity(clienteSocket.getInetAddress().getCanonicalHostName() +": "+ mensaje);
+                    addActivity(clienteSocket.getInetAddress() +": "+ mensaje);
                     showActivity();
                 }
 

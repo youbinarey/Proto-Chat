@@ -1,4 +1,4 @@
-package dam.psp;
+package dam.psp.cliente.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
