@@ -26,7 +26,7 @@ public class Servidor {
         }
     }
 
-    public static  Servidor getInstance(){
+    public static Servidor getInstance(){
         if(servidor == null){
             servidor = new Servidor();
         }
@@ -46,18 +46,18 @@ public class Servidor {
 
 
                 BufferedReader in = new BufferedReader((new InputStreamReader(clienteSocket.getInputStream())));
+
                 PrintWriter out = new PrintWriter(clienteSocket.getOutputStream(), true);
 
                 String mensaje;
                 while ((mensaje = in.readLine()) != null) {
                     addActivity(clienteSocket.getInetAddress() +": "+ mensaje);
                     showActivity();
+                    out.println("SEVER_STATUS: OK");
                 }
-
-
+                clienteSocket.close();
             } catch (IOException e) {
                 System.err.println("Error al conectar con el cliente " + e.getMessage());
-
             }
         }
 
