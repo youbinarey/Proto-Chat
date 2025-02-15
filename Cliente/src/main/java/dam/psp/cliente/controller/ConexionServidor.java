@@ -2,6 +2,7 @@ package dam.psp.cliente.controller;
 
 import dam.psp.cliente.config.Config;
 import dam.psp.cliente.model.Paquete;
+import dam.psp.cliente.model.TipoPaquete;
 
 import java.io.*;
 import java.net.Socket;
@@ -26,28 +27,36 @@ public class ConexionServidor {
     }
 
     public void conectar( Paquete p){
-        try{
-            //Inicializar socket
-            socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
+        if(!clienteConectado){
+            try{
+                //Inicializar socket
+                socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
 
-            //Inicializar Datas
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
+                //Inicializar Datas
+                out = new ObjectOutputStream(socket.getOutputStream());
+                in = new ObjectInputStream(socket.getInputStream());
 
-            out.writeObject(p);
-            out.flush();
+                out.writeObject(p);
+                out.flush();
+                out.reset();
 
-            clienteConectado = true;
+                clienteConectado = true;
 
-        } catch (IOException e) {
-            System.err.println("Error al conectar con el servidor: " + e.getMessage());
+            } catch (IOException e) {
+                System.err.println("Error al conectar con el servidor: " + e.getMessage());
+            }
+        }else{
+            System.out.println("Ya hay una conexión iniciada");
+
         }
+
     }
 
     public void enviarDatos(Paquete p){
         try {
             if(socket == null || socket.isClosed()){
-                conectar(p);
+                System.err.println("No existe conexion, Por favor conecta primero");
+                return;
             }
 
             out.writeObject(p);
@@ -57,10 +66,10 @@ public class ConexionServidor {
             out.flush();
             out.reset();
 
+
         } catch (IOException e) {
-            System.err.println("Error escucha Servidor " + e.getMessage());
+            System.err.println("Error al enviar paquete " + e.getMessage());
             clienteConectado = false;
-            cerrarConexion();
         }
     }
 
@@ -73,37 +82,54 @@ public class ConexionServidor {
                 try{
                     Paquete paqueteRecibido = (Paquete) in.readObject();
                     if(paqueteRecibido != null){
-                        System.out.println(paqueteRecibido.getMensajeCliente());
-                        System.out.println("ConexionServidor recibe un paquete de : " + paqueteRecibido.getTipo().toString());
-
+                        System.out.println("<-- SERVER -->" + paqueteRecibido.getMensajeCliente());
 
                     }
                 } catch (IOException | ClassNotFoundException e) {
-                    System.err.println("Error escuchaServidor " + e.getMessage());
-                    e.printStackTrace();
                     clienteConectado = false;
                 }
             }
-            cerrarConexion();
         }).start();
     }
-
-
-
-
-
-
-
 
     public void cerrarConexion(){
         try {
             if(in != null) in.close();
             if(out != null) out.close();
             if(socket != null) socket.close();
-            System.out.println("Conexión cerrada");
-            clienteConectado = false;
+
+            System.out.println("---Conexión cerrada");
+                clienteConectado = false;
+
         } catch (IOException e) {
             System.err.println("Error al cerrar la conexion " + e.getMessage());
+        }
+    }
+
+    public void procesarPaquete(Paquete p){
+
+        switch (p.getTipo()){
+            case CONECTAR -> {conectar(p);
+            escucharServidor();}
+
+            case MENSAJE -> {enviarDatos(p);
+                ;}
+            /*
+            case ARCHIVO -> {p.setMensajeCliente("Archivo Recibido: ");
+                p.setTipo(TipoPaquete.ARCHIVO);}
+
+            case NOTIFICACION -> {p.setMensajeCliente("Notificación Recibida: ");
+                p.setTipo(TipoPaquete.NOTIFICACION);}
+
+            case AUTENTICACION -> {p.setMensajeCliente("AUTENTICACION Recibida: ");
+                p.setTipo(TipoPaquete.AUTENTICACION);}
+            */
+            case DESCONECTAR -> {enviarDatos(p);
+                cerrarConexion();
+            }
+
+            default -> System.out.println
+                    ("Tipo de Paquete no reconocido");
         }
     }
 
