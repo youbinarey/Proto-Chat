@@ -51,7 +51,11 @@ public class ConexionServidor {
             }
 
             out.writeObject(p);
+            //
+            System.out.println("ConexionServidor envia un paquete de : " + p.getTipo().toString());
+            //
             out.flush();
+            out.reset();
 
         } catch (IOException e) {
             System.err.println("Error escucha Servidor " + e.getMessage());
@@ -70,10 +74,13 @@ public class ConexionServidor {
                     Paquete paqueteRecibido = (Paquete) in.readObject();
                     if(paqueteRecibido != null){
                         System.out.println(paqueteRecibido.getMensajeCliente());
+                        System.out.println("ConexionServidor recibe un paquete de : " + paqueteRecibido.getTipo().toString());
+
 
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     System.err.println("Error escuchaServidor " + e.getMessage());
+                    e.printStackTrace();
                     clienteConectado = false;
                 }
             }
