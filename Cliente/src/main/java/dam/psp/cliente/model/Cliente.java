@@ -23,34 +23,33 @@ public class Cliente  {
 
     public void conectarServidor(){
        conexionServidor.conectar(new Paquete(this.nickname,null,null, null, TipoPaquete.CONECTAR));
-        conexionServidor.escucharServidor();
+       conexionServidor.escucharServidor();
 
     }
     public void enviarPaquete() {
         Scanner sc = new Scanner(System.in);
+        String opt;
 
         Paquete p = new Paquete();
-        p.setTipo(TipoPaquete.MENSAJE);
         p.setDestinatario("SERVER");
 
         while (true) {
-            System.out.println("Introduce el mensaje (o '0' para salir):");
-            String mensaje = sc.nextLine();
+            setTipoPaquete();
+            opt = sc.nextLine();
+
+            p = crearTipoPaquete(p, opt);
 
             // Salir si el usuario ingresa "0"
-            if (mensaje.equals("0")) {
+            if (opt.equals("0")) {
                 break;
             }
+            System.out.println("Cliente envia datos");
 
-            // Establecer el mensaje y enviar el paquete
-            p.setMensajeCliente(mensaje);
             conexionServidor.enviarDatos(p);
-
-            // Esperar y mostrar la respuesta del servidor
-            System.out.println("Esperando respuesta del servidor...");
         }
 
         // Cerrar el scanner al salir
+        conexionServidor.cerrarConexion();
         sc.close();
     }
     public void recibirPaquete(){
@@ -58,6 +57,31 @@ public class Cliente  {
 
     public void desconectar(){
         //TODO
+    }
+
+    public Paquete crearTipoPaquete(Paquete p,String tipo){
+        switch (tipo){
+            case "1" -> p.setTipo(TipoPaquete.CONECTAR);
+            case "2" -> p.setTipo(TipoPaquete.MENSAJE);
+            case "3" -> p.setTipo(TipoPaquete.ARCHIVO);
+            case "4" -> p.setTipo(TipoPaquete.NOTIFICACION);
+            case "5" -> p.setTipo(TipoPaquete.AUTENTICACION);
+            case "6" -> p.setTipo(TipoPaquete.DESCONECTAR);
+            default -> System.out.println
+                    ("Tipo de Paquete no reconocido");
+        }
+        return p;
+    }
+
+    public void setTipoPaquete(){
+        System.out.println("1. CONECTAR");
+        System.out.println("2. MENSAJE");
+        System.out.println("3. ARCHIVO");
+        System.out.println("4. NOTIFICACION");
+        System.out.println("5. AUTENTICACION");
+        System.out.println("0. DESCONECTAR");
+
+
     }
 
 

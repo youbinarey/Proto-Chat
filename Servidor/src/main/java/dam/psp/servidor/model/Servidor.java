@@ -2,6 +2,7 @@ package dam.psp.servidor.model;
 
 
 import dam.psp.cliente.model.Paquete;
+import dam.psp.cliente.model.TipoPaquete;
 import dam.psp.servidor.config.Config;
 
 
@@ -18,61 +19,93 @@ public class Servidor {
     public Servidor(){
         try {
             serverSocket = new ServerSocket(PUERTO);
-           logs ="";
+            logs ="";
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
         }
     }
 
 
-
     public void servidorUp()  {
 
         addActivity("Servidor iniciado en el puerto " + PUERTO);
-        showActivity();
+        Socket clienteSocket = esperarConexion(); // Aceptar conexion
 
-            try {
-                Socket clienteSocket = serverSocket.accept(); // Aceptar conexion
+        if(clienteSocket != null){
+            conexionCliente(clienteSocket);
 
-                ObjectOutputStream out = new ObjectOutputStream(clienteSocket.getOutputStream());// Inicializar out
+        }
 
-                ObjectInputStream in = new ObjectInputStream(clienteSocket.getInputStream());// Inicializar in
+    }
 
-            // recibir y enviar paquetes
-                while (true) {
-                    try {
-                        // Leer el paquete del cliente
-                        Paquete paqueteRecibido = (Paquete) in.readObject();
-                        System.out.println("Paquete recibido: " + paqueteRecibido.getTipo().toString());
+    private Socket esperarConexion() {
+        try{
+            return serverSocket.accept();
+        } catch (IOException e) {
+            System.out.println("Error esperando Conexión " + e.getMessage());
+            return null;
+        }
+    }
 
-                        // Procesar el paquete y enviar una respuesta
-                        paqueteRecibido.setRemitente("Servidor");
-                        paqueteRecibido.setMensajeCliente("ConexionExitosa");
-                        out.writeObject(paqueteRecibido);
-                        out.flush();
-                    } catch (IOException e) {
-                        System.err.println("Error al recibir/enviar datos: " + e.getMessage());
-                        break;
-                    } catch (ClassNotFoundException e) {
-                        System.err.println("Error de deserialización: " + e.getMessage());
-                        break;
-                    }
+    private void conexionCliente(Socket clienteSocket) {
+        try {
+            ObjectOutputStream out = new ObjectOutputStream(clienteSocket.getOutputStream());
+
+            ObjectInputStream in = new ObjectInputStream(clienteSocket.getInputStream());
+
+            while(true){
+                Paquete pRecibido = (Paquete) in.readObject();
+                Paquete pEnviar;
+
+                if(pRecibido == null){
+                    break;
                 }
+                infoPaquete(pRecibido);
 
-                // Cerrar la conexión con el cliente
-                clienteSocket.close();
-                addActivity("Cliente desconectado: " + clienteSocket.getInetAddress().getHostAddress());
-            } catch (IOException e) {
-                System.err.println("Error al aceptar conexión del cliente: " + e.getMessage());
+                pEnviar = procesarPaquete(pRecibido);
+                out.writeObject(pEnviar);
+                out.flush();
+
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Paquete procesarPaquete(Paquete p){
+        switch (p.getTipo()){
+            case CONECTAR -> {p.setMensajeCliente("Conexion Exitosa");
+                p.setTipo(TipoPaquete.CONECTAR);}
+
+            case MENSAJE -> {p.setMensajeCliente("Mensaje Recibido: ");
+                p.setTipo(TipoPaquete.MENSAJE);}
+            case ARCHIVO -> {p.setMensajeCliente("Archivo Recibido: ");
+                p.setTipo(TipoPaquete.ARCHIVO);}
+            case NOTIFICACION -> {p.setMensajeCliente("Notificación Recibida: ");
+                p.setTipo(TipoPaquete.NOTIFICACION);}
+            case AUTENTICACION -> {p.setMensajeCliente("AUTENTICACION Recibida: ");
+                p.setTipo(TipoPaquete.AUTENTICACION);}
+            case DESCONECTAR -> {p.setMensajeCliente("Desconexión Recibida: ");
+                p.setTipo(TipoPaquete.DESCONECTAR);}
+            default -> System.out.println
+                    ("Tipo de Paquete no reconocido");
+        }
+        return p;
     }
 
     private void addActivity(String activity){
         logs += activity + "\n";
+        showActivity();
     }
 
     private void showActivity(){
         System.out.println(logs);
+    }
+    private void infoPaquete(Paquete p){
+        System.out.println("Paquete tipo: " + p.getTipo().toString());
+
     }
 
 

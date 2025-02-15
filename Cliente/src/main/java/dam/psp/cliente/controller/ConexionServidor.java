@@ -45,22 +45,20 @@ public class ConexionServidor {
     }
 
     public void enviarDatos(Paquete p){
+        try {
+            if(socket == null || socket.isClosed()){
+                conectar(p);
+            }
 
+            out.writeObject(p);
+            out.flush();
 
-                try {
-                    if(socket == null || socket.isClosed()){
-                        conectar(p);
-                    }
-
-                    out.writeObject(p);
-                    out.flush();
-
-                } catch (IOException e) {
-                    System.err.println("Error escuchaServidor " + e.getMessage());
-                    clienteConectado = false;
-                    cerrarConexion();
-                }
+        } catch (IOException e) {
+            System.err.println("Error escucha Servidor " + e.getMessage());
+            clienteConectado = false;
+            cerrarConexion();
         }
+    }
 
 
 
@@ -86,14 +84,8 @@ public class ConexionServidor {
 
 
 
-    public String recibirMensaje() {
-        try {
-            return in.readLine();
-        } catch (IOException e) {
-            System.err.println("Error al recibir mensaje: " + e.getMessage());
-            return null;
-        }
-    }
+
+
 
 
     public void cerrarConexion(){
