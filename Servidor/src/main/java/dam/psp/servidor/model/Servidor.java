@@ -55,16 +55,21 @@ public class Servidor {
 
             while(true){
                 Paquete pRecibido = (Paquete) in.readObject();
+                
                 Paquete pEnviar;
 
                 if(pRecibido == null){
                     break;
                 }
+                System.out.print("Paquete recibido");
                 infoPaquete(pRecibido);
 
                 pEnviar = procesarPaquete(pRecibido);
+                System.out.print("Paquete para enviar");
+                infoPaquete(pEnviar);
                 out.writeObject(pEnviar);
                 out.flush();
+                out.reset();
 
             }
         } catch (IOException e) {
@@ -75,6 +80,7 @@ public class Servidor {
     }
 
     private Paquete procesarPaquete(Paquete p){
+       
         switch (p.getTipo()){
             case CONECTAR -> {p.setMensajeCliente("Conexion Exitosa");
                 p.setTipo(TipoPaquete.CONECTAR);}
@@ -104,9 +110,14 @@ public class Servidor {
         System.out.println(logs);
     }
     private void infoPaquete(Paquete p){
+        System.out.println("----------------------");
         System.out.println("Paquete tipo: " + p.getTipo().toString());
+        System.out.println("Contenido del mensaje: " + p.getMensajeCliente());
+        System.out.println("Hash del objeto: " + p.hashCode());
+        System.out.println("----------------------");
 
     }
+    
 
 
     public static void main(String[] args) {
