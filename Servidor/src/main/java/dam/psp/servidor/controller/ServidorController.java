@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 import java.time.LocalTime;
@@ -27,6 +29,7 @@ public class ServidorController {
 
         @FXML
         private TextArea textAreaOfLogs;
+
 
         @FXML
         private Label timeLbl;
@@ -60,6 +63,7 @@ public class ServidorController {
     public void mostrarLog(String log) {
         String textoActual = textAreaOfLogs.getText();
         textAreaOfLogs.setText(textoActual + log + "\n");
+
     }
 
 
