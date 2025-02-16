@@ -3,7 +3,6 @@ package dam.psp.servidor.model;
 import dam.psp.cliente.model.Paquete;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Sala {
@@ -42,37 +41,32 @@ public class Sala {
         this.chat = chat;
     }
 
-    public void joinCliente(Paquete p) {
-        if (clientes.contains(p.getRemitente())) {
-            System.out.println("Cliente duplicado con nickname: " + p.getRemitente());
-
+    public void joinCliente(String nickname) {
+        if (clientes.contains(nickname)) {
+            System.out.println("Cliente duplicado con nickname: " + nickname);
         } else {
-            System.out.println(p.getRemitente() + " se ha unido");
-            clientes.add(p.getRemitente());
+            System.out.println(nickname + " se ha unido");
+            clientes.add(nickname);
             numClientes++;
             infoSala();
-
         }
     }
 
-
-    public void leaveCliente(Paquete p) {
-        if (clientes.remove(p.getRemitente())) {
-            System.out.println("Cliente con nickname " + p.getRemitente() + " ha salido de la sala.");
+    public void leaveCliente(String nickname) {
+        if (clientes.remove(nickname)) {
+            System.out.println("Cliente con nickname " + nickname + " ha salido de la sala.");
             numClientes--;
         } else {
-            System.out.println("Cliente con nickname " + p.getRemitente() + " no se encontró en la sala.");
+            System.out.println("Cliente con nickname " + nickname + " no se encontró en la sala.");
         }
         infoSala();
     }
+
     public void infoSala(){
         System.out.println("Clientes en la sala: " + numClientes + " de " + MAX_CLIENTES);
         for(String s : clientes){
             System.out.println(s);
-
         }
-
-
     }
 
     public boolean contieneCliente(String nickname){

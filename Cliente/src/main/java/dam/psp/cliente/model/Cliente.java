@@ -4,6 +4,7 @@ package dam.psp.cliente.model;
 
 import dam.psp.cliente.controller.ConexionServidor;
 
+import java.time.LocalTime;
 import java.util.Scanner;
 
 
@@ -19,6 +20,7 @@ public class Cliente  {
         this.nickname = nombre;
         p = new Paquete();
         this.p.setRemitente(this.nickname);
+        this.p.setMensajeCliente("Prueba " + LocalTime.now());
         conexionServidor = ConexionServidor.getInstance();
     }
 
@@ -32,7 +34,7 @@ public class Cliente  {
         while (true) {
             showMenu();
             opt = sc.nextLine();
-            setTipoPaquete(opt);
+            setTipoPaquete(opt,sc);
 
             conexionServidor.procesarPaquete(p);
 
@@ -54,10 +56,10 @@ public class Cliente  {
         //TODO
     }
 
-    public void setTipoPaquete(String tipo){
+    public void setTipoPaquete(String tipo,Scanner sc){
         switch (tipo){
             case "1" -> p.setTipo(TipoPaquete.CONECTAR);
-            case "2" -> p.setTipo(TipoPaquete.MENSAJE);
+            case "2" -> crearMesaje(sc);
             case "3" -> p.setTipo(TipoPaquete.ARCHIVO);
             case "4" -> p.setTipo(TipoPaquete.NOTIFICACION);
             case "5" -> p.setTipo(TipoPaquete.AUTENTICACION);
@@ -65,6 +67,20 @@ public class Cliente  {
             default -> System.out.println
                     ("Tipo de Paquete no reconocido");
         }
+
+    }
+
+    public void crearMesaje(Scanner sc){
+        String opt;
+        do{
+            p.setTipo(TipoPaquete.MENSAJE);
+            System.out.println("<- Escribe aqui: ");
+            opt = sc.nextLine();
+            p.setMensajeCliente(opt);
+            System.out.println("<- Mensje enviado");
+            conexionServidor.procesarPaquete(p);
+        }while(!opt.equals("."));
+
 
     }
 
@@ -85,7 +101,7 @@ public class Cliente  {
 
 
     public static void main(String[] args) {
-        Cliente cliente = new Cliente("Yeray");
+        Cliente cliente = new Cliente("Jordi");
         cliente.enviarPaquete();
 
 

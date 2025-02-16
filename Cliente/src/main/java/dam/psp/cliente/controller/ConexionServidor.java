@@ -2,7 +2,6 @@ package dam.psp.cliente.controller;
 
 import dam.psp.cliente.config.Config;
 import dam.psp.cliente.model.Paquete;
-import dam.psp.cliente.model.TipoPaquete;
 
 import java.io.*;
 import java.net.Socket;
@@ -52,7 +51,7 @@ public class ConexionServidor {
 
     }
 
-    public void enviarDatos(Paquete p){
+    public void enviarMensaje(Paquete p){
         try {
             if(socket == null || socket.isClosed()){
                 System.err.println("No existe conexion, Por favor conecta primero");
@@ -82,7 +81,8 @@ public class ConexionServidor {
                 try{
                     Paquete paqueteRecibido = (Paquete) in.readObject();
                     if(paqueteRecibido != null){
-                        System.out.println("<-- SERVER -->" + paqueteRecibido.getMensajeCliente());
+                        //MUESTRA EL MENSAJE POR TErminal
+                        System.out.println(paqueteRecibido.getMensajeCliente());
 
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -112,7 +112,8 @@ public class ConexionServidor {
             case CONECTAR -> {conectar(p);
             escucharServidor();}
 
-            case MENSAJE -> {enviarDatos(p);
+            case MENSAJE -> {
+                enviarMensaje(p);
                 ;}
             /*
             case ARCHIVO -> {p.setMensajeCliente("Archivo Recibido: ");
@@ -124,7 +125,8 @@ public class ConexionServidor {
             case AUTENTICACION -> {p.setMensajeCliente("AUTENTICACION Recibida: ");
                 p.setTipo(TipoPaquete.AUTENTICACION);}
             */
-            case DESCONECTAR -> {enviarDatos(p);
+            case DESCONECTAR -> {
+                enviarMensaje(p);
                 cerrarConexion();
             }
 
