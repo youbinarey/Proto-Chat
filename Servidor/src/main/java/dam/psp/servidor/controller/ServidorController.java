@@ -2,8 +2,10 @@ package dam.psp.servidor.controller;
 
 import dam.psp.cliente.model.Paquete;
 import dam.psp.servidor.model.ClienteHandler;
+import dam.psp.servidor.model.Servidor;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
@@ -14,6 +16,8 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 
 public class ServidorController {
+
+    private Servidor servidor;
 
         @FXML
         private ListView<String> listOfClientes;
@@ -31,7 +35,27 @@ public class ServidorController {
     @FXML
     public void initialize() {
         actualizaHora();
+        servidor = new Servidor();
+        servidor.setControlador(this);
+        listOfClientes.setItems(servidor.getClientesObservable());
+        iniciarServidor();
     }
+
+
+    // task evita bloqueos con hilos
+    private void iniciarServidor() {
+        Task<Void> task = new Task<>() {
+            @Override
+            protected Void call() {
+                servidor.servidorUp();
+                return null;
+            }
+        };
+
+
+        new Thread(task).start();
+    }
+
 
     public void mostrarLog(String log) {
         String textoActual = textAreaOfLogs.getText();
@@ -39,8 +63,8 @@ public class ServidorController {
     }
 
 
-    public void addCliente(String cliente){
-        listOfClientes.getItems().add(cliente);
+    public void addCliente(String nickname){
+        listOfClientes.getItems().add(nickname);
     }
 
 

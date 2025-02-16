@@ -58,7 +58,6 @@ public class ClienteHandler implements Runnable {
      */
     public void enviarPaquete(Paquete p) {
 
-
         try {
             out.writeObject(p);
             out.flush();

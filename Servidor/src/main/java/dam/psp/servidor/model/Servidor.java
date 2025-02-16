@@ -3,10 +3,15 @@ package dam.psp.servidor.model;
 import dam.psp.cliente.model.Paquete;
 import dam.psp.cliente.model.TipoPaquete;
 import dam.psp.servidor.config.Config;
+import dam.psp.servidor.controller.ServidorController;
+import javafx.application.Platform;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,6 +22,13 @@ public class Servidor {
     private String logs;
     private Sala sala;
     private Set<ClienteHandler> clientes;
+    private ObservableList<String> clientesObservables;
+    private ServidorController controlador;
+
+    public void setControlador(ServidorController controlador) {
+        this.controlador = controlador;
+    }
+
 
     public Servidor() {
         try {
@@ -24,13 +36,14 @@ public class Servidor {
             logs = "";
             sala = new Sala();
             clientes = new HashSet<>();
+            clientesObservables = FXCollections.observableArrayList();
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
         }
     }
 
     public void servidorUp() {
-        addActivity();
+        addActivity("Servidor Arrancado");
         while (true) {
             Socket clienteSocket = esperarConexion(); // Aceptar conexión
             if (clienteSocket != null) {
@@ -61,7 +74,10 @@ public class Servidor {
                     System.out.println("Cliente duplicado:" + p.getRemitente());
                 } else {
                     clienteHandler.setNickname(p.getRemitente());
+
                     sala.joinCliente(p.getRemitente());
+                    logPaquete(p);
+                    clientesObservables.add(clienteHandler.getNickname());
                     broadcastMensaje(p);
                 }
             }
@@ -69,11 +85,15 @@ public class Servidor {
                 //capturar quien lo envia y el mensaje
                 System.out.println(leerMensaje(p));
                 addChat(p);
+                logPaquete(p);
+
                 broadcastMensaje(p);
             }
             case DESCONECTAR -> {
                 desconectarCliente(clienteSocket, out, in, p.getRemitente());
                 clientes.remove(clienteHandler);
+                clientesObservables.remove(clienteHandler.getNickname());
+                logPaquete(p);
                 broadcastMensaje(p);
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
@@ -107,14 +127,16 @@ public class Servidor {
         pEnviar.setDestinatario("TODOS");
 
         System.out.println("handeler envia  -> " + pEnviar.getMensajeCliente());
+
         for (ClienteHandler cliente : clientes) {
             cliente.enviarPaquete(pEnviar);
         }
     }
 
-    private void addActivity() {
-        logs += "Servidor iniciado en el puerto 9999" + "\n";
+    private void addActivity(String log) {
+        logs= log;
         showActivity();
+        Platform.runLater(() -> controlador.mostrarLog(logs)); // controlador es la instancia de ServidorController
     }
 
     private void showActivity() {
@@ -127,6 +149,14 @@ public class Servidor {
         System.out.println("Contenido del mensaje: " + p.getMensajeCliente());
         System.out.println("Hash del objeto: " + p.hashCode());
         System.out.println("----------------------");
+    }
+
+    public ObservableList<String> getClientesObservable() {
+        return clientesObservables;
+    }
+
+    public void logPaquete(Paquete p){
+        addActivity(p.getTipo() + " - " +p.getRemitente() + LocalTime.now());
     }
 
 
