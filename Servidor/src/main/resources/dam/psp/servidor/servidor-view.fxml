@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.servidor.controller.ServidorController">
    <children>
       <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" prefHeight="18.0" prefWidth="210.0" text="SERVIDOR" AnchorPane.leftAnchor="195.0" AnchorPane.rightAnchor="195.0" AnchorPane.topAnchor="20.0" />
-      <TextArea fx:id="logTextArea" editable="false" layoutX="46.0" layoutY="229.0" prefHeight="163.0" prefWidth="508.0" AnchorPane.topAnchor="229.0" />
+      <TextArea fx:id="textAreaOfLogs" editable="false" layoutX="243.0" layoutY="99.0" prefHeight="236.0" prefWidth="325.0" AnchorPane.topAnchor="99.0" />
       <Label fx:id="timeLbl" layoutX="471.0" layoutY="20.0" prefHeight="18.0" prefWidth="109.0" text="00:00:00" />
+      <ListView fx:id="listOfClientes" layoutX="14.0" layoutY="79.0" prefHeight="275.0" prefWidth="200.0" />
    </children>
 </AnchorPane>

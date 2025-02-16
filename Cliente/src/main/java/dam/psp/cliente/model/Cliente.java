@@ -36,7 +36,10 @@ public class Cliente  {
             opt = sc.nextLine();
             setTipoPaquete(opt,sc);
 
-            conexionServidor.procesarPaquete(p);
+            if(p.getTipo()!= null){
+                conexionServidor.procesarPaquete(p);
+            }
+
 
             // Salir si el usuario ingresa "0"
             if (opt.equals("10")) {
@@ -71,17 +74,21 @@ public class Cliente  {
     }
 
     public void crearMesaje(Scanner sc){
-        String opt;
-        do{
+        String opt = "";
+        System.out.println("<- Escribe aqui: ");
+
+
+        while(true){
             p.setTipo(TipoPaquete.MENSAJE);
-            System.out.println("<- Escribe aqui: ");
             opt = sc.nextLine();
+            if(opt.equals(".")) break;
+
             p.setMensajeCliente(opt);
-            System.out.println("<- Mensje enviado");
+            //System.out.println("<- Mensje enviado");
             conexionServidor.procesarPaquete(p);
-        }while(!opt.equals("."));
+        };
 
-
+        resetPaquete();
     }
 
     public void showMenu(){
@@ -95,13 +102,18 @@ public class Cliente  {
 
     }
 
+    private void resetPaquete(){
+        p.setTipo(null);
+        p.setMensajeCliente(null);
+    }
+
 
 
 
 
 
     public static void main(String[] args) {
-        Cliente cliente = new Cliente("Jordi");
+        Cliente cliente = new Cliente("Yeray");
         cliente.enviarPaquete();
 
 

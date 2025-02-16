@@ -1,9 +1,12 @@
 package dam.psp.servidor.controller;
 
+import dam.psp.cliente.model.Paquete;
+import dam.psp.servidor.model.ClienteHandler;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.util.Duration;
 
@@ -12,14 +15,18 @@ import java.time.format.DateTimeFormatter;
 
 public class ServidorController {
 
-    @FXML
-    private Label serverTxt;
+        @FXML
+        private ListView<String> listOfClientes;
 
-    @FXML
-    private Label timeLbl;
+        @FXML
+        private Label serverTxt;
 
-    @FXML
-    private TextArea logTextArea;
+        @FXML
+        private TextArea textAreaOfLogs;
+
+        @FXML
+        private Label timeLbl;
+
 
     @FXML
     public void initialize() {
@@ -27,9 +34,16 @@ public class ServidorController {
     }
 
     public void mostrarLog(String log) {
-        String textoActual = logTextArea.getText();
-        logTextArea.setText(textoActual + log + "\n");
+        String textoActual = textAreaOfLogs.getText();
+        textAreaOfLogs.setText(textoActual + log + "\n");
     }
+
+
+    public void addCliente(String cliente){
+        listOfClientes.getItems().add(cliente);
+    }
+
+
 
     // Método para actualizar la hora cada segundo
     public void actualizaHora() {

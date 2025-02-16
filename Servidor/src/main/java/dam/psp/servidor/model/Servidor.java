@@ -99,12 +99,14 @@ public class Servidor {
     }
 
     private void broadcastMensaje(Paquete pRecibido) {
+
         Paquete pEnviar = new Paquete();
         pEnviar.setTipo(TipoPaquete.MENSAJE);
         pEnviar.setRemitente(pRecibido.getRemitente());
         pEnviar.setMensajeCliente((leerMensaje(pRecibido)));
         pEnviar.setDestinatario("TODOS");
 
+        System.out.println("handeler envia  -> " + pEnviar.getMensajeCliente());
         for (ClienteHandler cliente : clientes) {
             cliente.enviarPaquete(pEnviar);
         }
@@ -135,6 +137,20 @@ public class Servidor {
     }
 
     public  String leerMensaje(Paquete p) {
-        return p.getRemitente() + " dice: " + p.getMensajeCliente();
+        switch (p.getTipo()) {
+            case CONECTAR -> {
+                return p.getRemitente() + " se ha unido";
+            }
+            case MENSAJE -> {
+                return p.getRemitente() + " dice: " + p.getMensajeCliente();
+
+            }
+            case DESCONECTAR -> {
+                return p.getRemitente() + " ha abandonado la sala";
+            }
+            default -> {
+                return "OPCION NO RECONOCIDA";
+            }
+        }
     }
 }

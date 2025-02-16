@@ -57,7 +57,7 @@ public class ClienteHandler implements Runnable {
      * @param p El paquete a enviar.
      */
     public void enviarPaquete(Paquete p) {
-        System.out.println("handeler envia  -> " + p.getMensajeCliente());
+
 
         try {
             out.writeObject(p);

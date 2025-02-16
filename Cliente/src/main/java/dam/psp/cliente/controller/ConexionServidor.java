@@ -107,7 +107,6 @@ public class ConexionServidor {
     }
 
     public void procesarPaquete(Paquete p){
-
         switch (p.getTipo()){
             case CONECTAR -> {conectar(p);
             escucharServidor();}
