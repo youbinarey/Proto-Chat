@@ -3,6 +3,7 @@ package dam.psp.cliente.model;
 
 
 import dam.psp.cliente.controller.ConexionServidor;
+import dam.psp.cliente.controller.PaqueteListener;
 
 import java.time.LocalTime;
 import java.util.Scanner;
@@ -16,40 +17,26 @@ public class Cliente  {
 
 
 
-    public Cliente(String nombre) {
+    public Cliente(String nombre, PaqueteListener listener) {
         this.nickname = nombre;
         p = new Paquete();
         this.p.setRemitente(this.nickname);
         this.p.setMensajeCliente("Prueba " + LocalTime.now());
         conexionServidor = ConexionServidor.getInstance();
+        conexionServidor.setMessageListener(listener);
+
     }
 
+    public void enviarMensaje(String mensaje){
+        p.setTipo(TipoPaquete.MENSAJE);
+        p.setMensajeCliente(mensaje);
+        p.setDestinatario("TODOS");
+        conexionServidor.procesarPaquete(p);
+    }
 
-    public void enviarPaquete() {
-        Scanner sc = new Scanner(System.in);
-        String opt;
+    public void enviarPaquete(Paquete p) {
 
-        p.setDestinatario("SERVER");
-
-        while (true) {
-            showMenu();
-            opt = sc.nextLine();
-            setTipoPaquete(opt,sc);
-
-            if(p.getTipo()!= null){
-                conexionServidor.procesarPaquete(p);
-            }
-
-
-            // Salir si el usuario ingresa "0"
-            if (opt.equals("10")) {
-                break;
-            }
-
-        }
-        sc.close();
-
-        // Cerrar el scanner al salir
+        conexionServidor.procesarPaquete(p);
 
     }
     public void recibirPaquete(){
@@ -91,6 +78,7 @@ public class Cliente  {
         resetPaquete();
     }
 
+
     public void showMenu(){
         System.out.println("1. CONECTAR");
         System.out.println("2. MENSAJE");
@@ -107,15 +95,11 @@ public class Cliente  {
         p.setMensajeCliente(null);
     }
 
-
-
-
-
-
-    public static void main(String[] args) {
-        Cliente cliente = new Cliente("Yeray");
-        cliente.enviarPaquete();
-
-
+    public void conectar(){
+        this.p.setTipo(TipoPaquete.CONECTAR);
+        conexionServidor.procesarPaquete(p);
     }
+
+
+
 }

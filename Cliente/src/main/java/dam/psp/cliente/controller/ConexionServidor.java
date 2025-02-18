@@ -13,6 +13,7 @@ public class ConexionServidor {
     private ObjectOutputStream  out;
     private ObjectInputStream in;
     private boolean clienteConectado;
+    private PaqueteListener messageListener;
 
     private ConexionServidor() {
         clienteConectado = false;
@@ -83,6 +84,7 @@ public class ConexionServidor {
                     if(paqueteRecibido != null){
                         //MUESTRA EL MENSAJE POR TErminal
                         System.out.println(paqueteRecibido.getMensajeCliente());
+                        messageListener.mensajeRecibido(paqueteRecibido);
 
                     }
                 } catch (IOException | ClassNotFoundException e) {
@@ -136,6 +138,10 @@ public class ConexionServidor {
 
     public boolean isClienteConectado() {
         return clienteConectado;
+    }
+
+    public void setMessageListener(PaqueteListener listener) {
+        this.messageListener = listener;
     }
 
 

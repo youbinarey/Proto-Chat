@@ -1,0 +1,113 @@
+/* Estilo general */
+.root {
+    background-color: #1e1e1e; /* Fondo oscuro */
+    -fx-background-color: #1e1e1e; /* Fondo oscuro */
+    -fx-font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
+}
+
+/* --- Parte Superior --- */
+.top-bar {
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-spacing: 20px;
+    background-color: linear-gradient(to bottom, #252526, #1e1e1e);
+    -fx-background-color: linear-gradient(to bottom, #252526, #1e1e1e);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+
+.title {
+    color: #ffffff; /* Texto blanco */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    font-size: 20px;
+    -fx-font-size: 20px;
+    font-weight: bold;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 2, 0, 0, 0);
+}
+
+.server-time {
+    color: #cccccc; /* Texto gris claro */
+    -fx-text-fill: #cccccc; /* Texto gris claro */
+    font-size: 14px;
+    -fx-font-size: 14px;
+}
+
+/* --- Parte Izquierda --- */
+.user-list {
+    background-color: #2d2d30; /* Fondo oscuro */
+    -fx-background-color: #2d2d30; /* Fondo oscuro */
+    color: #ffffff; /* Texto blanco */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    border-color: #3c3c3c; /* Borde gris */
+    -fx-border-color: #3c3c3c; /* Borde gris */
+    border-width: 1px;
+    -fx-border-width: 1px;
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+
+/* --- Parte Central --- */
+.log-area {
+    -jevelsea-lined-notepad:
+        linear-gradient (
+            from 0px 0px to0px 11px,
+            repetat,
+            gainsboro,
+            gainsboro 6.25%,
+            #252526 6.25%,
+            #252526
+        );
+    background-color: #1e1e1e; /* Fondo oscuro */
+    -fx-background-color: #1e1e1e; /* Fondo oscuro */
+    color: #0d330d; /* Texto verde (estilo terminal) */
+    -fx-text-fill: #005e00; /* Texto verde (estilo terminal) */
+    font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
+    -fx-font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
+    font-size: 14px;
+    -fx-font-size: 14px;
+    border-color: #3c3c3c; /* Borde gris */
+    -fx-border-color: #3c3c3c; /* Borde gris */
+    border-width: 1px;
+    -fx-border-width: 1px;
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+.textAreaColor {
+    -fx-background-color:-jevelsea-lined-notepad;
+}
+
+/* --- Parte Derecha --- */
+.right-panel {
+    background-color: #2d2d30; /* Fondo oscuro */
+    -fx-background-color: #2d2d30; /* Fondo oscuro */
+    border-color: #3c3c3c; /* Borde gris */
+    -fx-border-color: #3c3c3c; /* Borde gris */
+    border-width: 1px;
+    -fx-border-width: 1px;
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+
+/* --- Parte Inferior --- */
+.status-bar {
+    background-color: #252526; /* Fondo más claro */
+    -fx-background-color: #252526; /* Fondo más claro */
+    color: #ffffff; /* Texto blanco */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    font-size: 14px;
+    -fx-font-size: 14px;
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+
+/*Borde inputr*/
+.label-borde {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
