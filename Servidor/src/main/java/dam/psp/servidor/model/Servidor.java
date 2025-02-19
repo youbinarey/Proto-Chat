@@ -21,7 +21,7 @@ public class Servidor {
     private final int PUERTO = Config.SERVER_PORT;
     private String logs;
     private Sala sala;
-    private Set<ClienteHandler> clientes;
+    //private Set<ClienteHandler> clientes;
     private ObservableList<String> clientesObservables;
     private ServidorController controlador;
 
@@ -31,11 +31,12 @@ public class Servidor {
 
 
     public Servidor() {
+
         try {
             serverSocket = new ServerSocket(PUERTO);
             logs = "";
             sala = new Sala();
-            clientes = new HashSet<>();
+            //clientes = new HashSet<>();
             clientesObservables = FXCollections.observableArrayList();
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
@@ -63,23 +64,14 @@ public class Servidor {
 
     private void conexionCliente(Socket clienteSocket) {
         ClienteHandler clienteHandler = new ClienteHandler(clienteSocket, this);
-        clientes.add(clienteHandler);
+        //clientes.add(clienteHandler);
         new Thread(clienteHandler).start();
     }
 
     public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler clienteHandler) {
         switch (p.getTipo()) {
             case CONECTAR -> {
-                if (sala.contieneCliente(p.getRemitente())) {
-                    System.out.println("Cliente duplicado:" + p.getRemitente());
-                } else {
-                    clienteHandler.setNickname(p.getRemitente());
-
-                    sala.joinCliente(p.getRemitente());
-                    logPaquete(p);
-                    clientesObservables.add(clienteHandler.getNickname());
-                    broadcastMensaje(p);
-                }
+                    conectarCliente(clienteSocket,in,out,clienteHandler,p);
             }
             case MENSAJE -> {
                 //capturar quien lo envia y el mensaje
@@ -90,9 +82,7 @@ public class Servidor {
                 broadcastMensaje(p);
             }
             case DESCONECTAR -> {
-                desconectarCliente(clienteSocket, out, in, p.getRemitente());
-                clientes.remove(clienteHandler);
-                clientesObservables.remove(clienteHandler.getNickname());
+                desconectarCliente(clienteSocket, out, in, clienteHandler);
                 logPaquete(p);
                 broadcastMensaje(p);
             }
@@ -100,8 +90,13 @@ public class Servidor {
         }
     }
 
-    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, String nickname) {
-        sala.leaveCliente(nickname); // Eliminar al cliente de la sala
+    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente) {
+
+        sala.leaveCliente(cliente); // Eliminar al cliente de la sala
+        Platform.runLater(()-> {
+            clientesObservables.remove(cliente.getNickname());
+            //Actualiza la UI
+        });
 
         try {
             if (out != null) out.close(); // Cerrar el ObjectOutputStream
@@ -113,6 +108,23 @@ public class Servidor {
         } catch (IOException e) {
             System.err.println("Error al desconectar al cliente: " + e.getMessage());
         }
+    }
+
+    private void conectarCliente(Socket socketCliente,  ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p){
+        if (sala.contieneCliente(cliente)) {
+            System.out.println("Cliente duplicado:" + p.getRemitente());
+        } else {
+            cliente.setNickname(p.getRemitente());
+
+            sala.joinCliente(cliente);
+            logPaquete(p);
+            Platform.runLater(()->{
+                clientesObservables.add(cliente.getNickname());
+
+            });
+            broadcastMensaje(p);
+        }
+
     }
     public void addChat(Paquete p) {
         sala.setChat(sala.getChat() + "\n" + p.getRemitente() + " dice: " + p.getMensajeCliente());
@@ -127,10 +139,14 @@ public class Servidor {
         pEnviar.setDestinatario("TODOS");
 
         System.out.println("handeler envia  -> " + pEnviar.getMensajeCliente());
-
+        sala.broadcastMensaje(pEnviar);
+       // TODO
+        /*
         for (ClienteHandler cliente : clientes) {
             cliente.enviarPaquete(pEnviar);
         }
+
+         */
     }
 
     private void addActivity(String log) {

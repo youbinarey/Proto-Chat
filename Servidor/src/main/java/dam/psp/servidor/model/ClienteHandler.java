@@ -31,23 +31,18 @@ public class ClienteHandler implements Runnable {
     public void run() {
         try {
             while (true) {
-                // Leer el paquete enviado por el cliente
                 Paquete pRecibido = (Paquete) in.readObject();
-
-                if (pRecibido == null) {
-                    break; // Si el paquete es nulo, salir del bucle
-                }
-
-                // Procesar el paquete recibido
+                if (pRecibido == null) break;
                 servidor.procesarPaquete(pRecibido, out, in, socket, this);
             }
         } catch (EOFException e) {
             System.out.println("Cliente desconectado: " + nickname);
-        } catch (IOException | ClassNotFoundException e) {
-            System.err.println("Error en la comunicación con el cliente " + nickname + ": " + e.getMessage());
+        } catch (ClassNotFoundException e) {
+            System.err.println("Clase no encontrada: " + e.getMessage());
+        } catch (IOException e) {
+            System.err.println("Error de I/O en cliente " + nickname + ": " + e.getMessage());
         } finally {
-            // Desconectar al cliente cuando ocurre un error o se cierra la conexión
-            servidor.desconectarCliente(socket, out, in, nickname);
+            servidor.desconectarCliente(socket, out, in, this);
         }
     }
 

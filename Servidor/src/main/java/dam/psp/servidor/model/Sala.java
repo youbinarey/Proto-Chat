@@ -2,35 +2,21 @@ package dam.psp.servidor.model;
 
 import dam.psp.cliente.model.Paquete;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class Sala {
     private final int MAX_CLIENTES = 10;
     private int numClientes;
-    private Set<String> clientes;
+    private Map<String, ClienteHandler> clientes;
     private String chat;
 
     public Sala(){
         numClientes = 0;
-        clientes = new HashSet<>();
+        clientes = new HashMap<>();
         chat = "<------ CHAT ------>";
-    }
-
-    public int getNumClientes() {
-        return numClientes;
-    }
-
-    public void setNumClientes(int numClientes) {
-        this.numClientes = numClientes;
-    }
-
-    public Set<String> getClientes() {
-        return clientes;
-    }
-
-    public void setClientes(Set<String> clientes) {
-        this.clientes = clientes;
     }
 
     public String getChat() {
@@ -41,35 +27,41 @@ public class Sala {
         this.chat = chat;
     }
 
-    public void joinCliente(String nickname) {
-        if (clientes.contains(nickname)) {
-            System.out.println("Cliente duplicado con nickname: " + nickname);
-        } else {
-            System.out.println(nickname + " se ha unido");
-            clientes.add(nickname);
+    public void joinCliente(ClienteHandler cliente) {
+        if (clientes.size() < MAX_CLIENTES && !clientes.containsKey(cliente.getNickname())) {
+            clientes.put(cliente.getNickname(),cliente);
             numClientes++;
+            System.out.println(cliente.getNickname() + " se ha unido");
+            infoSala();
+        } else {
+            System.out.println("No se puede agregar a " + cliente.getNickname());
+        }
+    }
+
+    public void leaveCliente(ClienteHandler cliente) {
+        if (clientes.remove(cliente.getNickname())!=null) {
+            numClientes--;
+            System.out.println(cliente.getNickname() + " ha salido de la sala.");
             infoSala();
         }
     }
 
-    public void leaveCliente(String nickname) {
-        if (clientes.remove(nickname)) {
-            System.out.println("Cliente con nickname " + nickname + " ha salido de la sala.");
-            numClientes--;
-        } else {
-            System.out.println("Cliente con nickname " + nickname + " no se encontró en la sala.");
-        }
-        infoSala();
-    }
-
     public void infoSala(){
         System.out.println("Clientes en la sala: " + numClientes + " de " + MAX_CLIENTES);
-        for(String s : clientes){
+        for(String s : clientes.keySet()){
             System.out.println(s);
         }
     }
 
-    public boolean contieneCliente(String nickname){
-        return clientes.contains(nickname);
+    public boolean contieneCliente(ClienteHandler cliente){
+        return clientes.containsKey(cliente.getNickname());
+    }
+
+
+
+    public void broadcastMensaje(Paquete p) {
+        for (ClienteHandler cliente : clientes.values()) {
+            cliente.enviarPaquete(p);
+        }
     }
 }

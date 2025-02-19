@@ -29,8 +29,8 @@
                         <TextArea fx:id="textAreaMensaje" prefRowCount="1" promptText="Escribe un mensaje..." style="-fx-background-radius: 10px;" wrapText="true" />
                      </graphic>
                   </Label>
-                  <Button id="btn-adjuntar" fx:id="btnAdjuntar" layoutX="293.0" layoutY="27.0" text="📎" />
                   <AutoCompleteTextField layoutX="71.0" layoutY="48.0" />
+                  <Button id="btn-adjuntar" fx:id="btnAdjuntar" layoutX="271.0" layoutY="42.0" text="📎" />
                </AnchorPane>
             </bottom>
             <left>
@@ -52,7 +52,7 @@
                            <Font name="System Bold" size="12.0" />
                         </font>
                      </Label>
-                     <JFXToggleButton layoutX="53.0" layoutY="18.0" text="Modo" />
+                     <JFXToggleButton layoutX="51.0" layoutY="24.0" text="Modo" />
                   </children>
                </AnchorPane>
             </top>
@@ -60,6 +60,8 @@
                <AnchorPane id="panel-chat" prefHeight="401.0" prefWidth="743.0" BorderPane.alignment="CENTER">
                   <children>
                      <JFXTextArea fx:id="textAreaChat" layoutX="54.0" layoutY="111.0" style="-fx-background-color: grey;" unFocusColor="#d71e1e" />
+                     <Button id="btn-enviar" fx:id="btnLogOut" layoutX="632.0" layoutY="121.0" onAction="#btnLogOutOnClick" text="Log/out" />
+                     <Button id="btn-enviar" fx:id="btnLogIn" layoutX="638.0" layoutY="167.0" onAction="#btnLogInOnClick" text="Log/in" />
                   </children>
                </AnchorPane>
             </right>

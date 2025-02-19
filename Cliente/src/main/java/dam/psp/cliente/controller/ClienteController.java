@@ -16,6 +16,8 @@ public class ClienteController implements PaqueteListener {
     private Cliente cliente;
     public TextArea textAreaMensaje;
     public Button btnEnviar;
+    public Button btnLogIn;
+    public Button btnLogOut;
     public ListView<String> listUsuarios;
     public JFXTextArea textAreaChat;
 
@@ -24,7 +26,7 @@ public class ClienteController implements PaqueteListener {
     @FXML
     public void initialize() {
 
-        Cliente cliente = new Cliente("Yeray",this);
+        cliente = new Cliente("Yeray",this);
         cliente.conectar();
 
 
@@ -78,11 +80,23 @@ public class ClienteController implements PaqueteListener {
     @FXML
     void btnEnviarOnClick(ActionEvent event) {
         String mensaje = textAreaMensaje.getText();
+        enviarMensaje();
         cliente.enviarMensaje(mensaje);
     }
 
     @Override
     public void mensajeRecibido(Paquete p) {
-        textAreaMensaje.appendText(p.getMensajeCliente());
+        textAreaChat.appendText(p.getMensajeCliente());
     }
+
+
+    @FXML
+    void btnLogOutOnClick(ActionEvent event) {
+            cliente.desconectar();
+    }
+    @FXML
+    void btnLogInOnClick(ActionEvent event) {
+        cliente.conectar();
+    }
+
 }

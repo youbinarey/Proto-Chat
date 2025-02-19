@@ -39,56 +39,17 @@ public class Cliente  {
         conexionServidor.procesarPaquete(p);
 
     }
-    public void recibirPaquete(){
-    }
+
 
     public void desconectar(){
-        //TODO
-    }
-
-    public void setTipoPaquete(String tipo,Scanner sc){
-        switch (tipo){
-            case "1" -> p.setTipo(TipoPaquete.CONECTAR);
-            case "2" -> crearMesaje(sc);
-            case "3" -> p.setTipo(TipoPaquete.ARCHIVO);
-            case "4" -> p.setTipo(TipoPaquete.NOTIFICACION);
-            case "5" -> p.setTipo(TipoPaquete.AUTENTICACION);
-            case "0" -> p.setTipo(TipoPaquete.DESCONECTAR);
-            default -> System.out.println
-                    ("Tipo de Paquete no reconocido");
-        }
-
-    }
-
-    public void crearMesaje(Scanner sc){
-        String opt = "";
-        System.out.println("<- Escribe aqui: ");
-
-
-        while(true){
-            p.setTipo(TipoPaquete.MENSAJE);
-            opt = sc.nextLine();
-            if(opt.equals(".")) break;
-
-            p.setMensajeCliente(opt);
-            //System.out.println("<- Mensje enviado");
-            conexionServidor.procesarPaquete(p);
-        };
-
-        resetPaquete();
+        p.setTipo(TipoPaquete.DESCONECTAR);
+        conexionServidor.procesarPaquete(p);
     }
 
 
-    public void showMenu(){
-        System.out.println("1. CONECTAR");
-        System.out.println("2. MENSAJE");
-        System.out.println("3. ARCHIVO");
-        System.out.println("4. NOTIFICACION");
-        System.out.println("5. AUTENTICACION");
-        System.out.println("0. DESCONECTAR");
 
 
-    }
+
 
     private void resetPaquete(){
         p.setTipo(null);
