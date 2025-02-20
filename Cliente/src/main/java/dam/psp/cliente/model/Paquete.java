@@ -3,6 +3,8 @@ package dam.psp.cliente.model;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Paquete implements Serializable {
     @Serial
@@ -12,6 +14,7 @@ public class Paquete implements Serializable {
     private String ip;
     private String mensajeCliente;
     private TipoPaquete tipo;
+    private List<String> listaUsuarios;
 
     public Paquete(){
 
@@ -23,6 +26,7 @@ public class Paquete implements Serializable {
         this.ip = ip;
         this.mensajeCliente = mensajeCliente;
         this.tipo = tipo;
+        listaUsuarios = new ArrayList<>();
     }
 
     public String getRemitente() {
@@ -63,6 +67,14 @@ public class Paquete implements Serializable {
 
     public void setTipo(TipoPaquete tipo) {
         this.tipo = tipo;
+    }
+
+    public List<String> getListaUsuarios() {
+        return listaUsuarios;
+    }
+
+    public void setListaUsuarios(List<String> listaUsuarios) {
+        this.listaUsuarios = listaUsuarios;
     }
 }
 

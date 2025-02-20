@@ -1,5 +1,6 @@
 package dam.psp.servidor.model;
 
+
 import dam.psp.cliente.model.Paquete;
 import dam.psp.cliente.model.TipoPaquete;
 import dam.psp.servidor.config.Config;
@@ -38,6 +39,7 @@ public class Servidor {
             sala = new Sala();
             //clientes = new HashSet<>();
             clientesObservables = FXCollections.observableArrayList();
+
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
         }

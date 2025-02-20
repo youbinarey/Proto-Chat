@@ -8,7 +8,8 @@ module dam.psp.servidor {
     requires net.synedra.validatorfx;
     requires org.kordamp.ikonli.javafx;
     requires org.kordamp.bootstrapfx.core;
-    requires eu.hansolo.tilesfx;
+
+
     requires Paquete;
 
     //requires eu.hansolo.tilesfx;
