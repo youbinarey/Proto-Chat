@@ -1,6 +1,5 @@
 package dam.psp.servidor.controller;
 
-import dam.psp.cliente.model.Paquete;
 import dam.psp.servidor.model.ClienteHandler;
 import dam.psp.servidor.model.Servidor;
 import javafx.animation.KeyFrame;
@@ -10,8 +9,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
-import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.util.Duration;
 
 import java.time.LocalTime;
@@ -21,18 +18,18 @@ public class ServidorController {
 
     private Servidor servidor;
 
-        @FXML
-        private ListView<ClienteHandler> listOfClientes;
+    @FXML
+    private ListView<ClienteHandler> listOfClientes;
 
-        @FXML
-        private Label serverTxt;
+    @FXML
+    private Label serverTxt;
 
-        @FXML
-        private TextArea textAreaOfLogs;
+    @FXML
+    private TextArea textAreaOfLogs;
 
 
-        @FXML
-        private Label timeLbl;
+    @FXML
+    private Label timeLbl;
 
 
     @FXML
@@ -54,8 +51,6 @@ public class ServidorController {
                 return null;
             }
         };
-
-
         new Thread(task).start();
     }
 
@@ -63,14 +58,7 @@ public class ServidorController {
     public void mostrarLog(String log) {
         String textoActual = textAreaOfLogs.getText();
         textAreaOfLogs.setText(textoActual + log + "\n");
-
     }
-
-
-    //public void addCliente(String nickname){
-      //  listOfClientes.getItems().add(nickname);
-    //}
-
 
 
     // Método para actualizar la hora cada segundo

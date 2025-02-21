@@ -4,7 +4,6 @@ import com.jfoenix.controls.JFXTextArea;
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.Paquete;
 import javafx.application.Platform;
-import javafx.beans.Observable;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -94,7 +93,7 @@ public class ClienteController implements PaqueteListener {
 
     @Override
     public void mensajeRecibido(Paquete p) {
-        textAreaChat.appendText(p.getMensajeCliente());
+        textAreaChat.appendText(p.getMensajeCliente() + "\n");
     }
 
     @Override

@@ -1,6 +1,5 @@
 package dam.psp.servidor.model;
 
-import dam.psp.cliente.model.Paquete;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -10,14 +9,12 @@ import java.util.List;
 public class Sala {
     private final int MAX_CLIENTES = 10;
     private int numClientes;
-    //private Map<String, ClienteHandler> clientes;
     private String chat;
-    private ObservableList<ClienteHandler> clientesObservables;
+    private final ObservableList<ClienteHandler> clientesObservables;
 
 
-    public Sala(){
+    public Sala() {
         numClientes = 0;
-        //clientes = new HashMap<>();
         clientesObservables = FXCollections.observableArrayList();
         chat = "<------ CHAT ------>";
     }
@@ -49,36 +46,26 @@ public class Sala {
         }
     }
 
-    public void infoSala(){
+    public void infoSala() {
         System.out.println("Clientes en la sala: " + numClientes + " de " + MAX_CLIENTES);
-        for(ClienteHandler c : clientesObservables){
+        for (ClienteHandler c : clientesObservables) {
             System.out.println(c.getNickname());
         }
     }
 
-    public boolean contieneCliente(ClienteHandler cliente){
+    public boolean contieneCliente(ClienteHandler cliente) {
         return clientesObservables.contains(cliente);
     }
 
-
-    /*
-    public void broadcastMensaje(Paquete p) {
-        for (ClienteHandler cliente : clientesObservables) {
-            cliente.enviarPaquete(p);
-        }
-    }
-
-     */
     public ObservableList<ClienteHandler> getClientes() {
         return clientesObservables;
     }
 
-    public List<String> getClientesNickname(){
+    public List<String> getClientesNickname() {
         List<String> clientesNickname = new ArrayList<>();
-        for(ClienteHandler c : clientesObservables){
+        for (ClienteHandler c : clientesObservables) {
             clientesNickname.add(c.getNickname());
         }
-
         return clientesNickname;
     }
 }

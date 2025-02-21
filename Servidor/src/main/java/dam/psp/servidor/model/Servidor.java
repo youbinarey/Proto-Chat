@@ -6,29 +6,22 @@ import dam.psp.cliente.model.TipoPaquete;
 import dam.psp.servidor.config.Config;
 import dam.psp.servidor.controller.ServidorController;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalTime;
-import java.util.HashSet;
-import java.util.Set;
 
 public class Servidor {
 
-    private ServerSocket serverSocket;
     private final int PUERTO = Config.SERVER_PORT;
-    private String logs;
     public Sala sala;
+    private ServerSocket serverSocket;
+    private String logs;
     //private Set<ClienteHandler> clientes;
     private ServidorController controlador;
-
-    public void setControlador(ServidorController controlador) {
-        this.controlador = controlador;
-    }
-
 
     public Servidor() {
 
@@ -42,6 +35,15 @@ public class Servidor {
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        Servidor servidor = new Servidor();
+        servidor.servidorUp();
+    }
+
+    public void setControlador(ServidorController controlador) {
+        this.controlador = controlador;
     }
 
     public void servidorUp() {
@@ -73,7 +75,7 @@ public class Servidor {
         switch (p.getTipo()) {
             case CONECTAR -> {
                 //p.setListaUsuarios(sala.getClientesNickname());
-                    conectarCliente(clienteSocket,in,out,clienteHandler,p);
+                conectarCliente(clienteSocket, in, out, clienteHandler, p);
             }
             case MENSAJE -> {
                 //capturar quien lo envia y el mensaje
@@ -93,13 +95,7 @@ public class Servidor {
     }
 
     void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
-
         sala.leaveCliente(cliente);
-
-       // Platform.runLater(()-> {
-        //clientesObservables.remove(cliente.getNickname());
-            //Actualiza la UI
-        //});
         broadcastMensaje(p);
 
         try {
@@ -114,32 +110,26 @@ public class Servidor {
         }
     }
 
-    private void conectarCliente(Socket socketCliente,  ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p){
+    private void conectarCliente(Socket socketCliente, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
         if (sala.contieneCliente(cliente)) {
+            //TODO PRESCINDIR O CAMBIAR COMPOROBACION
             System.out.println("Cliente duplicado:" + p.getRemitente());
         } else {
             cliente.setNickname(p.getRemitente());
-
             sala.joinCliente(cliente);
-
             logPaquete(p);
-            //Platform.runLater(()->{
-              //  clientesObservables.add(cliente.getNickname());
-
-            //});
-
             broadcastMensaje(p);
-
         }
 
     }
+
     public void addChat(Paquete p) {
         sala.setChat(sala.getChat() + "\n" + p.getRemitente() + " dice: " + p.getMensajeCliente());
     }
 
+
+    //TODO refactorizar leerMensaje
     private void broadcastMensaje(Paquete pRecibido) {
-
-
         Paquete pEnviar = new Paquete();
         pEnviar.setTipo(TipoPaquete.MENSAJE);
         pEnviar.setRemitente(pRecibido.getRemitente());
@@ -151,23 +141,15 @@ public class Servidor {
         System.out.println("USUARIOS CONECTADOS");
         System.out.println(sala.getClientesNickname());
 
-
-        for(ClienteHandler c : sala.getClientes()){
+        // Difusión
+        for (ClienteHandler c : sala.getClientes()) {
             c.enviarPaquete(pEnviar);
         }
 
-        //sala.broadcastMensaje(pEnviar);
-       // TODO
-        /*
-        for (ClienteHandler cliente : clientes) {
-            cliente.enviarPaquete(pEnviar);
-        }
-
-         */
     }
 
     private void addActivity(String log) {
-        logs= log;
+        logs = log;
         showActivity();
         Platform.runLater(() -> controlador.mostrarLog(logs)); // controlador es la instancia de ServidorController
     }
@@ -175,6 +157,10 @@ public class Servidor {
     private void showActivity() {
         System.out.println(logs);
     }
+
+    //public ObservableList<String> getClientesObservable() {
+    // return clientesObservables;
+    //}
 
     public void infoPaquete(Paquete p) {
         System.out.println("----------------------");
@@ -184,28 +170,17 @@ public class Servidor {
         System.out.println("----------------------");
     }
 
-    //public ObservableList<String> getClientesObservable() {
-       // return clientesObservables;
-    //}
-
-    public void logPaquete(Paquete p){
-        addActivity(p.getTipo() + " - " +p.getRemitente() + LocalTime.now());
+    public void logPaquete(Paquete p) {
+        addActivity(p.getTipo() + " - " + p.getRemitente() + LocalTime.now());
     }
 
-
-
-    public static void main(String[] args) {
-        Servidor servidor = new Servidor();
-        servidor.servidorUp();
-    }
-
-    public  String leerMensaje(Paquete p) {
+    public String leerMensaje(Paquete p) {
         switch (p.getTipo()) {
             case CONECTAR -> {
                 return p.getRemitente() + " se ha unido";
             }
             case MENSAJE -> {
-                return p.getRemitente() + " dice: " + p.getMensajeCliente();
+                return p.getRemitente() + ": " + p.getMensajeCliente();
 
             }
             case DESCONECTAR -> {

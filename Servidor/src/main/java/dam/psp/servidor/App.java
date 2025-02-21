@@ -9,6 +9,10 @@ import java.io.IOException;
 
 public class App extends Application {
 
+    public static void main(String[] args) {
+        launch(App.class, args);
+    }
+
     @Override
     public void start(Stage stage) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("servidor-view2.fxml"));
@@ -16,9 +20,5 @@ public class App extends Application {
         stage.setTitle("Servidor");
         stage.setScene(scene);
         stage.show();
-    }
-
-    public static void main(String[] args) {
-        launch(App.class,args);
     }
 }

@@ -124,7 +124,7 @@ public class ConexionServidor {
             case MENSAJE -> {
                 enviarMensaje(p);
                 ;}
-            /*
+            /* TODO MAS FUNCIONALIDADES
             case ARCHIVO -> {p.setMensajeCliente("Archivo Recibido: ");
                 p.setTipo(TipoPaquete.ARCHIVO);}
 

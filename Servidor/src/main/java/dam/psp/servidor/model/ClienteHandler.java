@@ -10,10 +10,10 @@ import java.net.Socket;
 import java.util.Objects;
 
 public class ClienteHandler implements Runnable {
-    private Socket socket;
+    private final Socket socket;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private Servidor servidor;
+    private final Servidor servidor;
     private String nickname;
 
     public ClienteHandler(Socket socket, Servidor servidor) {
@@ -63,21 +63,21 @@ public class ClienteHandler implements Runnable {
     }
 
     /**
-     * Establece el nickname del cliente.
-     *
-     * @param nickname El nickname del cliente.
-     */
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    /**
      * Obtiene el nickname del cliente.
      *
      * @return El nickname del cliente.
      */
     public String getNickname() {
         return nickname;
+    }
+
+    /**
+     * Establece el nickname del cliente.
+     *
+     * @param nickname El nickname del cliente.
+     */
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
     }
 
     @Override
