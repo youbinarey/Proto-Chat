@@ -5,8 +5,6 @@ package dam.psp.cliente.model;
 import dam.psp.cliente.controller.ConexionServidor;
 import dam.psp.cliente.controller.PaqueteListener;
 
-import java.time.LocalTime;
-import java.util.Scanner;
 
 
 public class Cliente  {
@@ -21,7 +19,7 @@ public class Cliente  {
         this.nickname = nombre;
         p = new Paquete();
         this.p.setRemitente(this.nickname);
-        this.p.setMensajeCliente("Prueba " + LocalTime.now());
+    
         conexionServidor = ConexionServidor.getInstance();
         conexionServidor.setMessageListener(listener);
 
@@ -31,25 +29,18 @@ public class Cliente  {
         p.setTipo(TipoPaquete.MENSAJE);
         p.setMensajeCliente(mensaje);
         p.setDestinatario("TODOS");
-        conexionServidor.procesarPaquete(p);
+        enviarPaquete(p);
     }
 
     public void enviarPaquete(Paquete p) {
-
         conexionServidor.procesarPaquete(p);
-
     }
 
 
     public void desconectar(){
         p.setTipo(TipoPaquete.DESCONECTAR);
-        conexionServidor.procesarPaquete(p);
+        enviarPaquete(p);
     }
-
-
-
-
-
 
     private void resetPaquete(){
         p.setTipo(null);
@@ -58,7 +49,7 @@ public class Cliente  {
 
     public void conectar(){
         this.p.setTipo(TipoPaquete.CONECTAR);
-        conexionServidor.procesarPaquete(p);
+        enviarPaquete(p);
     }
 
 

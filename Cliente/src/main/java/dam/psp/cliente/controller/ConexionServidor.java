@@ -89,7 +89,7 @@ public class ConexionServidor {
                         if(paqueteRecibido.getListaUsuarios() != null){
                             messageListener.updateUsuariosConectados(paqueteRecibido.getListaUsuarios());
                         }
-                        System.out.println("Clietne recibe:");
+                        System.out.println("Clietne recibe un paquete de :" + paqueteRecibido.getTipo());
                                 System.out.println(paqueteRecibido.getListaUsuarios());
                     }
                 } catch (IOException | ClassNotFoundException e) {

@@ -20,7 +20,6 @@ public class Servidor {
     public Sala sala;
     private ServerSocket serverSocket;
     private String logs;
-    //private Set<ClienteHandler> clientes;
     private ServidorController controlador;
 
     public Servidor() {
@@ -74,25 +73,23 @@ public class Servidor {
     public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler clienteHandler) {
         switch (p.getTipo()) {
             case CONECTAR -> {
-                //p.setListaUsuarios(sala.getClientesNickname());
+                
                 conectarCliente(clienteSocket, in, out, clienteHandler, p);
             }
             case MENSAJE -> {
-                //capturar quien lo envia y el mensaje
-                System.out.println(leerMensaje(p));
-                addChat(p);
-                logPaquete(p);
-
-                broadcastMensaje(p);
+                mensajeCliente(clienteSocket, in, out, clienteHandler, p);
+                
             }
             case DESCONECTAR -> {
                 desconectarCliente(clienteSocket, out, in, clienteHandler, p);
                 logPaquete(p);
-                //broadcastMensaje(p);
+                
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
         }
     }
+
+    
 
     void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
         sala.leaveCliente(cliente);
@@ -117,7 +114,6 @@ public class Servidor {
         } else {
             cliente.setNickname(p.getRemitente());
             sala.joinCliente(cliente);
-            logPaquete(p);
             broadcastMensaje(p);
         }
 
@@ -127,26 +123,36 @@ public class Servidor {
         sala.setChat(sala.getChat() + "\n" + p.getRemitente() + " dice: " + p.getMensajeCliente());
     }
 
+    void mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler clientehHandler, Paquete p){
+        //captura el mensaje y notifica a todos
+        System.out.println(leerMensaje(p));
+      
+        //Procesar mensaje
+        broadcastMensaje(p);
+    }
 
     //TODO refactorizar leerMensaje
-    private void broadcastMensaje(Paquete pRecibido) {
-        Paquete pEnviar = new Paquete();
-        pEnviar.setTipo(TipoPaquete.MENSAJE);
-        pEnviar.setRemitente(pRecibido.getRemitente());
-        pEnviar.setMensajeCliente((leerMensaje(pRecibido)));
-        pEnviar.setDestinatario("TODOS");
-        pEnviar.setListaUsuarios(sala.getClientesNickname());
-        System.out.println("handeler envia  -> " + pEnviar.getMensajeCliente());
+    private void broadcastMensaje(Paquete p) {
+        p.setMensajeCliente(leerMensaje(p));
+        p.setListaUsuarios(sala.getClientesNickname());
+
+        logPaquete(p);
+        addChat(p);
+
+        System.out.println("handeler envia  -> " + p.getMensajeCliente());
 
         System.out.println("USUARIOS CONECTADOS");
         System.out.println(sala.getClientesNickname());
 
         // Difusión
         for (ClienteHandler c : sala.getClientes()) {
-            c.enviarPaquete(pEnviar);
+            
+            c.enviarPaquete(p);
         }
 
     }
+
+   
 
     private void addActivity(String log) {
         logs = log;
