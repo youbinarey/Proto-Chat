@@ -6,12 +6,17 @@ import dam.psp.cliente.model.TipoPaquete;
 import dam.psp.servidor.config.Config;
 import dam.psp.servidor.controller.ServidorController;
 import javafx.application.Platform;
+import javafx.scene.chart.PieChart.Data;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.time.LocalTime;
 
 public class Servidor {
@@ -37,8 +42,13 @@ public class Servidor {
     }
 
     public static void main(String[] args) {
-        Servidor servidor = new Servidor();
-        servidor.servidorUp();
+        DatabaseManager dbManager = new DatabaseManager();
+
+       if( dbManager.logInUser("Antonio", "abc123")){
+        System.out.println("USUARIO Y CONTRASEÑA CORRECTAS");
+       }
+
+
     }
 
     public void setControlador(ServidorController controlador) {
@@ -197,4 +207,6 @@ public class Servidor {
             }
         }
     }
+
+    
 }
