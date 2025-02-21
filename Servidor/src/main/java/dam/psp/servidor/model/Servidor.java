@@ -84,24 +84,23 @@ public class Servidor {
                 broadcastMensaje(p);
             }
             case DESCONECTAR -> {
-                desconectarCliente(clienteSocket, out, in, clienteHandler);
+                desconectarCliente(clienteSocket, out, in, clienteHandler, p);
                 logPaquete(p);
-                broadcastMensaje(p);
+                //broadcastMensaje(p);
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
         }
     }
 
-    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente) {
+    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
 
         sala.leaveCliente(cliente);
-        //p.setListaUsuarios(sala.getClientesNickname());
-        // Eliminar al cliente de la sala
 
        // Platform.runLater(()-> {
         //clientesObservables.remove(cliente.getNickname());
             //Actualiza la UI
         //});
+        broadcastMensaje(p);
 
         try {
             if (out != null) out.close(); // Cerrar el ObjectOutputStream
@@ -152,7 +151,12 @@ public class Servidor {
         System.out.println("USUARIOS CONECTADOS");
         System.out.println(sala.getClientesNickname());
 
-        sala.broadcastMensaje(pEnviar);
+
+        for(ClienteHandler c : sala.getClientes()){
+            c.enviarPaquete(pEnviar);
+        }
+
+        //sala.broadcastMensaje(pEnviar);
        // TODO
         /*
         for (ClienteHandler cliente : clientes) {

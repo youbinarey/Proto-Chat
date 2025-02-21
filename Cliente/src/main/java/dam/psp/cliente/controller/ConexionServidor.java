@@ -5,6 +5,7 @@ import dam.psp.cliente.model.Paquete;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
 
 
 public class ConexionServidor {
@@ -103,6 +104,9 @@ public class ConexionServidor {
             if(in != null) in.close();
             if(out != null) out.close();
             if(socket != null) socket.close();
+
+            //TODO implementar este comportamiento directamente en el servidor o cambiar de vista
+            messageListener.updateUsuariosConectados(new ArrayList<>());
 
             System.out.println("---Conexión cerrada");
                 clienteConectado = false;

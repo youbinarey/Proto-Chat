@@ -61,12 +61,14 @@ public class Sala {
     }
 
 
-
+    /*
     public void broadcastMensaje(Paquete p) {
         for (ClienteHandler cliente : clientesObservables) {
             cliente.enviarPaquete(p);
         }
     }
+
+     */
     public ObservableList<ClienteHandler> getClientes() {
         return clientesObservables;
     }

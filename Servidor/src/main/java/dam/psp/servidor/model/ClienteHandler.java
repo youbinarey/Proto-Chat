@@ -43,7 +43,7 @@ public class ClienteHandler implements Runnable {
         } catch (IOException e) {
             System.err.println("Error de I/O en cliente " + nickname + ": " + e.getMessage());
         } finally {
-            servidor.desconectarCliente(socket, out, in, this);
+            servidor.desconectarCliente(socket, out, in, this, new Paquete());
         }
     }
 
