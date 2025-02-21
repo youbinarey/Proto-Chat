@@ -21,9 +21,8 @@ public class Servidor {
     private ServerSocket serverSocket;
     private final int PUERTO = Config.SERVER_PORT;
     private String logs;
-    private Sala sala;
+    public Sala sala;
     //private Set<ClienteHandler> clientes;
-    private ObservableList<String> clientesObservables;
     private ServidorController controlador;
 
     public void setControlador(ServidorController controlador) {
@@ -38,7 +37,7 @@ public class Servidor {
             logs = "";
             sala = new Sala();
             //clientes = new HashSet<>();
-            clientesObservables = FXCollections.observableArrayList();
+            //clientesObservables = FXCollections.observableArrayList();
 
         } catch (IOException e) {
             System.err.println("Error al crear el servidor en el puerto " + PUERTO + " " + e.getMessage());
@@ -73,6 +72,7 @@ public class Servidor {
     public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler clienteHandler) {
         switch (p.getTipo()) {
             case CONECTAR -> {
+                //p.setListaUsuarios(sala.getClientesNickname());
                     conectarCliente(clienteSocket,in,out,clienteHandler,p);
             }
             case MENSAJE -> {
@@ -94,11 +94,14 @@ public class Servidor {
 
     void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente) {
 
-        sala.leaveCliente(cliente); // Eliminar al cliente de la sala
-        Platform.runLater(()-> {
-            clientesObservables.remove(cliente.getNickname());
+        sala.leaveCliente(cliente);
+        //p.setListaUsuarios(sala.getClientesNickname());
+        // Eliminar al cliente de la sala
+
+       // Platform.runLater(()-> {
+        //clientesObservables.remove(cliente.getNickname());
             //Actualiza la UI
-        });
+        //});
 
         try {
             if (out != null) out.close(); // Cerrar el ObjectOutputStream
@@ -119,12 +122,15 @@ public class Servidor {
             cliente.setNickname(p.getRemitente());
 
             sala.joinCliente(cliente);
-            logPaquete(p);
-            Platform.runLater(()->{
-                clientesObservables.add(cliente.getNickname());
 
-            });
+            logPaquete(p);
+            //Platform.runLater(()->{
+              //  clientesObservables.add(cliente.getNickname());
+
+            //});
+
             broadcastMensaje(p);
+
         }
 
     }
@@ -134,13 +140,18 @@ public class Servidor {
 
     private void broadcastMensaje(Paquete pRecibido) {
 
+
         Paquete pEnviar = new Paquete();
         pEnviar.setTipo(TipoPaquete.MENSAJE);
         pEnviar.setRemitente(pRecibido.getRemitente());
         pEnviar.setMensajeCliente((leerMensaje(pRecibido)));
         pEnviar.setDestinatario("TODOS");
-
+        pEnviar.setListaUsuarios(sala.getClientesNickname());
         System.out.println("handeler envia  -> " + pEnviar.getMensajeCliente());
+
+        System.out.println("USUARIOS CONECTADOS");
+        System.out.println(sala.getClientesNickname());
+
         sala.broadcastMensaje(pEnviar);
        // TODO
         /*
@@ -169,9 +180,9 @@ public class Servidor {
         System.out.println("----------------------");
     }
 
-    public ObservableList<String> getClientesObservable() {
-        return clientesObservables;
-    }
+    //public ObservableList<String> getClientesObservable() {
+       // return clientesObservables;
+    //}
 
     public void logPaquete(Paquete p){
         addActivity(p.getTipo() + " - " +p.getRemitente() + LocalTime.now());

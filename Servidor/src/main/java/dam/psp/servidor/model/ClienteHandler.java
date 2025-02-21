@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
+import java.util.Objects;
 
 public class ClienteHandler implements Runnable {
     private Socket socket;
@@ -76,6 +77,24 @@ public class ClienteHandler implements Runnable {
      * @return El nickname del cliente.
      */
     public String getNickname() {
+        return nickname;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClienteHandler that = (ClienteHandler) o;
+        return Objects.equals(socket, that.socket) && Objects.equals(servidor, that.servidor) && Objects.equals(nickname, that.nickname);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(socket, servidor, nickname);
+    }
+
+    @Override
+    public String toString() {
         return nickname;
     }
 }

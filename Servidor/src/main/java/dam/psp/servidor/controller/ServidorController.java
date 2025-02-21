@@ -22,7 +22,7 @@ public class ServidorController {
     private Servidor servidor;
 
         @FXML
-        private ListView<String> listOfClientes;
+        private ListView<ClienteHandler> listOfClientes;
 
         @FXML
         private Label serverTxt;
@@ -40,7 +40,7 @@ public class ServidorController {
         actualizaHora();
         servidor = new Servidor();
         servidor.setControlador(this);
-        listOfClientes.setItems(servidor.getClientesObservable());
+        listOfClientes.setItems(servidor.sala.getClientes());
         iniciarServidor();
     }
 
@@ -67,9 +67,9 @@ public class ServidorController {
     }
 
 
-    public void addCliente(String nickname){
-        listOfClientes.getItems().add(nickname);
-    }
+    //public void addCliente(String nickname){
+      //  listOfClientes.getItems().add(nickname);
+    //}
 
 
 

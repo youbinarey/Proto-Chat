@@ -3,6 +3,10 @@ package dam.psp.cliente.controller;
 import com.jfoenix.controls.JFXTextArea;
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.Paquete;
+import javafx.application.Platform;
+import javafx.beans.Observable;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -10,6 +14,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+
+import java.util.List;
 
 public class ClienteController implements PaqueteListener {
 
@@ -19,6 +25,7 @@ public class ClienteController implements PaqueteListener {
     public Button btnLogIn;
     public Button btnLogOut;
     public ListView<String> listUsuarios;
+    private ObservableList<String> usuariosList;
     public JFXTextArea textAreaChat;
 
 
@@ -28,7 +35,8 @@ public class ClienteController implements PaqueteListener {
 
         cliente = new Cliente("Yeray",this);
         cliente.conectar();
-
+        usuariosList = FXCollections.observableArrayList();
+        listUsuarios.setItems(usuariosList);
 
         // Manejar eventos del teclado
         textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
@@ -87,6 +95,13 @@ public class ClienteController implements PaqueteListener {
     @Override
     public void mensajeRecibido(Paquete p) {
         textAreaChat.appendText(p.getMensajeCliente());
+    }
+
+    @Override
+    public void updateUsuariosConectados(List<String> listaUsuarios) {
+        Platform.runLater(()->{
+            usuariosList.setAll(listaUsuarios);
+        });
     }
 
 

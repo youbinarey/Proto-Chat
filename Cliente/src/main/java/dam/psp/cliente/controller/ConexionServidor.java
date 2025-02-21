@@ -85,7 +85,11 @@ public class ConexionServidor {
                         //MUESTRA EL MENSAJE POR TErminal
                         System.out.println(paqueteRecibido.getMensajeCliente());
                         messageListener.mensajeRecibido(paqueteRecibido);
-
+                        if(paqueteRecibido.getListaUsuarios() != null){
+                            messageListener.updateUsuariosConectados(paqueteRecibido.getListaUsuarios());
+                        }
+                        System.out.println("Clietne recibe:");
+                                System.out.println(paqueteRecibido.getListaUsuarios());
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     clienteConectado = false;
