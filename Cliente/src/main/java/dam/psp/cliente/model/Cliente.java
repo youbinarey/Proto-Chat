@@ -11,13 +11,13 @@ public class Cliente  {
     private final String nickname;
 
     private final ConexionServidor conexionServidor;
-    private Paquete p;
+    private Paquetes p;
 
 
 
     public Cliente(String nombre, PaqueteListener listener) {
         this.nickname = nombre;
-        p = new Paquete();
+        p = new Paquetes();
         this.p.setRemitente(this.nickname);
     
         conexionServidor = ConexionServidor.getInstance();
@@ -32,7 +32,7 @@ public class Cliente  {
         enviarPaquete(p);
     }
 
-    public void enviarPaquete(Paquete p) {
+    public void enviarPaquete(Paquetes p) {
         conexionServidor.procesarPaquete(p);
     }
 

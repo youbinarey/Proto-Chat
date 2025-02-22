@@ -1,7 +1,7 @@
 package dam.psp.cliente.controller;
 
 import dam.psp.cliente.config.Config;
-import dam.psp.cliente.model.Paquete;
+import dam.psp.cliente.model.Paquetes;
 
 import java.io.*;
 import java.net.Socket;
@@ -27,7 +27,7 @@ public class ConexionServidor {
         return instance;
     }
 
-    public void conectar( Paquete p){
+    public void conectar( Paquetes p){
         if(!clienteConectado){
             try{
                 //Inicializar socket
@@ -53,7 +53,7 @@ public class ConexionServidor {
 
     }
 
-    public void enviarMensaje(Paquete p){
+    public void enviarMensaje(Paquetes p){
         try {
             if(socket == null || socket.isClosed()){
                 System.err.println("No existe conexion, Por favor conecta primero");
@@ -81,7 +81,7 @@ public class ConexionServidor {
         new Thread(() -> {
             while (isClienteConectado()) {
                 try{
-                    Paquete paqueteRecibido = (Paquete) in.readObject();
+                    Paquetes paqueteRecibido = (Paquetes) in.readObject();
                     if(paqueteRecibido != null){
                         //MUESTRA EL MENSAJE POR TErminal
                         System.out.println(paqueteRecibido.getMensajeCliente());
@@ -116,7 +116,7 @@ public class ConexionServidor {
         }
     }
 
-    public void procesarPaquete(Paquete p){
+    public void procesarPaquete(Paquetes p){
         switch (p.getTipo()){
             case CONECTAR -> {conectar(p);
             escucharServidor();}
