@@ -1,22 +1,17 @@
 package dam.psp.servidor.model;
 
 
-import dam.psp.cliente.model.Paquete;
-import dam.psp.cliente.model.TipoPaquete;
+
+import dam.psp.cliente.model.Paquetes;
 import dam.psp.servidor.config.Config;
 import dam.psp.servidor.controller.ServidorController;
 import javafx.application.Platform;
-import javafx.scene.chart.PieChart.Data;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.time.LocalTime;
 
 public class Servidor {
@@ -80,7 +75,7 @@ public class Servidor {
         new Thread(clienteHandler).start();
     }
 
-    public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler clienteHandler) {
+    public void procesarPaquete(Paquetes p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler clienteHandler) {
         switch (p.getTipo()) {
             case CONECTAR -> {
                 
@@ -101,7 +96,7 @@ public class Servidor {
 
     
 
-    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
+    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquetes p) {
         sala.leaveCliente(cliente);
         broadcastMensaje(p);
 
@@ -117,7 +112,7 @@ public class Servidor {
         }
     }
 
-    private void conectarCliente(Socket socketCliente, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
+    private void conectarCliente(Socket socketCliente, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquetes p) {
         if (sala.contieneCliente(cliente)) {
             //TODO PRESCINDIR O CAMBIAR COMPOROBACION
             System.out.println("Cliente duplicado:" + p.getRemitente());
@@ -129,11 +124,11 @@ public class Servidor {
 
     }
 
-    public void addChat(Paquete p) {
+    public void addChat(Paquetes p) {
         sala.setChat(sala.getChat() + "\n" + p.getRemitente() + " dice: " + p.getMensajeCliente());
     }
 
-    void mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler clientehHandler, Paquete p){
+    void mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler clientehHandler, Paquetes p){
         //captura el mensaje y notifica a todos
         System.out.println(leerMensaje(p));
       
@@ -142,7 +137,7 @@ public class Servidor {
     }
 
     //TODO refactorizar leerMensaje
-    private void broadcastMensaje(Paquete p) {
+    private void broadcastMensaje(Paquetes p) {
         p.setMensajeCliente(leerMensaje(p));
         p.setListaUsuarios(sala.getClientesNickname());
 
@@ -178,7 +173,7 @@ public class Servidor {
     // return clientesObservables;
     //}
 
-    public void infoPaquete(Paquete p) {
+    public void infoPaquete(Paquetes p) {
         System.out.println("----------------------");
         System.out.println("Paquete tipo: " + p.getTipo().toString());
         System.out.println("Contenido del mensaje: " + p.getMensajeCliente());
@@ -186,11 +181,11 @@ public class Servidor {
         System.out.println("----------------------");
     }
 
-    public void logPaquete(Paquete p) {
+    public void logPaquete(Paquetes p) {
         addActivity(p.getTipo() + " - " + p.getRemitente() + LocalTime.now());
     }
 
-    public String leerMensaje(Paquete p) {
+    public String leerMensaje(Paquetes p) {
         switch (p.getTipo()) {
             case CONECTAR -> {
                 return p.getRemitente() + " se ha unido";

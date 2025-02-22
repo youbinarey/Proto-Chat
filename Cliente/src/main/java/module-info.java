@@ -2,6 +2,7 @@ module dam.psp.cliente {
     requires javafx.controls;
     requires javafx.fxml;
     requires com.jfoenix;
+    requires com.gluonhq.charm.glisten;
 
 
     opens dam.psp.cliente.controller to javafx.fxml;

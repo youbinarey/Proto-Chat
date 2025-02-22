@@ -28,12 +28,11 @@ public class ClienteController implements PaqueteListener {
     public JFXTextArea textAreaChat;
 
 
-
     @FXML
     public void initialize() {
 
-        cliente = new Cliente("yeray",this);
-        cliente.conectar();
+       // cliente = new Cliente("yeray",this,ConexionServidor.getInstance());
+        //cliente.conectar();
         usuariosList = FXCollections.observableArrayList();
         listUsuarios.setItems(usuariosList);
 
@@ -93,7 +92,9 @@ public class ClienteController implements PaqueteListener {
 
     @Override
     public void mensajeRecibido(Paquetes p) {
-        textAreaChat.appendText(p.getMensajeCliente() + "\n");
+        Platform.runLater(() -> {
+            textAreaChat.appendText(p.getMensajeCliente() + "\n");
+        });
     }
 
     @Override
@@ -113,4 +114,7 @@ public class ClienteController implements PaqueteListener {
         cliente.conectar();
     }
 
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
 }

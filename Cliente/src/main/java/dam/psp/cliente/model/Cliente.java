@@ -15,13 +15,15 @@ public class Cliente  {
 
 
 
-    public Cliente(String nombre, PaqueteListener listener) {
+    public Cliente(String nombre, ConexionServidor conexionServidor) {
         this.nickname = nombre;
         p = new Paquetes();
         this.p.setRemitente(this.nickname);
     
-        conexionServidor = ConexionServidor.getInstance();
-        conexionServidor.setMessageListener(listener);
+        //conexionServidor = ConexionServidor.getInstance();
+        this.conexionServidor = conexionServidor;
+
+
 
     }
 

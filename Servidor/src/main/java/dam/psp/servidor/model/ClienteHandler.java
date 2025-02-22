@@ -1,6 +1,8 @@
 package dam.psp.servidor.model;
 
 import dam.psp.cliente.model.Paquete;
+import dam.psp.cliente.model.PaqueteConectar;
+import dam.psp.cliente.model.Paquetes;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class ClienteHandler implements Runnable {
     public void run() {
         try {
             while (true) {
-                Paquete pRecibido = (Paquete) in.readObject();
+                Paquetes pRecibido = (Paquetes) in.readObject();
                 if (pRecibido == null) break;
                 servidor.procesarPaquete(pRecibido, out, in, socket, this);
             }
@@ -43,7 +45,7 @@ public class ClienteHandler implements Runnable {
         } catch (IOException e) {
             System.err.println("Error de I/O en cliente " + nickname + ": " + e.getMessage());
         } finally {
-            servidor.desconectarCliente(socket, out, in, this, new Paquete());
+            servidor.desconectarCliente(socket, out, in, this, new Paquetes());
         }
     }
 
@@ -52,7 +54,7 @@ public class ClienteHandler implements Runnable {
      *
      * @param p El paquete a enviar.
      */
-    public void enviarPaquete(Paquete p) {
+    public void enviarPaquete(Paquetes p) {
         try {
             out.writeObject(p);
             out.flush();
