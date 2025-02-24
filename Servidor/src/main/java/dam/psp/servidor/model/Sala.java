@@ -1,5 +1,6 @@
 package dam.psp.servidor.model;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -28,22 +29,29 @@ public class Sala {
     }
 
     public void joinCliente(ClienteHandler cliente) {
-        if (clientesObservables.size() < MAX_CLIENTES && !clientesObservables.contains(cliente)) {
-            clientesObservables.add(cliente);
-            numClientes++;
-            System.out.println(cliente.getNickname() + " se ha unido");
-            infoSala();
-        } else {
-            System.out.println("No se puede agregar a " + cliente.getNickname());
-        }
+        Platform.runLater(()-> {
+            if (clientesObservables.size() < MAX_CLIENTES && !clientesObservables.contains(cliente)) {
+                clientesObservables.add(cliente);
+                numClientes++;
+                System.out.println(cliente.getNickname() + " se ha unido");
+                infoSala();
+            } else {
+                System.out.println("No se puede agregar a " + cliente.getNickname());
+            }
+        });
+
     }
 
     public void leaveCliente(ClienteHandler cliente) {
+        Platform.runLater(() ->{
         if (clientesObservables.remove(cliente)) {
-            numClientes--;
-            System.out.println(cliente.getNickname() + " ha salido de la sala.");
-            infoSala();
+                cliente.setConnected(false);
+                numClientes--;
+                System.out.println(cliente.getNickname() + " ha salido de la sala.");
+                infoSala();
+
         }
+        });
     }
 
     public void infoSala() {

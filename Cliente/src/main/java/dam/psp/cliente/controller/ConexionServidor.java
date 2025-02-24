@@ -2,6 +2,7 @@ package dam.psp.cliente.controller;
 
 import dam.psp.cliente.config.Config;
 import dam.psp.cliente.model.Paquetes;
+import dam.psp.cliente.model.TipoPaquete;
 
 import java.io.*;
 import java.net.Socket;
@@ -81,6 +82,7 @@ public class ConexionServidor {
         new Thread(() -> {
             while (isClienteConectado()) {
                 try{
+                    // TODO comprobar nulos de message listener uso de plathfomr??
                     Paquetes paqueteRecibido = (Paquetes) in.readObject();
                     if(paqueteRecibido != null){
                         //MUESTRA EL MENSAJE POR TErminal
@@ -88,6 +90,12 @@ public class ConexionServidor {
                         messageListener.mensajeRecibido(paqueteRecibido);
                         if(paqueteRecibido.getListaUsuarios() != null){
                             messageListener.updateUsuariosConectados(paqueteRecibido.getListaUsuarios());
+                        }
+
+                        if(paqueteRecibido.getTipo() == TipoPaquete.DESCONECTAR){
+                            System.out.println("Desconexion confirmada por el servidor");
+                            cerrarConexion();
+
                         }
                         System.out.println("Clietne recibe un paquete de :" + paqueteRecibido.getTipo());
                         System.out.println(paqueteRecibido.getListaUsuarios());
@@ -100,6 +108,8 @@ public class ConexionServidor {
     }
 
     public void cerrarConexion(){
+
+
         try {
             if(in != null) in.close();
             if(out != null) out.close();
@@ -135,8 +145,9 @@ public class ConexionServidor {
                 p.setTipo(TipoPaquete.AUTENTICACION);}
             */
             case DESCONECTAR -> {
+
                 enviarMensaje(p);
-                cerrarConexion();
+
             }
 
             default -> System.out.println

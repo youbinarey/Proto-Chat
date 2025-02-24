@@ -33,7 +33,7 @@ public class ClienteController implements PaqueteListener {
     public void initialize() {
 
         cliente = new Cliente("yeray",this);
-        cliente.conectar();
+
         usuariosList = FXCollections.observableArrayList();
         listUsuarios.setItems(usuariosList);
 
@@ -110,7 +110,7 @@ public class ClienteController implements PaqueteListener {
     }
     @FXML
     void btnLogInOnClick(ActionEvent event) {
-        cliente.conectar();
+        cliente.conectar2();
     }
 
     public void setCliente(Cliente cliente) {

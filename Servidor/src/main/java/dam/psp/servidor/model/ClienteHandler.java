@@ -17,6 +17,7 @@ public class ClienteHandler implements Runnable {
     private ObjectInputStream in;
     private final Servidor servidor;
     private String nickname;
+    boolean isConected;
 
     public ClienteHandler(Socket socket, Servidor servidor) {
         this.socket = socket;
@@ -25,6 +26,7 @@ public class ClienteHandler implements Runnable {
             // Inicializar los streams de entrada y salida
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
+            isConected = true;
         } catch (IOException e) {
             System.err.println("Error al inicializar los streams del cliente: " + e.getMessage());
         }
@@ -32,6 +34,7 @@ public class ClienteHandler implements Runnable {
 
     @Override
     public void run() {
+
         try {
             while (true) {
                 Paquetes pRecibido = (Paquetes) in.readObject();
@@ -45,7 +48,10 @@ public class ClienteHandler implements Runnable {
         } catch (IOException e) {
             System.err.println("Error de I/O en cliente " + nickname + ": " + e.getMessage());
         } finally {
-            servidor.desconectarCliente(socket, out, in, this, new Paquetes());
+            if(isConected()){
+                servidor.desconectarCliente(socket, out, in, this, new Paquetes());
+
+            }
         }
     }
 
@@ -99,4 +105,12 @@ public class ClienteHandler implements Runnable {
     public String toString() {
         return nickname;
     }
+    public boolean isConected() {
+        return isConected;
+    }
+    public void setConnected(boolean conected) {
+        this.isConected = conected;
+    }
+
+
 }

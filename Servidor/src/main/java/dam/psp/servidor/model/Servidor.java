@@ -3,6 +3,7 @@ package dam.psp.servidor.model;
 
 
 import dam.psp.cliente.model.Paquetes;
+import dam.psp.cliente.model.TipoPaquete;
 import dam.psp.servidor.config.Config;
 import dam.psp.servidor.controller.ServidorController;
 import javafx.application.Platform;
@@ -89,7 +90,7 @@ public class Servidor {
             }
             case DESCONECTAR -> {
                 desconectarCliente(clienteSocket, out, in, clienteHandler, p);
-                logPaquete(p);
+
                 
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
@@ -99,11 +100,15 @@ public class Servidor {
     
 
     void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquetes p) {
+
         sala.leaveCliente(cliente);
         broadcastMensaje(p);
+        p.setTipo(TipoPaquete.DESCONECTAR);
 
         try {
-            if (out != null) out.close(); // Cerrar el ObjectOutputStream
+            out.writeObject(p);
+            out.flush();
+            out.close(); // Cerrar el ObjectOutputStream
             if (in != null) in.close();  // Cerrar el ObjectInputStream
             if (clienteSocket != null && !clienteSocket.isClosed()) {
                 clienteSocket.close(); // Cerrar el socket

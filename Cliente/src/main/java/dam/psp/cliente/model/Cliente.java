@@ -12,6 +12,9 @@ public class Cliente  {
 
     private final ConexionServidor conexionServidor;
     private Paquetes p;
+    private Paquete paquete;
+
+
 
 
 
@@ -19,6 +22,7 @@ public class Cliente  {
         this.nickname = nombre;
         p = new Paquetes();
         this.p.setRemitente(this.nickname);
+
 
         conexionServidor = ConexionServidor.getInstance();
         conexionServidor.setMessageListener(listener);
@@ -50,6 +54,19 @@ public class Cliente  {
     public void conectar(){
         this.p.setTipo(TipoPaquete.CONECTAR);
         enviarPaquete(p);
+    }
+    public void conectar2(){
+        crearPaqueteAutenticacion("yeray","admin");
+        System.out.println(this.paquete.getTipo());
+
+
+        this.p.setTipo(TipoPaquete.CONECTAR);
+
+        enviarPaquete(p);
+    }
+
+    public void crearPaqueteAutenticacion(String usuario, String password){
+        this.paquete = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION,usuario,password);
     }
 
 
