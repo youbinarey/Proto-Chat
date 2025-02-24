@@ -35,7 +35,7 @@ public class LoginController {
         if(conexionServidor.autenticarUsuario(txtUser.getText(), txtPass.getText())){
             System.out.println("CORRECTOOO");
 
-            cliente = new Cliente(txtUser.getText(),  conexionServidor);
+            //cliente = new Cliente(txtUser.getText(),  conexionServidor);
       
             loadClienteView(cliente);
 
@@ -52,11 +52,12 @@ public class LoginController {
             Parent root = loader.load();
 
             ClienteController clienteController = loader.getController();
+            System.out.println("Antes de setCliente: " + clienteController);
             clienteController.setCliente(cliente);
+            System.out.println("Después de setCliente: " + clienteController);
 
             conexionServidor.setMessageListener(clienteController);
 
-            cliente.conectar();
 
             Stage stage = (Stage) txtUser.getScene().getWindow();
             stage.setScene(new Scene(root));

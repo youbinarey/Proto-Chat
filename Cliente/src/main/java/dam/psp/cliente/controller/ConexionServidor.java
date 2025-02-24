@@ -6,7 +6,6 @@ import dam.psp.cliente.model.Paquetes;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.List;
 
 
 public class ConexionServidor {
@@ -19,7 +18,6 @@ public class ConexionServidor {
 
     private ConexionServidor() {
         clienteConectado = false;
-
     }
 
     public static ConexionServidor getInstance() {
@@ -44,13 +42,6 @@ public class ConexionServidor {
                 out.reset();
 
                 clienteConectado = true;
-
-                if(messageListener !=null){
-                    escucharServidor();
-                } else {
-                    System.err.println("mesageListener no está asignado");
-
-                }
 
             } catch (IOException e) {
                 System.err.println("Error al conectar con el servidor: " + e.getMessage());
@@ -84,9 +75,7 @@ public class ConexionServidor {
     }
 
 
-    public boolean autenticarUsuario(String usuario, String password){
-        return(usuario.equalsIgnoreCase("yeray") && password.equals("admin"));
-    }
+
 
     public void escucharServidor() {
         new Thread(() -> {
@@ -101,7 +90,7 @@ public class ConexionServidor {
                             messageListener.updateUsuariosConectados(paqueteRecibido.getListaUsuarios());
                         }
                         System.out.println("Clietne recibe un paquete de :" + paqueteRecibido.getTipo());
-                                System.out.println(paqueteRecibido.getListaUsuarios());
+                        System.out.println(paqueteRecibido.getListaUsuarios());
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     clienteConectado = false;
@@ -120,7 +109,7 @@ public class ConexionServidor {
             messageListener.updateUsuariosConectados(new ArrayList<>());
 
             System.out.println("---Conexión cerrada");
-                clienteConectado = false;
+            clienteConectado = false;
 
         } catch (IOException e) {
             System.err.println("Error al cerrar la conexion " + e.getMessage());
@@ -130,7 +119,7 @@ public class ConexionServidor {
     public void procesarPaquete(Paquetes p){
         switch (p.getTipo()){
             case CONECTAR -> {conectar(p);
-            escucharServidor();}
+                escucharServidor();}
 
             case MENSAJE -> {
                 enviarMensaje(p);
@@ -163,19 +152,8 @@ public class ConexionServidor {
         this.messageListener = listener;
     }
 
-    //REFACTORIZANDO
 
-    // Método para notificar mensajes recibidos
-    private void notificarMensajeRecibido(Paquetes p) {
-        if (messageListener != null) {
-            messageListener.mensajeRecibido(p);
-        }
-    }
-
-    // Método para notificar actualizaciones de la lista de usuarios
-    private void notificarUsuariosConectados(List<String> listaUsuarios) {
-        if (messageListener != null) {
-            messageListener.updateUsuariosConectados(listaUsuarios);
-        }
+    public boolean autenticarUsuario(String text, String text1) {
+        return false;
     }
 }

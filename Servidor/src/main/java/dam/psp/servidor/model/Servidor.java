@@ -13,6 +13,7 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.util.ArrayList;
 
 public class Servidor {
 
@@ -76,6 +77,7 @@ public class Servidor {
     }
 
     public void procesarPaquete(Paquetes p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler clienteHandler) {
+        infoPaquete(p);
         switch (p.getTipo()) {
             case CONECTAR -> {
                 
