@@ -76,4 +76,17 @@ public class Sala {
         }
         return clientesNickname;
     }
+
+    public boolean isNicknameInSala(String nickname){
+        List<String> clientesNickname = getClientesNickname();
+        if(clientesNickname.contains(nickname)){
+            System.out.println("SALA: El cliente ya esta conectado");
+            return true;
+        }
+        System.out.println("SALA: El cliente puede unirse a la sla");
+        return false;
+    }
+
+
+
 }

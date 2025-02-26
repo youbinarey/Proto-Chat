@@ -29,7 +29,7 @@ public class LoginController {
     public LoginController(){
         this.conexionServidor = ConexionServidor.getInstance();
     }
-
+    /*
     @FXML
     void btnLogInOnClick(ActionEvent event) {
         if(conexionServidor.autenticarUsuario(txtUser.getText(), txtPass.getText())){
@@ -68,7 +68,7 @@ public class LoginController {
 
 
 
-
+*/
 
 
 }

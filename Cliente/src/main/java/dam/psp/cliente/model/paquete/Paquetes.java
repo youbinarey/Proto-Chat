@@ -1,4 +1,4 @@
-package dam.psp.cliente.model;
+package dam.psp.cliente.model.paquete;
 
 
 import java.io.Serial;

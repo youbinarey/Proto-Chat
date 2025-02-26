@@ -1,8 +1,8 @@
-package dam.psp.cliente.model;
+package dam.psp.cliente.model.paquete;
 
-import dam.psp.cliente.util.Network;
+import java.io.Serializable;
 
-public class PaqueteAutenticacion extends Paquete {
+public class PaqueteAutenticacion extends Paquete implements Serializable {
 
     private  String usuario;
     private String password;

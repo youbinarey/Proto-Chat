@@ -39,7 +39,7 @@ public class DatabaseManager {
         }
     }
 
-    public boolean logInUser(String username, String password){
+    public  boolean logInUser(String username, String password){
         String selectSQL = "SELECT password FROM usuarios WHERE username = ?";
         try (PreparedStatement preparedStatement = connection.prepareStatement(selectSQL)) {
 
@@ -48,6 +48,8 @@ public class DatabaseManager {
 
             if(resultSet.next()){
                 String hashedPassword = resultSet.getString("password");
+                System.out.println("USUARIO Y CONTRASEÑA CORRECTAS");
+
                 return BCrypt.checkpw(password, hashedPassword);
             }
            
@@ -55,6 +57,8 @@ public class DatabaseManager {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
+        System.out.println("USUARIO O CONTRASEÑA INCORRECTAS");
+
             return false;
     }
 

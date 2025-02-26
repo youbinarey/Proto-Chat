@@ -1,74 +1,45 @@
 package dam.psp.cliente.model;
 
-
-
 import dam.psp.cliente.controller.ConexionServidor;
 import dam.psp.cliente.controller.PaqueteListener;
+import dam.psp.cliente.model.paquete.*;
 
-
-
-public class Cliente  {
+public class Cliente {
     private final String nickname;
-
     private final ConexionServidor conexionServidor;
-    private Paquetes p;
-    private Paquete paquete;
-
-
-
-
 
     public Cliente(String nombre, PaqueteListener listener) {
         this.nickname = nombre;
-        p = new Paquetes();
-        this.p.setRemitente(this.nickname);
-
-
-        conexionServidor = ConexionServidor.getInstance();
-        conexionServidor.setMessageListener(listener);
-
+        this.conexionServidor = ConexionServidor.getInstance();
+        this.conexionServidor.setMessageListener(listener);
     }
 
-    public void enviarMensaje(String mensaje){
-        p.setTipo(TipoPaquete.MENSAJE);
-        p.setMensajeCliente(mensaje);
-        p.setDestinatario("TODOS");
+    public void enviarMensaje(String mensaje) {
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE, this.nickname, mensaje);
         enviarPaquete(p);
     }
 
-    public void enviarPaquete(Paquetes p) {
-        conexionServidor.procesarPaquete(p);
+    public void desconectar() {
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.DESCONECTAR, this.nickname);
+        enviarPaquete(p);
+
     }
 
-
-    public void desconectar(){
-        p.setTipo(TipoPaquete.DESCONECTAR);
+    public void conectar() {
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.CONECTAR, this.nickname);
         enviarPaquete(p);
     }
 
-    private void resetPaquete(){
-        p.setTipo(null);
-        p.setMensajeCliente(null);
+    public void enviarPaquete(Paquete paquete) {
+        conexionServidor.procesarPaquete(paquete);
     }
 
-    public void conectar(){
-        this.p.setTipo(TipoPaquete.CONECTAR);
-        enviarPaquete(p);
+    public void autenticar(String usuario, String password) {
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
+
+        if (conexionServidor.autenticar(p)) {
+            conectar();
+        }
     }
-    public void conectar2(){
-        crearPaqueteAutenticacion("yeray","admin");
-        System.out.println(this.paquete.getTipo());
-
-
-        this.p.setTipo(TipoPaquete.CONECTAR);
-
-        enviarPaquete(p);
-    }
-
-    public void crearPaqueteAutenticacion(String usuario, String password){
-        this.paquete = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION,usuario,password);
-    }
-
-
 
 }

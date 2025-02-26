@@ -1,8 +1,10 @@
-package dam.psp.cliente.model;
+package dam.psp.cliente.model.paquete;
 
 import dam.psp.cliente.util.Network;
 
-public abstract class Paquete {
+import java.io.Serializable;
+
+public abstract class Paquete implements Serializable {
     protected final String IP;
     protected final TipoPaquete tipo;
 

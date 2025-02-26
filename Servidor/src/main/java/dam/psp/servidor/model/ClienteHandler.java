@@ -1,8 +1,9 @@
 package dam.psp.servidor.model;
 
-import dam.psp.cliente.model.Paquete;
-import dam.psp.cliente.model.PaqueteConectar;
-import dam.psp.cliente.model.Paquetes;
+import dam.psp.cliente.model.paquete.Paquete;
+import dam.psp.cliente.model.paquete.PaqueteConectar;
+import dam.psp.cliente.model.paquete.Paquetes;
+import dam.psp.cliente.model.paquete.Paquetes;
 
 import java.io.EOFException;
 import java.io.IOException;
@@ -17,18 +18,29 @@ public class ClienteHandler implements Runnable {
     private ObjectInputStream in;
     private final Servidor servidor;
     private String nickname;
+    private String IP;
     boolean isConected;
 
-    public ClienteHandler(Socket socket, Servidor servidor) {
+    public ClienteHandler(String nickname, String IP,ObjectOutputStream out, ObjectInputStream in, Socket socket, Servidor servidor) {
         this.socket = socket;
         this.servidor = servidor;
+        this.nickname = nickname;
+        this.IP = IP;
+        this.out = out;
+        this.in = in;
+        System.out.println("ClienteHandler: creado cliente -> " + this.getNickname() +  " con IP " + this.getIP()  );
+        isConected = true;
+    }
+
+    private void closeConnection() {
         try {
-            // Inicializar los streams de entrada y salida
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
-            isConected = true;
+            if (out != null) out.close();
+            if (in != null) in.close();
+            if (socket != null && !socket.isClosed()) socket.close();
+           isConected = false;
+            System.out.println("ClienteHandler -> Conexión cerrada con el cliente: " + nickname);
         } catch (IOException e) {
-            System.err.println("Error al inicializar los streams del cliente: " + e.getMessage());
+            System.err.println("Error al cerrar la conexión con el cliente " + nickname + ": " + e.getMessage());
         }
     }
 
@@ -36,10 +48,13 @@ public class ClienteHandler implements Runnable {
     public void run() {
 
         try {
-            while (true) {
-                Paquetes pRecibido = (Paquetes) in.readObject();
+            while (isConected) {
+                //Paquetes pRecibido = (Paquetes) in.readObject();
+                Paquete pRecibido = (Paquete) in.readObject();
+
                 if (pRecibido == null) break;
-                servidor.procesarPaquete(pRecibido, out, in, socket, this);
+                //servidor.procesarPaquete(pRecibido, out, in, socket, this);
+                servidor.procesarPaquete(pRecibido, out, in, socket,this);
             }
         } catch (EOFException e) {
             System.out.println("Cliente desconectado: " + nickname);
@@ -48,10 +63,7 @@ public class ClienteHandler implements Runnable {
         } catch (IOException e) {
             System.err.println("Error de I/O en cliente " + nickname + ": " + e.getMessage());
         } finally {
-            if(isConected()){
-                servidor.desconectarCliente(socket, out, in, this, new Paquetes());
-
-            }
+            servidor.desconectarCliente(socket, out, in, this, null); // Desconectar al cliente
         }
     }
 
@@ -60,7 +72,7 @@ public class ClienteHandler implements Runnable {
      *
      * @param p El paquete a enviar.
      */
-    public void enviarPaquete(Paquetes p) {
+    public void enviarPaquete(Paquete p) {
         try {
             out.writeObject(p);
             out.flush();
@@ -112,5 +124,7 @@ public class ClienteHandler implements Runnable {
         this.isConected = conected;
     }
 
-
+    public String getIP() {
+        return IP;
+    }
 }

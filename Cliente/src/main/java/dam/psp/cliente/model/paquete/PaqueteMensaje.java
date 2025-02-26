@@ -1,8 +1,8 @@
-package dam.psp.cliente.model;
+package dam.psp.cliente.model.paquete;
 
-import dam.psp.cliente.util.Network;
+import java.io.Serializable;
 
-public class PaqueteMensaje extends  Paquete{
+public class PaqueteMensaje extends  Paquete implements Serializable {
     private  String remitente;
     private String mensaje;
 
