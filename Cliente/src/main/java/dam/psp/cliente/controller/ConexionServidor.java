@@ -6,6 +6,7 @@ import dam.psp.cliente.model.paquete.*;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.List;
 
 import static dam.psp.cliente.model.paquete.TipoPaquete.CONECTAR;
 
@@ -114,16 +115,20 @@ public class ConexionServidor {
             out.reset();
             System.out.println("Paquete desconectar enviado: ");
 
+            /*
             try {
                 Paquete desconectar = (Paquete) in.readObject();
                     System.out.println("El servidor te autoriza a abandonar la sala");
 
-                    cerrarConexion();
+                    if(desconectar.getTipo() == TipoPaquete.DESCONECTAR){
+                        cerrarConexion();
+
+                    }
 
             } catch (ClassNotFoundException e) {
                 throw new RuntimeException(e);
             }
-
+            */
         } catch (IOException e) {
             System.err.println("Error al enviar mensaje: " + e.getMessage());
             clienteConectado = false;
@@ -134,9 +139,9 @@ public class ConexionServidor {
         new Thread(() -> {
             while (clienteConectado) {
                 try {
-                    Paquete paqueteRecibido = (Paquete) in.readObject();
+                    Object objetoRecibido = in.readObject();
 
-                    if (paqueteRecibido != null) {
+                    if (objetoRecibido instanceof Paquete paqueteRecibido) {
                         System.out.println("Paquete recibido: " + paqueteRecibido.getTipo());
 
                         if (messageListener != null) {
@@ -146,12 +151,19 @@ public class ConexionServidor {
                         }
 
                         if (paqueteRecibido.getTipo() == TipoPaquete.DESCONECTAR) {
+                            System.out.println("Servidor autoriza desconexión");
                             cerrarConexion();
-                            break;
+                            break; // Rompe el bucle de escucha
                         }
+
+                    } else if (objetoRecibido instanceof List<?> listaUsuarios) {
+                        System.out.println("Lista de usuarios recibida: " + listaUsuarios);
+                        messageListener.updateUsuariosConectados((List<String>) listaUsuarios);
+                    } else {
+                        System.err.println("Objeto recibido de tipo desconocido: " + objetoRecibido.getClass().getName());
                     }
                 } catch (IOException | ClassNotFoundException e) {
-                    System.err.println("Error al recibir paquete: " + e.getMessage());
+                    System.err.println("Error al recibir objeto: " + e.getMessage());
                     clienteConectado = false;
                     cerrarConexion();
                     break;
@@ -159,6 +171,7 @@ public class ConexionServidor {
             }
         }).start();
     }
+
 
     public synchronized void cerrarConexion() {
         try {
@@ -204,4 +217,5 @@ public class ConexionServidor {
     public void setMessageListener(PaqueteListener listener) {
         this.messageListener = listener;
     }
+
 }

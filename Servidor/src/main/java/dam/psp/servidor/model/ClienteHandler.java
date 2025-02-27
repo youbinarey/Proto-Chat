@@ -127,4 +127,8 @@ public class ClienteHandler implements Runnable {
     public String getIP() {
         return IP;
     }
+
+    public ObjectOutputStream getOut() {
+        return out;
+    }
 }

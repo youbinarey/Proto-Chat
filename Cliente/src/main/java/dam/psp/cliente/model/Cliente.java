@@ -34,6 +34,7 @@ public class Cliente {
         conexionServidor.procesarPaquete(paquete);
     }
 
+    /*
     public void autenticar(String usuario, String password) {
         Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
 
@@ -41,5 +42,7 @@ public class Cliente {
             conectar();
         }
     }
+
+     */
 
 }

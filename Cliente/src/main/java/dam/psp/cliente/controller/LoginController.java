@@ -2,6 +2,9 @@ package dam.psp.cliente.controller;
 
 import com.gluonhq.charm.glisten.control.TextField;
 import dam.psp.cliente.model.Cliente;
+import dam.psp.cliente.model.paquete.Paquete;
+import dam.psp.cliente.model.paquete.PaqueteFactory;
+import dam.psp.cliente.model.paquete.TipoPaquete;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -11,8 +14,9 @@ import javafx.scene.control.Button;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.util.List;
 
-public class LoginController {
+public class LoginController implements PaqueteListener{
 
     @FXML
     private Button btnLogIn;
@@ -29,16 +33,16 @@ public class LoginController {
     public LoginController(){
         this.conexionServidor = ConexionServidor.getInstance();
     }
-    /*
+
     @FXML
     void btnLogInOnClick(ActionEvent event) {
-        if(conexionServidor.autenticarUsuario(txtUser.getText(), txtPass.getText())){
-            System.out.println("CORRECTOOO");
+        String usuario = txtUser.getText();
+        String password = txtPass.getText();
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
+        if(conexionServidor.autenticar(p)){
+            cliente = new Cliente(usuario, (PaqueteListener) this);
 
-            //cliente = new Cliente(txtUser.getText(),  conexionServidor);
-      
             loadClienteView(cliente);
-
 
         }else{
             System.out.println("Autenticacion fallida");
@@ -52,9 +56,9 @@ public class LoginController {
             Parent root = loader.load();
 
             ClienteController clienteController = loader.getController();
-            System.out.println("Antes de setCliente: " + clienteController);
+
             clienteController.setCliente(cliente);
-            System.out.println("Después de setCliente: " + clienteController);
+
 
             conexionServidor.setMessageListener(clienteController);
 
@@ -66,9 +70,13 @@ public class LoginController {
         }
     }
 
+    @Override
+    public void mensajeRecibido(Paquete p) {
 
+    }
 
-*/
+    @Override
+    public void updateUsuariosConectados(List<String> listaUsuarios) {
 
-
+    }
 }

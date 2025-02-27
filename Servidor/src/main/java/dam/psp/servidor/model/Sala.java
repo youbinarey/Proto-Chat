@@ -28,7 +28,7 @@ public class Sala {
         this.chat = chat;
     }
 
-    public void joinCliente(ClienteHandler cliente) {
+    public synchronized void  joinCliente(ClienteHandler cliente) {
         Platform.runLater(()-> {
             if (clientesObservables.size() < MAX_CLIENTES && !clientesObservables.contains(cliente)) {
                 clientesObservables.add(cliente);
@@ -42,7 +42,7 @@ public class Sala {
 
     }
 
-    public void leaveCliente(ClienteHandler cliente) {
+    public synchronized void leaveCliente(ClienteHandler cliente) {
         Platform.runLater(() ->{
         if (clientesObservables.remove(cliente)) {
                 cliente.setConnected(false);
@@ -54,14 +54,14 @@ public class Sala {
         });
     }
 
-    public void infoSala() {
+    public synchronized   void infoSala() {
         System.out.println("Clientes en la sala: " + numClientes + " de " + MAX_CLIENTES);
         for (ClienteHandler c : clientesObservables) {
             System.out.println(c.getNickname());
         }
     }
 
-    public boolean contieneCliente(ClienteHandler cliente) {
+    public synchronized   boolean contieneCliente(ClienteHandler cliente) {
         return clientesObservables.contains(cliente);
     }
 
@@ -69,7 +69,7 @@ public class Sala {
         return clientesObservables;
     }
 
-    public List<String> getClientesNickname() {
+    public synchronized List<String> getClientesNickname() {
         List<String> clientesNickname = new ArrayList<>();
         for (ClienteHandler c : clientesObservables) {
             clientesNickname.add(c.getNickname());
@@ -77,7 +77,7 @@ public class Sala {
         return clientesNickname;
     }
 
-    public boolean isNicknameInSala(String nickname){
+    public synchronized boolean isNicknameInSala(String nickname){
         List<String> clientesNickname = getClientesNickname();
         if(clientesNickname.contains(nickname)){
             System.out.println("SALA: El cliente ya esta conectado");
@@ -86,6 +86,8 @@ public class Sala {
         System.out.println("SALA: El cliente puede unirse a la sla");
         return false;
     }
+
+
 
 
 

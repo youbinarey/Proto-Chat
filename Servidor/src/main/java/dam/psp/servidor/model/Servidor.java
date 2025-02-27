@@ -14,6 +14,8 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
+import java.util.List;
 
 
 public class Servidor {
@@ -94,7 +96,7 @@ public class Servidor {
 
 
     // LLAMADO POR CONECTAR, se crea un cliente para manejarlo
-    private ClienteHandler createCliente(String nickname, String IP, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket) {
+    private synchronized ClienteHandler createCliente(String nickname, String IP, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket) {
 
         if (!sala.isNicknameInSala(nickname)) {
             ClienteHandler clienteHandler = new ClienteHandler(nickname, IP, out, in, clienteSocket, this);
@@ -111,14 +113,12 @@ public class Servidor {
     public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler cliente) {
 
 
-
         switch (p.getTipo()) {
             case AUTENTICACION -> {
-                System.out.println("Recibido paquete autenticacion");
-                addActivity(p.getIP() +"@" + p.getTipo());
+                System.out.println("Recibido paquete autenticacion " + p.getIP());
 
                 PaqueteAutenticacion pa = (PaqueteAutenticacion) p;// convierte el paquete para acceder a sus metodos
-
+                addActivity(pa.getIP()+ "@" + pa.getTipo() );
 
                 try {
                     //si autenticar es true manda true a la conexion
@@ -131,44 +131,48 @@ public class Servidor {
             case CONECTAR -> {
                 System.out.println("Entra ene la case...conectar");
 
-                PaqueteConectar pc = (PaqueteConectar) p;
-                addActivity("Cliente conectado: " + pc.getUsuario() + " desde " + pc.getIP());
+                conectarCliente((PaqueteConectar) p, out, in, clienteSocket);
 
-                 ClienteHandler clienteHandler = createCliente(pc.getUsuario(),pc.getIP(), out, in, clienteSocket);
 
-                 if(clienteSocket != null){
-                     // Notificar a la sala que un nuevo cliente se ha conectado
-                     sala.joinCliente(clienteHandler);
-                     addActivity("Cliente añadido a la sala: " + pc.getUsuario());
-                 }else{
-                     addActivity("Error: El cliente ya está conectado: " + pc.getUsuario());
-                 }
             }
             case MENSAJE -> {
+                System.out.println("RECIBIDO UN PAQUETE MENSAJE");
                 mensajeCliente(clienteSocket, in, out, cliente, p);
 
             }
             case DESCONECTAR -> {
+                System.out.println("RECIBIDO UN PAQUETE MENSAJE");
+
                  desconectarCliente(clienteSocket, out, in, cliente, p);
-
-
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
         }
+
     }
 
+    private synchronized void conectarCliente(PaqueteConectar pc, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket) {
 
-    // conectar
-    private void conectarCliente(ClienteHandler cliente) {//
-        if (sala.contieneCliente(cliente)) {
-            //TODO PRESCINDIR O CAMBIAR COMPOROBACION
-            System.out.println("Cliente duplicado:" + cliente.getNickname());
-        } else {
-            sala.joinCliente(cliente);
-            //broadcastMensaje(p);
+
+        ClienteHandler clienteHandler = createCliente(pc.getUsuario(),pc.getIP(), out, in, clienteSocket);
+
+        if(clienteSocket != null){
+            // Notificar a la sala que un nuevo cliente se ha conectado
+            sala.joinCliente(clienteHandler);
+
+
+            addActivity(pc.getUsuario() + "@" + pc.getTipo() + "//" + pc.getIP());
+        }else{
+            addActivity("Error: El cliente ya está conectado: " + pc.getUsuario());
         }
+        try {
+            Thread.sleep(50L);
+            enviarListaUsuarios();
 
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
+
 
     private boolean autenticar(PaqueteAutenticacion pa) {
         DatabaseManager dbManager = new DatabaseManager();
@@ -179,25 +183,58 @@ public class Servidor {
     }
 
     //TODO
-    void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
+     synchronized void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
+        // Verificar si el cliente sigue en la sala antes de desconectarlo
+        if (!sala.contieneCliente(cliente)) {
+            return; // Si no está en la sala, ya ha sido desconectado, así que salimos
+        }
 
         sala.leaveCliente(cliente);
-        //broadcastMensaje(p);
 
+        //LOG DEL SERVIDOR
+         addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
+
+        // Sacamos al cliente de la sala
+
+        PaqueteMensaje pm = (PaqueteMensaje) PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE, cliente.getNickname(), "Se ha desconectado");
+
+
+        // Intentar enviar el mensaje solo si el socket sigue abierto
+        if (clienteSocket != null && !clienteSocket.isClosed()) {
+            try {
+                if (out != null) {
+                    out.writeObject(p);
+                    out.flush();
+                }
+            } catch (IOException e) {
+                System.err.println("Error al enviar mensaje de desconexión: " + e.getMessage());
+            }
+        }
+
+        // Cerrar recursos
+        try {
+            if (out != null) out.close();
+        } catch (IOException e) {
+            System.err.println("Error al cerrar OutputStream: " + e.getMessage());
+        }
 
         try {
-            out.writeObject(p);
-            out.flush();
-            out.close(); // Cerrar el ObjectOutputStream
-            if (in != null) in.close();  // Cerrar el ObjectInputStream
+            if (in != null) in.close();
+        } catch (IOException e) {
+            System.err.println("Error al cerrar InputStream: " + e.getMessage());
+        }
+
+        try {
             if (clienteSocket != null && !clienteSocket.isClosed()) {
-                clienteSocket.close(); // Cerrar el socket
+                clienteSocket.close();
             }
             System.out.println("Cliente desconectado correctamente.");
         } catch (IOException e) {
-            System.err.println("Error al desconectar al cliente: " + e.getMessage());
+            System.err.println("Error al cerrar el socket: " + e.getMessage());
         }
+        enviarListaUsuarios();
     }
+
 
 
 
@@ -206,28 +243,29 @@ public class Servidor {
         sala.setChat(sala.getChat() + "\n" + cliente.getNickname() + " dice: " + pm.getMensaje());
     }
 
-    void mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p){
+    void  mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p){
         //captura el mensaje y notifica a todos
         System.out.println(leerMensaje(p,cliente));
         Paquete pm = PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE,cliente.getNickname(), leerMensaje(p,cliente));
+
+        addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
+
 
         //Procesar mensaje
         broadcastMensaje(pm, cliente);
     }
 
     //TODO refactorizar leerMensaje
-    private void broadcastMensaje(Paquete p, ClienteHandler cliente) {
+    private synchronized void broadcastMensaje(Paquete p, ClienteHandler cliente) {
        PaqueteMensaje pm = (PaqueteMensaje) p;
 
-        logPaquete(p);
+        logPaquete(p, cliente);
         addChat(pm,cliente);
 
         System.out.println("USUARIOS CONECTADOS");
         System.out.println(sala.getClientesNickname());
-
         // Difusión
         for (ClienteHandler c : sala.getClientes()) {
-
             c.enviarPaquete(p);
         }
         System.out.println("BROADCASTMENSAJE ENVIADO");
@@ -246,13 +284,15 @@ public class Servidor {
     }
 
 
+        // TODO CREA UN BUENFORMATO DE LOG
+    public void logPaquete(Paquete p,ClienteHandler cliente) {
+        LocalTime time = LocalTime.now();
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
 
-    public void logPaquete(Paquete p) {
-        addActivity(p.getTipo() + " - " + p.getIP() + LocalTime.now());
+        addActivity(p.getTipo() + " - " + p.getIP() +" - "+  time.format(formato));
     }
 
     public String leerMensaje(Paquete p, ClienteHandler cliente) {
-
 
         switch (p.getTipo()) {
 
@@ -276,8 +316,30 @@ public class Servidor {
                 return "OPCION NO RECONOCIDA";
             }
 
+
+        }
+
+
+    }
+
+    private synchronized void enviarListaUsuarios() {
+        // Obtener la lista de clientes conectados
+        List<String> listaUsuarios = sala.getClientesNickname();
+        System.out.println("ENVIAR---"+ sala.getClientesNickname());
+
+        // Enviar la lista de usuarios a todos los clientes conectados
+        for (ClienteHandler cliente : sala.getClientes()) {
+            try {
+                // Enviar la lista como un objeto
+                cliente.getOut().writeObject(listaUsuarios);
+                cliente.getOut().flush();
+            } catch (IOException e) {
+                System.err.println("Error al enviar lista de usuarios a " + cliente.getNickname() + ": " + e.getMessage());
+            }
         }
     }
+
+
 
 
 }
