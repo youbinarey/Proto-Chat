@@ -194,6 +194,7 @@ public class ConexionServidor {
 
     public synchronized void procesarPaquete(Paquete p) {
         switch (p.getTipo()) {
+            
             case AUTENTICACION -> {
                 autenticar(p);
 

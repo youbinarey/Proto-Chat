@@ -12,7 +12,7 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<StackPane stylesheets="@../../../css/styles.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.cliente.controller.ClienteController">
+<StackPane stylesheets="@../../../css/styles.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.cliente.controller.ClienteController">
    <AnchorPane prefHeight="200.0" prefWidth="800.0">
       <children>
 
@@ -57,7 +57,6 @@
                   <children>
                      <JFXTextArea fx:id="textAreaChat" layoutX="16.0" layoutY="156.0" prefHeight="226.0" prefWidth="483.0" style="-fx-background-color: grey;" unFocusColor="#d71e1e" />
                      <Button id="btn-enviar" fx:id="btnLogOut" layoutX="71.0" layoutY="66.0" onAction="#btnLogOutOnClick" text="Log/out" />
-                     <Button id="btn-enviar" fx:id="btnLogIn" layoutX="159.0" layoutY="64.0" onAction="#btnLogInOnClick" text="Log/in" />
                   </children>
                </AnchorPane>
             </center>

@@ -12,14 +12,19 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 
+import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -29,7 +34,7 @@ public class ClienteController implements PaqueteListener {
     private Cliente cliente;
     public TextArea textAreaMensaje;
     public Button btnEnviar;
-    public Button btnLogIn;
+
     public Button btnLogOut;
     public ListView<String> listUsuarios;
     private ObservableList<String> usuariosList;
@@ -39,7 +44,6 @@ public class ClienteController implements PaqueteListener {
     private Label timeLbl;
 
     public void initialize() {
-        cliente.conectar();
             actualizaHora();
             usuariosList = FXCollections.observableArrayList();
             listUsuarios.setItems(usuariosList);
@@ -58,8 +62,6 @@ public class ClienteController implements PaqueteListener {
             textAreaMensaje.textProperty().addListener((obs, oldText, newText) -> {
                 ajustarAltura();
             });
-
-
 
     }
 
@@ -88,19 +90,37 @@ public class ClienteController implements PaqueteListener {
         Platform.runLater(() -> usuariosList.setAll(listaUsuarios));
     }
 
+
     @FXML
     void btnLogOutOnClick(ActionEvent event) {
         cliente.desconectar();
+
+        goLoging();
     }
 
-    /*
-    @FXML
-    void btnLogInOnClick(ActionEvent event) {
-        cliente.autenticar("Antonio", "abc123");
+    private void goLoging() {
+        try {
+            // Cargar la vista del login
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dam/psp/cliente/clienteLogIn-view.fxml"));
+            Parent root = loader.load();
+
+            // Obtener el escenario actual
+            Stage stage = (Stage) btnLogOut.getScene().getWindow();
+
+            // Reemplazar la escena actual con la del login
+            stage.setScene(new Scene(root));
+            stage.show();
+        } catch (IOException e) {
+            System.err.println("Error al cargar la vista de login: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-    */
+
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
+        cliente.conectar();
+        System.out.println();
+
     }
 
     @FXML
@@ -131,6 +151,8 @@ public class ClienteController implements PaqueteListener {
         // Iniciar el Timeline
         time.play();
     }
+
+
 
 
 

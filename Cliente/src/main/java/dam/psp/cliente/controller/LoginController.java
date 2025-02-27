@@ -38,9 +38,11 @@ public class LoginController implements PaqueteListener{
     void btnLogInOnClick(ActionEvent event) {
         String usuario = txtUser.getText();
         String password = txtPass.getText();
-        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, "Antonio", "abc123");
         if(conexionServidor.autenticar(p)){
-            cliente = new Cliente(usuario, (PaqueteListener) this);
+            cliente = new Cliente("Antonio", (PaqueteListener) this);
+            System.out.println(cliente.getNickname());
+
 
             loadClienteView(cliente);
 
@@ -52,21 +54,21 @@ public class LoginController implements PaqueteListener{
 
     private void loadClienteView(Cliente cliente){
         try{
-         FXMLLoader loader = new FXMLLoader(getClass().getResource("/dam/psp/cliente/cliente-view2.fxml"));
+            String fxmlPath = "/dam/psp/cliente/cliente-view2.fxml";
+         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
-
             ClienteController clienteController = loader.getController();
-
             clienteController.setCliente(cliente);
 
 
             conexionServidor.setMessageListener(clienteController);
 
-
             Stage stage = (Stage) txtUser.getScene().getWindow();
             stage.setScene(new Scene(root));
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("Error en loadCliente: " + e.getMessage());
+            e.printStackTrace();
+
         }
     }
 

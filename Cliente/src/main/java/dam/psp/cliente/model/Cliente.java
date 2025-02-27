@@ -14,6 +14,7 @@ public class Cliente {
         this.conexionServidor.setMessageListener(listener);
     }
 
+
     public void enviarMensaje(String mensaje) {
         Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE, this.nickname, mensaje);
         enviarPaquete(p);
@@ -28,12 +29,21 @@ public class Cliente {
     public void conectar() {
         Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.CONECTAR, this.nickname);
         enviarPaquete(p);
+        System.out.println("Clietne con nombre " + this.getNickname() + " CONECTAA");
+
     }
 
     public void enviarPaquete(Paquete paquete) {
         conexionServidor.procesarPaquete(paquete);
     }
 
+    public String getNickname() {
+        return nickname;
+    }
+
+    public ConexionServidor getConexionServidor() {
+        return conexionServidor;
+    }
     /*
     public void autenticar(String usuario, String password) {
         Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
