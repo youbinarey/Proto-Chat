@@ -110,8 +110,10 @@ public class Servidor {
         return null;
     }
 
-    public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler cliente) {
 
+
+    //PROCESAR PAQUETES --------------------
+    public void procesarPaquete(Paquete p, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket, ClienteHandler cliente) {
 
         switch (p.getTipo()) {
             case AUTENTICACION -> {
@@ -141,7 +143,7 @@ public class Servidor {
 
             }
             case DESCONECTAR -> {
-                System.out.println("RECIBIDO UN PAQUETE MENSAJE");
+                System.out.println("RECIBIDO UN PAQUETE DESCONECTAR");
 
                  desconectarCliente(clienteSocket, out, in, cliente, p);
             }
@@ -246,7 +248,8 @@ public class Servidor {
     void  mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p){
         //captura el mensaje y notifica a todos
         System.out.println(leerMensaje(p,cliente));
-        Paquete pm = PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE,cliente.getNickname(), leerMensaje(p,cliente));
+
+        PaqueteMensaje pm = (PaqueteMensaje) p;
 
         addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
 
