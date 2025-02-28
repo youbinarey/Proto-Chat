@@ -1,34 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import com.gluonhq.charm.glisten.control.TextField?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 
-<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.cliente.controller.LoginController">
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" stylesheets="@../../../css/styleLogin.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="dam.psp.cliente.controller.LoginController">
    <children>
-      <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane>
          <children>
-            <BorderPane prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-               <left>
-                  <AnchorPane prefHeight="274.0" prefWidth="132.0" BorderPane.alignment="CENTER" />
-               </left>
-               <right>
-                  <AnchorPane prefHeight="274.0" prefWidth="117.0" BorderPane.alignment="CENTER" />
-               </right>
+            <BorderPane prefHeight="400.0" prefWidth="421.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <bottom>
-                  <AnchorPane prefHeight="65.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
+                  <AnchorPane prefHeight="50.0" BorderPane.alignment="CENTER" />
                </bottom>
-               <top>
-                  <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="202.0" prefWidth="172.0" BorderPane.alignment="CENTER">
+               <center>
+                  <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
                      <children>
-                        <TextField fx:id="txtUser" layoutX="14.0" layoutY="56.0" promptText="Usuario" />
-                        <TextField fx:id="txtPass" layoutX="14.0" layoutY="93.0" promptText="Contraseña" />
-                        <Button fx:id="btnLogIn" layoutX="73.0" layoutY="133.0" mnemonicParsing="false" onAction="#btnLogInOnClick" text="Log In" />
-                        <AnchorPane layoutX="44.0" layoutY="9.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="10.0" prefWidth="145.0" />
+                        <TextField fx:id="txtUser" layoutX="134.0" layoutY="57.0" prefHeight="35.0" prefWidth="150.0" promptText="Usuario" styleClass="password-field" />
+                        <Button fx:id="btnLogIn" layoutX="222.0" layoutY="150.0" mnemonicParsing="false" onAction="#btnLogInOnClick" text="Log In" />
+                        <PasswordField fx:id="txtPass" layoutX="134.0" layoutY="106.0" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" styleClass="password-field" stylesheets="@../../../css/styleLogin.css" />
+                        <Label fx:id="lblvalidation" layoutX="133.0" layoutY="156.0" prefHeight="18.0" prefWidth="82.0" textFill="WHITE" />
                      </children>
                   </AnchorPane>
+               </center>
+               <top>
+                  <AnchorPane prefHeight="50.0" BorderPane.alignment="CENTER" />
                </top>
             </BorderPane>
          </children>

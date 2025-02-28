@@ -1,0 +1,52 @@
+/* Estilo general */
+.root {
+    -fx-background-color: #1e1e1e; /* Fondo oscuro */
+    -fx-font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
+}
+
+/* Estilo de los TextField y PasswordField */
+.text-field, .password-field {
+    -fx-background-color: #2d2d30;
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 14px;
+    -fx-padding: 8px;
+    -fx-border-color: #3c3c3c;
+    -fx-border-radius: 5px;
+    -fx-border-width: 2px;
+}
+
+/* Estilo cuando el campo está vacío
+.text-field:empty, .password-field:empty {
+    -fx-border-color: yellow;
+}
+*/
+
+/* Estilo cuando el campo está enfocado */
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #0078d7;
+    -fx-border-width: 2px;
+}
+
+/* Estilo del botón de login */
+.button {
+    -fx-background-color: #0078d7;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-padding: 10px;
+    -fx-border-radius: 5px;
+    -fx-border-width: 0px;
+}
+
+.button:hover {
+    -fx-background-color: #005bb5;
+}
+
+.button:pressed {
+    -fx-background-color: #004494;
+}
+
+/* Estilo de la etiqueta de validación */
+.label {
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+}

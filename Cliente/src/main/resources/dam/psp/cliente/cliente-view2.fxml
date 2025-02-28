@@ -23,40 +23,40 @@
             <bottom>
                <AnchorPane id="panel-escribir" prefHeight="118.0" prefWidth="800.0">
 
-                     <Button id="btn-enviar" fx:id="btnEnviar" layoutX="616.0" layoutY="52.0" onAction="#btnEnviarOnClick" text="Enviar" />
+                     <Button id="btn-enviar" fx:id="btnEnviar" layoutX="678.0" layoutY="53.0" onAction="#btnEnviarOnClick" text="Enviar" />
                   <AutoCompleteTextField layoutX="20.0" layoutY="7.0" />
-                  <Button id="btn-adjuntar" fx:id="btnAdjuntar" layoutX="14.0" layoutY="51.0" text="📎" />
-                  <TextArea fx:id="textAreaMensaje" layoutX="76.0" layoutY="44.0" prefRowCount="1" promptText="Escribe un mensaje..." style="-fx-background-radius: 10px;" wrapText="true" />
+                  <Button id="btn-adjuntar" fx:id="btnAdjuntar" layoutX="95.0" layoutY="53.0" text="📎" />
+                  <TextArea fx:id="textAreaMensaje" layoutX="161.0" layoutY="45.0" prefHeight="50.0" prefRowCount="1" prefWidth="500.0" promptText="Escribe un mensaje..." style="-fx-background-radius: 10px;" wrapText="true" />
                </AnchorPane>
             </bottom>
             <left>
                <AnchorPane id="panel-usuarios" prefHeight="311.0" prefWidth="100.0" BorderPane.alignment="CENTER">
-                  <Label id="titulo-usuarios" layoutX="10" layoutY="10" text="Usuarios Conectados" />
-                  <ListView id="list-usuarios" fx:id="listUsuarios" layoutX="34.0" layoutY="30.0" prefHeight="351.0" prefWidth="109.0" />
+                  <Label id="titulo-usuarios" layoutX="11.0" layoutY="112.0" text="Usuarios Conectados" />
+                  <ListView id="list-usuarios" fx:id="listUsuarios" layoutX="8.0" layoutY="157.0" prefHeight="120.0" prefWidth="120.0" />
                </AnchorPane>
             </left>
             <top>
                <AnchorPane prefHeight="18.0" prefWidth="800.0" styleClass="top-bar" stylesheets="@../../../../../../../Servidor/src/main/resources/css/styles.css" BorderPane.alignment="CENTER">
                   <children>
-                     <Label fx:id="serverTxt" layoutX="192.0" layoutY="25.0" prefHeight="30.0" prefWidth="78.0" styleClass="title" text="SERVER" textFill="WHITE">
+                     <Label fx:id="serverTxt" alignment="CENTER" layoutX="361.0" layoutY="10.0" prefHeight="30.0" prefWidth="78.0" styleClass="title" text="SERVER" textFill="WHITE">
                         <font>
                            <Font name="System Bold" size="12.0" />
                         </font>
                      </Label>
-                     <Label fx:id="timeLbl" layoutX="317.0" layoutY="33.0" prefHeight="20.0" prefWidth="241.0" styleClass="server-time" stylesheets="@../../../../../../../Servidor/src/main/resources/css/styles.css" text="Hora" textFill="WHITE">
+                     <Label fx:id="timeLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="298.0" layoutY="45.0" prefHeight="20.0" prefWidth="204.0" styleClass="server-time" stylesheets="@../../../../../../../Servidor/src/main/resources/css/styles.css" text="Hora" textFill="WHITE">
                         <font>
                            <Font name="System Bold" size="12.0" />
                         </font>
                      </Label>
-                     <JFXToggleButton layoutX="51.0" layoutY="24.0" text="Modo" />
+                     <JFXToggleButton layoutX="51.0" layoutY="24.0" text="Light" textFill="WHITE" />
+                     <Button id="btn-enviar" fx:id="btnLogOut" layoutX="692.0" layoutY="25.0" onAction="#btnLogOutOnClick" text="Log/out" />
                   </children>
                </AnchorPane>
             </top>
             <center>
                <AnchorPane id="panel-chat" prefHeight="301.0" prefWidth="400.0" BorderPane.alignment="CENTER">
                   <children>
-                     <JFXTextArea fx:id="textAreaChat" layoutX="16.0" layoutY="156.0" prefHeight="226.0" prefWidth="483.0" style="-fx-background-color: grey;" unFocusColor="#d71e1e" />
-                     <Button id="btn-enviar" fx:id="btnLogOut" layoutX="71.0" layoutY="66.0" onAction="#btnLogOutOnClick" text="Log/out" />
+                     <JFXTextArea fx:id="textAreaChat" layoutX="60.0" layoutY="76.0" prefHeight="320.0" prefWidth="500.0" style="-fx-background-color: grey;" unFocusColor="#d71e1e" />
                   </children>
                </AnchorPane>
             </center>

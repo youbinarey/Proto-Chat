@@ -76,4 +76,10 @@ public class DatabaseManager {
             System.err.println("Error al cerrar la conexión a la base de datos: " + e.getMessage());
         }
     }
+
+    public static void main(String[] args) {
+        DatabaseManager dbManager = new DatabaseManager();
+        dbManager.insertUser("Yeray", "dam");
+        dbManager.closeConnection();
+    }
 }

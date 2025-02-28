@@ -1,16 +1,19 @@
 package dam.psp.cliente.controller;
 
-import com.gluonhq.charm.glisten.control.TextField;
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.paquete.Paquete;
 import dam.psp.cliente.model.paquete.PaqueteFactory;
 import dam.psp.cliente.model.paquete.TipoPaquete;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -22,10 +25,13 @@ public class LoginController implements PaqueteListener{
     private Button btnLogIn;
 
     @FXML
-    private TextField txtPass;
+    private PasswordField txtPass;
 
     @FXML
     private TextField txtUser;
+    @FXML
+    private Label lblvalidation;
+
     private ConexionServidor conexionServidor;
     private Cliente cliente;
 
@@ -36,17 +42,46 @@ public class LoginController implements PaqueteListener{
 
     @FXML
     void btnLogInOnClick(ActionEvent event) {
+
+
         String usuario = txtUser.getText();
         String password = txtPass.getText();
-        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, "Antonio", "abc123");
+
+
+        if(!usuario.isEmpty() && !password.isEmpty()){
+            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
+            verifyLogin(p);
+        }else {
+            isFieldEmpty();
+            lblvalidation.setText("Completa todos los campos");
+            lblvalidation.setStyle("-fx-text-fill: yellow;");
+        }
+    }
+
+    private void verifyLogin(Paquete p) {
         if(conexionServidor.autenticar(p)){
+            setLblvalidation(true);
+
             cliente = new Cliente("Antonio", (PaqueteListener) this);
             System.out.println(cliente.getNickname());
+            //TODO animacion
 
+            // Ejecutar la pausa en un hilo separado
+            new Thread(() -> {
+                try {
+                    Thread.sleep(1000L); // Espera 1 segundo
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
 
-            loadClienteView(cliente);
+                // Volver al hilo de JavaFX para cargar la nueva vista
+                Platform.runLater(() -> loadClienteView(cliente));
+            }).start();
+
 
         }else{
+            setLblvalidation(false);
+
             System.out.println("Autenticacion fallida");
 
         }
@@ -70,6 +105,34 @@ public class LoginController implements PaqueteListener{
             e.printStackTrace();
 
         }
+    }
+
+    // Da informacion al usuairo de que la validacion ha sido erronea
+    public void setLblvalidation (Boolean login ){
+        String mensaje;
+        String lblColor;
+        if(login){
+            mensaje = ("Login con éxito");
+            lblColor = ("-fx-text-fill: white;");
+
+        }else{
+            mensaje = ("Datos incorrectos");
+            lblColor = ("-fx-text-fill: red;");
+            txtPass.clear();
+            txtPass.setStyle("-fx-border-color: transparent;");
+        }
+        this.lblvalidation.setText(mensaje);
+        this.lblvalidation.setStyle(lblColor);
+
+    }
+
+    //Comprobar campos vacios
+    private void isFieldEmpty() {
+        boolean userEmpty = txtUser.getText().isEmpty();
+        boolean passEmpty = txtPass.getText().isEmpty();
+
+        txtUser.setStyle(userEmpty ? "-fx-border-color: yellow;" : "-fx-border-color: transparent;");
+        txtPass.setStyle(passEmpty ? "-fx-border-color: yellow;" : "-fx-border-color: transparent;");
     }
 
     @Override
