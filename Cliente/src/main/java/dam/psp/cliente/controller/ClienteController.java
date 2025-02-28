@@ -2,9 +2,8 @@ package dam.psp.cliente.controller;
 
 import com.jfoenix.controls.JFXTextArea;
 import dam.psp.cliente.model.Cliente;
-import dam.psp.cliente.model.paquete.Paquete;
-import dam.psp.cliente.model.paquete.PaqueteMensaje;
-import dam.psp.cliente.model.paquete.TipoPaquete;
+import dam.psp.cliente.model.paquete.*;
+import javafx.animation.FadeTransition;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -21,6 +20,8 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -31,6 +32,7 @@ import java.util.List;
 
 public class ClienteController implements PaqueteListener {
 
+    public Button btnAdjuntar;
     private Cliente cliente;
     public TextArea textAreaMensaje;
     public Button btnEnviar;
@@ -42,6 +44,9 @@ public class ClienteController implements PaqueteListener {
 
     @FXML
     private Label timeLbl;
+
+    @FXML
+    private  Label serverTxt;
 
     public void initialize() {
             actualizaHora();
@@ -83,11 +88,21 @@ public class ClienteController implements PaqueteListener {
             PaqueteMensaje pm = (PaqueteMensaje) p;
             Platform.runLater(() -> textAreaChat.appendText(pm.getMensaje() + "\n"));
         }
+
+        if(p.getTipo()== TipoPaquete.NOTIFICACION){
+            PaqueteNotificacion pn  = (PaqueteNotificacion) p;
+            Platform.runLater(() -> mostrarBanner(pn.getEvento()));
+        }
+
     }
 
     @Override
     public void updateUsuariosConectados(List<String> listaUsuarios) {
-        Platform.runLater(() -> usuariosList.setAll(listaUsuarios));
+        Platform.runLater(() -> {
+            usuariosList.setAll(listaUsuarios);
+            //mostrarBanner("Nuevo usuario en la sala");
+        });
+
     }
 
 
@@ -125,8 +140,10 @@ public class ClienteController implements PaqueteListener {
 
     @FXML
     void btnEnviarOnClick(ActionEvent event){
+        if(textAreaMensaje.getText().isEmpty()){
             cliente.enviarMensaje(textAreaMensaje.getText());
             textAreaMensaje.clear();
+        }
     }
 
 
@@ -153,7 +170,31 @@ public class ClienteController implements PaqueteListener {
     }
 
 
+// BANNER NOTIFICACION
+// Método para mostrar el banner cuando la lista de usuarios se actualiza
+public  void mostrarBanner(String mensaje) {
+    Platform.runLater(() -> {
+        Label label = new Label(mensaje);
+        label.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-padding: 10px;");
 
+        FadeTransition fade = new FadeTransition(Duration.seconds(5), label);
+        fade.setFromValue(1.0);
+        fade.setToValue(0.0);
+        fade.setOnFinished(event -> label.setVisible(false));
+
+        AnchorPane root = (AnchorPane) serverTxt.getParent();
+        if (root == null) return;
+
+        AnchorPane.setTopAnchor(label, 0.0);
+        AnchorPane.setLeftAnchor(label, 0.0);
+        AnchorPane.setRightAnchor(label, 0.0);
+
+        root.getChildren().add(label);
+        fade.play();
+    });
+
+
+    }
 
 
 

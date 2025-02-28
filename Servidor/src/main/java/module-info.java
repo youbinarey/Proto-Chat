@@ -13,6 +13,7 @@ module dam.psp.servidor {
     requires Paquete;
     requires java.sql;
     requires jbcrypt;
+    requires jdk.accessibility;
 
     //requires eu.hansolo.tilesfx;
     opens dam.psp.servidor to javafx.fxml;

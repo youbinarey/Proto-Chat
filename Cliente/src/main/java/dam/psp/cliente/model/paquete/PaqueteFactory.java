@@ -22,8 +22,9 @@ public class PaqueteFactory {
     }
 
     private static Paquete crearPaqueteNotificacion(Object... parametros) {
-        String evento = (String) parametros[0];
-        return new PaqueteNotificacion(evento);
+        String usuario = (String) parametros[0];
+        String evento = (String) parametros[1];
+        return new PaqueteNotificacion(usuario, evento);
 
     }
 

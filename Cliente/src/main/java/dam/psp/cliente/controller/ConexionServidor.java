@@ -2,6 +2,11 @@ package dam.psp.cliente.controller;
 
 import dam.psp.cliente.config.Config;
 import dam.psp.cliente.model.paquete.*;
+import javafx.animation.FadeTransition;
+import javafx.application.Platform;
+import javafx.scene.control.Label;
+import javafx.scene.layout.AnchorPane;
+import javafx.util.Duration;
 
 import java.io.*;
 import java.net.Socket;
@@ -195,18 +200,10 @@ public class ConexionServidor {
     public synchronized void procesarPaquete(Paquete p) {
         switch (p.getTipo()) {
             
-            case AUTENTICACION -> {
-                autenticar(p);
-
-
-            }
+            case AUTENTICACION -> autenticar(p);
             case CONECTAR -> conectar(p);
             case MENSAJE -> enviarMensaje(p);
-            case DESCONECTAR -> {
-                System.out.println("manda desconexion en case SI");
-
-                enviarDesconexion(p);
-            }
+            case DESCONECTAR -> enviarDesconexion(p);
             default -> System.out.println("Tipo de paquete no reconocido.");
         }
     }
@@ -218,5 +215,7 @@ public class ConexionServidor {
     public void setMessageListener(PaqueteListener listener) {
         this.messageListener = listener;
     }
+
+
 
 }

@@ -153,19 +153,20 @@ public class Servidor {
     }
 
     private synchronized void conectarCliente(PaqueteConectar pc, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket) {
-
-
-        ClienteHandler clienteHandler = createCliente(pc.getUsuario(),pc.getIP(), out, in, clienteSocket);
+        ClienteHandler cliente = createCliente(pc.getUsuario(),pc.getIP(), out, in, clienteSocket);
 
         if(clienteSocket != null){
             // Notificar a la sala que un nuevo cliente se ha conectado
-            sala.joinCliente(clienteHandler);
+            sala.joinCliente(cliente);
 
 
             addActivity(pc.getUsuario() + "@" + pc.getTipo() + "//" + pc.getIP());
+            broadcastNotify(pc,cliente);
         }else{
             addActivity("Error: El cliente ya está conectado: " + pc.getUsuario());
         }
+
+
         try {
             Thread.sleep(50L);
             enviarListaUsuarios();
@@ -195,6 +196,7 @@ public class Servidor {
 
         //LOG DEL SERVIDOR
          addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
+         broadcastNotify(p,cliente);
 
         // Sacamos al cliente de la sala
 
@@ -249,7 +251,9 @@ public class Servidor {
         //captura el mensaje y notifica a todos
         System.out.println(leerMensaje(p,cliente));
 
-        PaqueteMensaje pm = (PaqueteMensaje) p;
+        //Crea el factory
+        Paquete pm = PaqueteFactory.crearPaquete(p.getTipo(), cliente.getNickname(), leerMensaje(p,cliente));
+
 
         addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
 
@@ -265,15 +269,16 @@ public class Servidor {
         logPaquete(p, cliente);
         addChat(pm,cliente);
 
-        System.out.println("USUARIOS CONECTADOS");
-        System.out.println(sala.getClientesNickname());
-        // Difusión
-        for (ClienteHandler c : sala.getClientes()) {
-            c.enviarPaquete(p);
-        }
+
+        broadcast(p);
         System.out.println("BROADCASTMENSAJE ENVIADO");
     }
 
+    private void broadcast(Paquete p) {
+        for (ClienteHandler c : sala.getClientes()) {
+            c.enviarPaquete(p);
+        }
+    }
 
 
     private void addActivity(String log) {
@@ -341,6 +346,22 @@ public class Servidor {
             }
         }
     }
+
+    private void broadcastNotify(Paquete p, ClienteHandler cliente){
+        // preparar mensaje
+        String notificacion = "";
+        if(p.getTipo()== TipoPaquete.CONECTAR)notificacion = " se ha unido!!";
+        else if (p.getTipo()== TipoPaquete.DESCONECTAR) notificacion = " ha abandona la sala";
+
+        //crear notificacion con mensaje
+        p = PaqueteFactory.crearPaquete(TipoPaquete.NOTIFICACION, cliente.getNickname(), cliente.getNickname() + notificacion  );
+
+        broadcast(p);
+        System.out.println("BROADCAST NOTIFY ENVIADO");
+    }
+
+
+
 
 
 
