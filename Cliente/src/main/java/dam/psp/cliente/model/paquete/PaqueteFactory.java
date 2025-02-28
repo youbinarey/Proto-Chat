@@ -36,7 +36,8 @@ public class PaqueteFactory {
     }
 
     private static Paquete crearPaquetePING(Object... parametros) {
-        return null;
+        String usuario = (String) parametros[0];
+        return new PaquetePing(usuario);
 
     }
 

@@ -53,7 +53,7 @@ public class ClienteHandler implements Runnable {
                 Paquete pRecibido = (Paquete) in.readObject();
 
                 if (pRecibido == null) break;
-                //servidor.procesarPaquete(pRecibido, out, in, socket, this);
+
                 servidor.procesarPaquete(pRecibido, out, in, socket,this);
             }
         } catch (EOFException e) {

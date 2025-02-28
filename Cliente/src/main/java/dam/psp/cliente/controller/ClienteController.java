@@ -23,6 +23,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 
 import java.io.IOException;
@@ -48,8 +49,16 @@ public class ClienteController implements PaqueteListener {
     @FXML
     private  Label serverTxt;
 
+    @FXML
+    private Button btnPing;
+
     public void initialize() {
             actualizaHora();
+
+        Platform.runLater(() -> {
+            Stage stage = (Stage) btnLogOut.getScene().getWindow();
+            stage.setOnCloseRequest(this::handleWindowClose);
+        });
             usuariosList = FXCollections.observableArrayList();
             listUsuarios.setItems(usuariosList);
 
@@ -68,6 +77,12 @@ public class ClienteController implements PaqueteListener {
                 ajustarAltura();
             });
 
+    }
+
+    private void handleWindowClose(WindowEvent event) {
+        if (cliente != null) {
+            cliente.desconectar();
+        }
     }
 
     private void enviarMensaje() {
@@ -94,6 +109,13 @@ public class ClienteController implements PaqueteListener {
             Platform.runLater(() -> mostrarBanner(pn.getEvento()));
         }
 
+        if (p.getTipo() == TipoPaquete.PING) {
+            PaquetePing ping = (PaquetePing) p;
+            long latencia = System.currentTimeMillis() - ping.getTimestamp();
+            mostrarBanner("Latencia con el chat -> " + latencia +
+                    "ms");
+        }
+
     }
 
     @Override
@@ -115,7 +137,7 @@ public class ClienteController implements PaqueteListener {
 
     private void goLoging() {
         try {
-            // Cargar la vista del login
+         // Cargar la vista del login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dam/psp/cliente/clienteLogIn-view.fxml"));
             Parent root = loader.load();
 
@@ -140,10 +162,15 @@ public class ClienteController implements PaqueteListener {
 
     @FXML
     void btnEnviarOnClick(ActionEvent event){
-        if(textAreaMensaje.getText().isEmpty()){
+        if(!textAreaMensaje.getText().isEmpty()){
             cliente.enviarMensaje(textAreaMensaje.getText());
             textAreaMensaje.clear();
         }
+    }
+
+    @FXML
+    void btnPingOnClick(ActionEvent event) {
+        Platform.runLater(()-> cliente.ping());
     }
 
 
@@ -192,7 +219,6 @@ public  void mostrarBanner(String mensaje) {
         root.getChildren().add(label);
         fade.play();
     });
-
 
     }
 

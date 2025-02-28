@@ -29,11 +29,12 @@ public class Cliente {
     public void conectar() {
         Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.CONECTAR, this.nickname);
         enviarPaquete(p);
-        System.out.println("Clietne con nombre " + this.getNickname() + " CONECTAA");
+
 
     }
 
     public void enviarPaquete(Paquete paquete) {
+
         conexionServidor.procesarPaquete(paquete);
     }
 
@@ -43,6 +44,13 @@ public class Cliente {
 
     public ConexionServidor getConexionServidor() {
         return conexionServidor;
+    }
+
+    public void ping() {
+        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.PING, this.nickname);
+
+        enviarPaquete(p);
+
     }
     /*
     public void autenticar(String usuario, String password) {

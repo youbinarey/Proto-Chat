@@ -131,7 +131,8 @@ public class Servidor {
 
             }
             case CONECTAR -> {
-                System.out.println("Entra ene la case...conectar");
+                System.out.println("RECIBIDO UN PAQUETE CONECTAR");
+
 
                 conectarCliente((PaqueteConectar) p, out, in, clienteSocket);
 
@@ -142,6 +143,10 @@ public class Servidor {
                 mensajeCliente(clienteSocket, in, out, cliente, p);
 
             }
+            case PING -> {
+                pingCliente(clienteSocket,in,out,cliente,p);
+            }
+
             case DESCONECTAR -> {
                 System.out.println("RECIBIDO UN PAQUETE DESCONECTAR");
 
@@ -149,6 +154,17 @@ public class Servidor {
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
         }
+
+    }
+
+    private void pingCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
+            PaquetePing pp = (PaquetePing) p;
+            System.out.println("Ping recibido de " + cliente.getNickname()+ " en " + pp.getTimestamp());
+
+            // envia Ping de vuelta
+        Paquete pong = PaqueteFactory.crearPaquete(pp.getTipo(), cliente.getNickname());
+
+        cliente.enviarPaquete(pong);
 
     }
 
@@ -197,10 +213,7 @@ public class Servidor {
         //LOG DEL SERVIDOR
          addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
          broadcastNotify(p,cliente);
-
-        // Sacamos al cliente de la sala
-
-        PaqueteMensaje pm = (PaqueteMensaje) PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE, cliente.getNickname(), "Se ha desconectado");
+         enviarListaUsuarios();
 
 
         // Intentar enviar el mensaje solo si el socket sigue abierto

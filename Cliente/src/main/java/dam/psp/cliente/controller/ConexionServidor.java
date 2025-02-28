@@ -198,11 +198,16 @@ public class ConexionServidor {
     }
 
     public synchronized void procesarPaquete(Paquete p) {
+        if (p == null) {
+            System.err.println("Advertencia: Se recibió un paquete nulo.");
+            return; // Evita que el programa crashee
+        }
         switch (p.getTipo()) {
             
             case AUTENTICACION -> autenticar(p);
             case CONECTAR -> conectar(p);
             case MENSAJE -> enviarMensaje(p);
+            case PING -> enviarPING(p);
             case DESCONECTAR -> enviarDesconexion(p);
             default -> System.out.println("Tipo de paquete no reconocido.");
         }
@@ -214,6 +219,17 @@ public class ConexionServidor {
 
     public void setMessageListener(PaqueteListener listener) {
         this.messageListener = listener;
+    }
+
+    public void enviarPING(Paquete p){
+
+        try {
+            out.writeObject(p);
+            out.flush();
+            System.out.println("Ping enviado al servidor.");
+        } catch (IOException e) {
+            System.err.println("Error al enviar el ping: " + e.getMessage());
+        }
     }
 
 

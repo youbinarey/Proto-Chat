@@ -5,14 +5,20 @@ import java.time.LocalTime;
 
 public class PaquetePing extends  Paquete implements Serializable {
 
-    private LocalTime time;
+    private long timestamp;
+    private String usuario;
 
-    public PaquetePing() {
+    public PaquetePing(String usuario) {
         super(TipoPaquete.PING);
-        this.time = LocalTime.now();
+        this.usuario = usuario;
+        this.timestamp = System.currentTimeMillis();
     }
 
-    public LocalTime getTime() {
-        return time;
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public String getUsuario() {
+        return usuario;
     }
 }
