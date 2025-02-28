@@ -2,6 +2,7 @@ package dam.psp.cliente.controller;
 
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.paquete.Paquete;
+import dam.psp.cliente.model.paquete.PaqueteAutenticacion;
 import dam.psp.cliente.model.paquete.PaqueteFactory;
 import dam.psp.cliente.model.paquete.TipoPaquete;
 import javafx.application.Platform;
@@ -60,9 +61,11 @@ public class LoginController implements PaqueteListener{
 
     private void verifyLogin(Paquete p) {
         if(conexionServidor.autenticar(p)){
+            PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
+
             setLblvalidation(true);
 
-            cliente = new Cliente("Antonio", (PaqueteListener) this);
+            cliente = new Cliente(pa.getUsuario(), (PaqueteListener) this);
             System.out.println(cliente.getNickname());
             //TODO animacion
 
