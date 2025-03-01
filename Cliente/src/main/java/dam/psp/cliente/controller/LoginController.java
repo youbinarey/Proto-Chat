@@ -5,17 +5,18 @@ import dam.psp.cliente.model.paquete.Paquete;
 import dam.psp.cliente.model.paquete.PaqueteAutenticacion;
 import dam.psp.cliente.model.paquete.PaqueteFactory;
 import dam.psp.cliente.model.paquete.TipoPaquete;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,14 +44,14 @@ public class LoginController implements PaqueteListener{
 
     @FXML
     void btnLogInOnClick(ActionEvent event) {
-
+        btnLogIn.setVisible(false);
 
         String usuario = txtUser.getText();
         String password = txtPass.getText();
 
 
         if(!usuario.isEmpty() && !password.isEmpty()){
-            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
+            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, "Antonios", "abc123");
             verifyLogin(p);
         }else {
             isFieldEmpty();
@@ -60,35 +61,94 @@ public class LoginController implements PaqueteListener{
     }
 
     private void verifyLogin(Paquete p) {
-        if(conexionServidor.autenticar(p)){
-            PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
+        btnLogIn.setVisible(false);
+       StackPane loadingPane= createLoadingIndicator();
 
-            setLblvalidation(true);
+       //Referenciar el contenedor donde lo queremos posicionar
+       AnchorPane root = (AnchorPane) txtPass.getParent();
+       if(root == null) return;
 
-            cliente = new Cliente(pa.getUsuario(), (PaqueteListener) this);
-            System.out.println(cliente.getNickname());
-            //TODO animacion
+       setLoadingIndicatorPosition(loadingPane, txtPass,root);
+       addLoadingIndicatorAnimation(loadingPane);
 
-            // Ejecutar la pausa en un hilo separado
-            new Thread(() -> {
-                try {
-                    Thread.sleep(1000L); // Espera 1 segundo
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+        // Ejecutar autenticación en un hilo separado
+        new Thread(() -> {
+            boolean autenticado = conexionServidor.autenticar(p);
+
+            Platform.runLater(() -> {
+                root.getChildren().remove(loadingPane);  // Eliminar indicador
+
+                if (autenticado) {
+                    setLblvalidation(true);
+                    cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
+                    System.out.println(cliente.getNickname());
+
+                    PauseTransition pause = new PauseTransition(Duration.seconds(1));
+                    pause.setOnFinished(event -> loadClienteView(cliente));
+                    pause.play();
+                } else {
+                    btnLogIn.setVisible(true);
+                    setLblvalidation(false);
                 }
-
-                // Volver al hilo de JavaFX para cargar la nueva vista
-                Platform.runLater(() -> loadClienteView(cliente));
-            }).start();
+            });
+        }).start();
 
 
-        }else{
-            setLblvalidation(false);
-
-            System.out.println("Autenticacion fallida");
-
-        }
     }
+
+    // Iniciar animacion y comportamiento
+    private void addLoadingIndicatorAnimation(StackPane loadingPane) {
+        ProgressIndicator loadingIndicator = (ProgressIndicator) loadingPane.getChildren().get(0);
+
+        // Animación de rotación
+        RotateTransition rotateTransition = new RotateTransition(Duration.seconds(1), loadingIndicator);
+        rotateTransition.setByAngle(360);
+        rotateTransition.setCycleCount(Animation.INDEFINITE);
+        rotateTransition.setInterpolator(Interpolator.LINEAR);
+        rotateTransition.play();
+
+        // Animación de escala
+        ScaleTransition scale = new ScaleTransition(Duration.seconds(0.5), loadingPane);
+        scale.setFromX(0.7);
+        scale.setFromY(0.7);
+        scale.setToX(1);
+        scale.setToY(1);
+        scale.setInterpolator(Interpolator.EASE_OUT);
+        scale.play();
+    }
+
+
+
+    // Posicionamiento dentro del contenedor
+    private void setLoadingIndicatorPosition(StackPane loadingPane, PasswordField passwordField, AnchorPane root) {
+        double x = passwordField.getLayoutX();
+        double y = passwordField.getLayoutY();
+        loadingPane.setLayoutX(x);
+        loadingPane.setLayoutY(y);
+
+        // Agregar el indicador al root
+        root.getChildren().add(loadingPane);
+
+    }
+
+    // Crear el indicador de progreso
+    private StackPane createLoadingIndicator() {
+        StackPane loadingPane = new StackPane();
+        //loadingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-background-radius: 12;");
+
+        ProgressIndicator loadingIndicator = new ProgressIndicator();
+        loadingIndicator.setPrefSize(50, 50);
+        loadingIndicator.setStyle("-fx-progress-color: #1DB954; -fx-background-color: transparent;");
+
+        loadingPane.getChildren().add(loadingIndicator);
+        return loadingPane;
+    }
+
+
+
+
+
+
 
     private void loadClienteView(Cliente cliente){
         try{

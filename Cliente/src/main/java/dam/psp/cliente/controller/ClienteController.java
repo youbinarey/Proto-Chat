@@ -3,9 +3,7 @@ package dam.psp.cliente.controller;
 import com.jfoenix.controls.JFXTextArea;
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.paquete.*;
-import javafx.animation.FadeTransition;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
+import javafx.animation.*;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -106,13 +104,13 @@ public class ClienteController implements PaqueteListener {
 
         if(p.getTipo()== TipoPaquete.NOTIFICACION){
             PaqueteNotificacion pn  = (PaqueteNotificacion) p;
-            Platform.runLater(() -> mostrarBanner(pn.getEvento()));
+            Platform.runLater(() -> mostrarBanner2(pn.getEvento()));
         }
 
         if (p.getTipo() == TipoPaquete.PING) {
             PaquetePing ping = (PaquetePing) p;
             long latencia = System.currentTimeMillis() - ping.getTimestamp();
-            mostrarBanner("Latencia con el chat -> " + latencia +
+            mostrarBanner2("Latencia con el chat -> " + latencia +
                     "ms");
         }
 
@@ -198,7 +196,7 @@ public class ClienteController implements PaqueteListener {
 
 
 // BANNER NOTIFICACION
-// Método para mostrar el banner cuando la lista de usuarios se actualiza
+// Método para mostrar el banner
 public  void mostrarBanner(String mensaje) {
     Platform.runLater(() -> {
         Label label = new Label(mensaje);
@@ -222,6 +220,58 @@ public  void mostrarBanner(String mensaje) {
 
     }
 
+    public void mostrarBanner2(String mensaje) {
+        Platform.runLater(() -> {
+            Label label = new Label(mensaje);
+            label.setStyle("""
+                        -fx-background-color: rgba(54, 57, 63, 0.9);
+                        -fx-text-fill: white;
+                        -fx-font-size: 14px;
+                        -fx-font-weight: bold;
+                        -fx-padding: 15px;
+                        -fx-border-radius: 8px;
+                        -fx-background-radius: 8px;
+                        -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 4);
+                    """);
+
+            AnchorPane root = (AnchorPane) serverTxt.getParent();
+            if (root == null) return;
+
+            // Inicializar en posición superior fuera de la pantalla
+            label.setTranslateY(-50);
+            AnchorPane.setTopAnchor(label, 10.0);
+            AnchorPane.setLeftAnchor(label, 20.0);
+            AnchorPane.setRightAnchor(label, 20.0);
+
+            root.getChildren().add(label);
+
+            // Animación de entrada: desplazar hacia abajo y aparecer
+            TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), label);
+            slideIn.setFromY(-50);
+            slideIn.setToY(0);
+            slideIn.setInterpolator(Interpolator.EASE_OUT);
+
+            FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.5), label);
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setDelay(Duration.seconds(3)); // Se mantiene visible por 3 segundos
+            fadeOut.setOnFinished(event -> root.getChildren().remove(label));
+
+            // Animación de salida: Desplazar hacia arriba y desvanecer
+            TranslateTransition slideOut = new TranslateTransition(Duration.millis(500), label);
+            slideOut.setFromY(0);
+            slideOut.setToY(-30);
+            slideOut.setInterpolator(Interpolator.EASE_IN);
+            slideOut.setDelay(Duration.seconds(3));
+
+            // Ejecutar animaciones
+            slideIn.setOnFinished(e -> {
+                fadeOut.play();
+                slideOut.play();
+            });
+            slideIn.play();
+        });
 
 
-}
+    }
+    }
