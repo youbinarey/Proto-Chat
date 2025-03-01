@@ -19,10 +19,10 @@
                <center>
                   <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
                      <children>
-                        <TextField fx:id="txtUser" layoutX="134.0" layoutY="57.0" prefHeight="35.0" prefWidth="150.0" promptText="Usuario" styleClass="password-field" />
-                        <Button fx:id="btnLogIn" layoutX="222.0" layoutY="150.0" mnemonicParsing="false" onAction="#btnLogInOnClick" text="Log In" />
-                        <PasswordField fx:id="txtPass" layoutX="134.0" layoutY="106.0" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" styleClass="password-field" stylesheets="@../../../css/styleLogin.css" />
-                        <Label fx:id="lblvalidation" layoutX="133.0" layoutY="156.0" prefHeight="18.0" prefWidth="82.0" textFill="WHITE" />
+                        <TextField fx:id="txtUser" layoutX="125.0" layoutY="62.0" prefHeight="35.0" prefWidth="150.0" promptText="Usuario" styleClass="password-field" />
+                        <Button fx:id="btnLogIn" alignment="CENTER" contentDisplay="CENTER" layoutX="171.0" layoutY="158.0" mnemonicParsing="false" onAction="#btnLogInOnClick" text="Log In" />
+                        <PasswordField fx:id="txtPass" layoutX="126.0" layoutY="111.0" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" styleClass="password-field" stylesheets="@../../../css/styleLogin.css" />
+                        <Label fx:id="lblvalidation" alignment="CENTER" contentDisplay="CENTER" layoutX="108.0" layoutY="38.0" prefHeight="18.0" prefWidth="185.0" textAlignment="CENTER" textFill="WHITE" />
                      </children>
                   </AnchorPane>
                </center>

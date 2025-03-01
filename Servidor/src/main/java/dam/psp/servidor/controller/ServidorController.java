@@ -4,12 +4,16 @@ import dam.psp.servidor.model.ClienteHandler;
 import dam.psp.servidor.model.Servidor;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+
 
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -39,6 +43,10 @@ public class ServidorController {
         servidor.setControlador(this);
         listOfClientes.setItems(servidor.sala.getClientes());
         iniciarServidor();
+
+
+
+
     }
 
 
@@ -53,6 +61,8 @@ public class ServidorController {
         };
         new Thread(task).start();
     }
+
+
 
 
     public void mostrarLog(String log) {
@@ -82,4 +92,6 @@ public class ServidorController {
         // Iniciar el Timeline
         time.play();
     }
+
+
 }

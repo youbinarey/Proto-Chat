@@ -21,7 +21,7 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.List;
 
-public class LoginController implements PaqueteListener{
+public class LoginController implements PaqueteListener {
 
     @FXML
     private Button btnLogIn;
@@ -38,22 +38,24 @@ public class LoginController implements PaqueteListener{
     private Cliente cliente;
 
 
-    public LoginController(){
+    public LoginController() {
         this.conexionServidor = ConexionServidor.getInstance();
     }
 
     @FXML
     void btnLogInOnClick(ActionEvent event) {
-        btnLogIn.setVisible(false);
+
 
         String usuario = txtUser.getText();
         String password = txtPass.getText();
 
 
-        if(!usuario.isEmpty() && !password.isEmpty()){
-            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, "Antonios", "abc123");
+        if (!usuario.isEmpty() && !password.isEmpty()) {
+            btnLogIn.setVisible(false);
+            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, "Antonio", "abc123");
             verifyLogin(p);
-        }else {
+        } else {
+
             isFieldEmpty();
             lblvalidation.setText("Completa todos los campos");
             lblvalidation.setStyle("-fx-text-fill: yellow;");
@@ -62,40 +64,65 @@ public class LoginController implements PaqueteListener{
 
     private void verifyLogin(Paquete p) {
         btnLogIn.setVisible(false);
-       StackPane loadingPane= createLoadingIndicator();
+        StackPane loadingPane = createLoadingIndicator();
 
-       //Referenciar el contenedor donde lo queremos posicionar
-       AnchorPane root = (AnchorPane) txtPass.getParent();
-       if(root == null) return;
+        // Referenciar el contenedor donde lo queremos posicionar
+        AnchorPane root = (AnchorPane) txtPass.getParent();
+        if (root == null) return;
 
-       setLoadingIndicatorPosition(loadingPane, txtPass,root);
-       addLoadingIndicatorAnimation(loadingPane);
+        setLoadingIndicatorPosition(loadingPane, txtPass, root);
+        addLoadingIndicatorAnimation(loadingPane);
+
 
         // Ejecutar autenticación en un hilo separado
         new Thread(() -> {
-            boolean autenticado = conexionServidor.autenticar(p);
+            try {
+                // Intentar autenticar con el servidor
+                Boolean autenticado = conexionServidor.autenticar(p);
 
-            Platform.runLater(() -> {
-                root.getChildren().remove(loadingPane);  // Eliminar indicador
 
-                if (autenticado) {
-                    setLblvalidation(true);
-                    cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
-                    System.out.println(cliente.getNickname());
+                Platform.runLater(() -> {
+                    root.getChildren().remove(loadingPane);  // Eliminar indicador
 
-                    PauseTransition pause = new PauseTransition(Duration.seconds(1));
-                    pause.setOnFinished(event -> loadClienteView(cliente));
-                    pause.play();
-                } else {
+                    if (autenticado == null) {
+                        btnLogIn.setVisible(true);
+                        setLblvalidationErrorConexion();
+                    }else if(autenticado){
+
+                        setLblvalidation(true);
+                        cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
+                        System.out.println(cliente.getNickname());
+
+                        PauseTransition pause = new PauseTransition(Duration.seconds(1));
+                        pause.setOnFinished(event -> loadClienteView(cliente));
+                        pause.play();
+                    } else {
+                        btnLogIn.setVisible(true);
+                        setLblvalidation(false);
+                    }
+                });
+
+            } catch (Exception e) {
+
+                Platform.runLater(() -> {
+                    root.getChildren().remove(loadingPane);  // Eliminar indicador
                     btnLogIn.setVisible(true);
-                    setLblvalidation(false);
-                }
-            });
+                    setLblvalidationErrorConexion(); // Mostrar mensaje de error de conexión
+                });
+            }
         }).start();
-
-
     }
 
+
+
+
+
+    private void setLblvalidationErrorConexion() {
+        String mensaje = "Error de conexión al servidor";
+        String lblColor = "-fx-text-fill: red;";
+        this.lblvalidation.setText(mensaje);
+        this.lblvalidation.setStyle(lblColor);
+    }
     // Iniciar animacion y comportamiento
     private void addLoadingIndicatorAnimation(StackPane loadingPane) {
         ProgressIndicator loadingIndicator = (ProgressIndicator) loadingPane.getChildren().get(0);

@@ -374,6 +374,24 @@ public class Servidor {
     }
 
 
+    public void detenerServidor() {
+        try {
+            // Notificar a los clientes que el servidor se está cerrando
+            for (ClienteHandler cliente : sala.getClientes()) {
+                cliente.setConnected(false); // Evita que vuelvan a entrar al bucle
+                cliente.enviarPaquete(PaqueteFactory.crearPaquete(TipoPaquete.DESCONECTAR));
+                cliente.getSocket().close(); // Forzar cierre del socket
+            }
+
+            // Detener el servidor cerrando el socket
+            if (serverSocket != null && !serverSocket.isClosed()) {
+                serverSocket.close();
+                addActivity("Servidor detenido");
+            }
+        } catch (IOException e) {
+            System.err.println("Error al detener el servidor: " + e.getMessage());
+        }
+    }
 
 
 

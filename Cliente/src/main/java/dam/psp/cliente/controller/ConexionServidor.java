@@ -57,7 +57,7 @@ public class ConexionServidor {
         }
     }
 
-    public synchronized boolean autenticar(Paquete p) {
+    public synchronized Boolean autenticar(Paquete p) {
         if (clienteConectado) {
             System.err.println("Ya hay una sesión iniciada. No es necesario autenticar nuevamente.");
             return false;
@@ -76,18 +76,18 @@ public class ConexionServidor {
             Boolean acceso = (Boolean) in.readObject();
             if (acceso) {
                 System.out.println("Autenticación exitosa.");
-
                 return true;
             } else {
                 System.out.println("Autenticación fallida.");
-
+                return false;
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error en autenticación: " + e.getMessage());
             cerrarConexion();
         }
-        return false;
+        return null;
     }
+
 
     public synchronized void enviarMensaje(Paquete p) {
         try {
@@ -169,8 +169,16 @@ public class ConexionServidor {
                     }
                 } catch (IOException | ClassNotFoundException e) {
                     System.err.println("Error al recibir objeto: " + e.getMessage());
+
                     clienteConectado = false;
                     cerrarConexion();
+
+                    // Notificar al ClienteController que se ha desconectado
+                    if (messageListener != null) {
+                        Platform.runLater(() -> {
+                            ((ClienteController) messageListener).onDesconexionServidor();
+                        });
+                    }
                     break;
                 }
             }
@@ -231,6 +239,8 @@ public class ConexionServidor {
             System.err.println("Error al enviar el ping: " + e.getMessage());
         }
     }
+
+
 
 
 

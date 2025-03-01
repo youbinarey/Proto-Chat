@@ -45,35 +45,35 @@ public class ClienteController implements PaqueteListener {
     private Label timeLbl;
 
     @FXML
-    private  Label serverTxt;
+    private Label serverTxt;
 
     @FXML
     private Button btnPing;
 
     public void initialize() {
-            actualizaHora();
+        actualizaHora();
 
         Platform.runLater(() -> {
             Stage stage = (Stage) btnLogOut.getScene().getWindow();
             stage.setOnCloseRequest(this::handleWindowClose);
         });
-            usuariosList = FXCollections.observableArrayList();
-            listUsuarios.setItems(usuariosList);
+        usuariosList = FXCollections.observableArrayList();
+        listUsuarios.setItems(usuariosList);
 
-            textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-                if (event.getCode() == KeyCode.ENTER) {
-                    if (event.isControlDown()) {
-                        enviarMensaje();
-                    } else {
-                        textAreaMensaje.appendText("\n");
-                        event.consume();
-                    }
+        textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                if (event.isControlDown()) {
+                    enviarMensaje();
+                } else {
+                    textAreaMensaje.appendText("\n");
+                    event.consume();
                 }
-            });
+            }
+        });
 
-            textAreaMensaje.textProperty().addListener((obs, oldText, newText) -> {
-                ajustarAltura();
-            });
+        textAreaMensaje.textProperty().addListener((obs, oldText, newText) -> {
+            ajustarAltura();
+        });
 
     }
 
@@ -97,13 +97,14 @@ public class ClienteController implements PaqueteListener {
 
     @Override
     public void mensajeRecibido(Paquete p) {
+
         if (p.getTipo() == TipoPaquete.MENSAJE) {
             PaqueteMensaje pm = (PaqueteMensaje) p;
             Platform.runLater(() -> textAreaChat.appendText(pm.getMensaje() + "\n"));
         }
 
-        if(p.getTipo()== TipoPaquete.NOTIFICACION){
-            PaqueteNotificacion pn  = (PaqueteNotificacion) p;
+        if (p.getTipo() == TipoPaquete.NOTIFICACION) {
+            PaqueteNotificacion pn = (PaqueteNotificacion) p;
             Platform.runLater(() -> mostrarBanner2(pn.getEvento()));
         }
 
@@ -135,12 +136,12 @@ public class ClienteController implements PaqueteListener {
 
     private void goLoging() {
         try {
-         // Cargar la vista del login
+            // Cargar la vista del login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/dam/psp/cliente/clienteLogIn-view.fxml"));
             Parent root = loader.load();
 
             // Obtener el escenario actual
-            Stage stage = (Stage) btnLogOut.getScene().getWindow();
+            Stage stage = (Stage) this.btnLogOut.getScene().getWindow();
 
             // Reemplazar la escena actual con la del login
             stage.setScene(new Scene(root));
@@ -159,8 +160,8 @@ public class ClienteController implements PaqueteListener {
     }
 
     @FXML
-    void btnEnviarOnClick(ActionEvent event){
-        if(!textAreaMensaje.getText().isEmpty()){
+    void btnEnviarOnClick(ActionEvent event) {
+        if (!textAreaMensaje.getText().isEmpty()) {
             cliente.enviarMensaje(textAreaMensaje.getText());
             textAreaMensaje.clear();
         }
@@ -168,7 +169,7 @@ public class ClienteController implements PaqueteListener {
 
     @FXML
     void btnPingOnClick(ActionEvent event) {
-        Platform.runLater(()-> cliente.ping());
+        Platform.runLater(() -> cliente.ping());
     }
 
 
@@ -195,28 +196,28 @@ public class ClienteController implements PaqueteListener {
     }
 
 
-// BANNER NOTIFICACION
+    // BANNER NOTIFICACION
 // Método para mostrar el banner
-public  void mostrarBanner(String mensaje) {
-    Platform.runLater(() -> {
-        Label label = new Label(mensaje);
-        label.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-padding: 10px;");
+    public void mostrarBanner(String mensaje) {
+        Platform.runLater(() -> {
+            Label label = new Label(mensaje);
+            label.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-padding: 10px;");
 
-        FadeTransition fade = new FadeTransition(Duration.seconds(5), label);
-        fade.setFromValue(1.0);
-        fade.setToValue(0.0);
-        fade.setOnFinished(event -> label.setVisible(false));
+            FadeTransition fade = new FadeTransition(Duration.seconds(5), label);
+            fade.setFromValue(1.0);
+            fade.setToValue(0.0);
+            fade.setOnFinished(event -> label.setVisible(false));
 
-        AnchorPane root = (AnchorPane) serverTxt.getParent();
-        if (root == null) return;
+            AnchorPane root = (AnchorPane) serverTxt.getParent();
+            if (root == null) return;
 
-        AnchorPane.setTopAnchor(label, 0.0);
-        AnchorPane.setLeftAnchor(label, 0.0);
-        AnchorPane.setRightAnchor(label, 0.0);
+            AnchorPane.setTopAnchor(label, 0.0);
+            AnchorPane.setLeftAnchor(label, 0.0);
+            AnchorPane.setRightAnchor(label, 0.0);
 
-        root.getChildren().add(label);
-        fade.play();
-    });
+            root.getChildren().add(label);
+            fade.play();
+        });
 
     }
 
@@ -272,6 +273,15 @@ public  void mostrarBanner(String mensaje) {
             slideIn.play();
         });
 
+    }
 
+    public void onDesconexionServidor() {
+        mostrarBanner2("Se ha perdido la conexión con el servidor. Redirigiendo al login...");
+
+        PauseTransition pause = new PauseTransition(Duration.seconds(3));
+        pause.setOnFinished(event -> goLoging());
+        pause.play();
     }
-    }
+
+
+}

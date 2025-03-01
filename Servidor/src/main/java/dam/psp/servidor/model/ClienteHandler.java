@@ -82,6 +82,8 @@ public class ClienteHandler implements Runnable {
         }
     }
 
+
+
     /**
      * Obtiene el nickname del cliente.
      *
@@ -130,5 +132,17 @@ public class ClienteHandler implements Runnable {
 
     public ObjectOutputStream getOut() {
         return out;
+    }
+
+    public Socket getSocket() {
+        return socket;
+    }
+
+    public ObjectInputStream getIn() {
+        return in;
+    }
+
+    public Servidor getServidor() {
+        return servidor;
     }
 }
