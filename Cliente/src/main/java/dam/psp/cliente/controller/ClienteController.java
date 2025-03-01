@@ -1,6 +1,8 @@
 package dam.psp.cliente.controller;
 
+import com.gluonhq.charm.glisten.control.AutoCompleteTextField;
 import com.jfoenix.controls.JFXTextArea;
+import com.jfoenix.controls.JFXToggleButton;
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.paquete.*;
 import javafx.animation.*;
@@ -12,26 +14,41 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
+import javafx.scene.image.ImageView;
 
+import java.awt.*;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 public class ClienteController implements PaqueteListener {
 
     public Button btnAdjuntar;
+    public AnchorPane bannerComandos;
+    public AutoCompleteTextField<String> auto;
+    public JFXToggleButton toggleTheme;
+    public ListView <HBox> textAreaChat2;
     private Cliente cliente;
     public TextArea textAreaMensaje;
     public Button btnEnviar;
@@ -39,7 +56,18 @@ public class ClienteController implements PaqueteListener {
     public Button btnLogOut;
     public ListView<String> listUsuarios;
     private ObservableList<String> usuariosList;
+    private final ObservableList<String> comandos = FXCollections.observableArrayList(
+            "/ayuda",
+            "/ping",
+            "/salir",
+            "/usuarios"
+    );
+
+
+
     public JFXTextArea textAreaChat;
+
+
 
     @FXML
     private Label timeLbl;
@@ -50,31 +78,101 @@ public class ClienteController implements PaqueteListener {
     @FXML
     private Button btnPing;
 
+    @FXML
+    private ListView<String> listViewComandos;
+
+
+
     public void initialize() {
+        // Configurar el ListView con una celda personalizada
+        textAreaChat2.setCellFactory(param -> new ListCell<HBox>() {
+            @Override
+            protected void updateItem(HBox hbox, boolean empty) {
+                super.updateItem(hbox, empty);
+                if (empty || hbox == null) {
+                    setText(null);
+                    setGraphic(null);
+                } else {
+                    setGraphic(hbox);
+                }
+            }
+        });
+
+
+
         actualizaHora();
+        listViewComandos.setItems(comandos); // Asignar la lista de comandos
+        listViewComandos.setVisible(false); // Ocultar inicialmente
+        listViewComandos.setPrefSize(200, 100);
+
+        // Posicionar el ListView cerca del textAreaMensaje
+        AnchorPane.setTopAnchor(listViewComandos, textAreaMensaje.getLayoutY() - 100); // Ajusta la posición
+        AnchorPane.setLeftAnchor(listViewComandos, textAreaMensaje.getLayoutX());
+
+        // Manejar la selección de una opción
+        listViewComandos.setOnKeyPressed(event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                String comandoSeleccionado = listViewComandos.getSelectionModel().getSelectedItem();
+                if (comandoSeleccionado != null) {
+                    textAreaMensaje.setText(comandoSeleccionado + " "); // Insertar el comando
+                    ocultarMenuComandos(); // Ocultar el menú
+                }
+            } else if (event.getCode() == KeyCode.ESCAPE) {
+                ocultarMenuComandos(); // Ocultar el menú al presionar Escape
+            }
+        });
+
+        //inicializarBannerComandos();
+
+
+        textAreaMensaje.textProperty().addListener((observableValue, s, t1) ->{
+            if(s.endsWith("/")){
+                mostrarMenuComandos();
+            }else{
+                ocultarMenuComandos();
+            }
+            ajustarAltura();
+        } );
+
+        usuariosList = FXCollections.observableArrayList();
+        listUsuarios.setItems(usuariosList);
+
+        textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.isShiftDown() && event.getCode() == KeyCode.ENTER) {
+                textAreaMensaje.appendText("\n");
+                event.consume();
+                return;
+            }
+
+            if (event.getCode() == KeyCode.ENTER) {
+                enviarMensaje();
+                event.consume();
+            }
+
+            if (event.getCode() == KeyCode.TAB) {
+                btnEnviar.requestFocus();
+                event.consume();
+            }
+        });
 
         Platform.runLater(() -> {
             Stage stage = (Stage) btnLogOut.getScene().getWindow();
             stage.setOnCloseRequest(this::handleWindowClose);
         });
-        usuariosList = FXCollections.observableArrayList();
-        listUsuarios.setItems(usuariosList);
+    }
 
-        textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-            if (event.getCode() == KeyCode.ENTER) {
-                if (event.isControlDown()) {
-                    enviarMensaje();
-                } else {
-                    textAreaMensaje.appendText("\n");
-                    event.consume();
-                }
-            }
-        });
+    private void mostrarMenuComandos() {
+        if (listViewComandos != null) {
+            listViewComandos.toFront(); // Mover el menú al frente
+            listViewComandos.setVisible(true); // Mostrar el menú
+            listViewComandos.requestFocus(); // Dar foco al menú para permitir la navegación con el teclado
+        }
+    }
 
-        textAreaMensaje.textProperty().addListener((obs, oldText, newText) -> {
-            ajustarAltura();
-        });
-
+    private void ocultarMenuComandos() {
+        if (listViewComandos != null) {
+            listViewComandos.setVisible(false); // Ocultar el menú
+        }
     }
 
     private void handleWindowClose(WindowEvent event) {
@@ -85,9 +183,12 @@ public class ClienteController implements PaqueteListener {
 
     private void enviarMensaje() {
         String mensaje = textAreaMensaje.getText();
-        cliente.enviarMensaje(mensaje);
-        textAreaMensaje.clear();
-        ajustarAltura();
+        if(!mensaje.isEmpty()){
+            cliente.enviarMensaje(mensaje);
+            textAreaMensaje.clear();
+            ajustarAltura();
+        }
+
     }
 
     private void ajustarAltura() {
@@ -95,12 +196,29 @@ public class ClienteController implements PaqueteListener {
         textAreaMensaje.setPrefRowCount(Math.min(lineas, 5));
     }
 
+       private void mostrarMensajeEnChat(String mensaje, String usuario){
+        Platform.runLater(()->{
+            HBox hbox = new HBox(new Text(usuario + ": " + mensaje));
+            textAreaChat2.getItems().add(hbox);
+        });
+       }
+
     @Override
     public void mensajeRecibido(Paquete p) {
 
         if (p.getTipo() == TipoPaquete.MENSAJE) {
             PaqueteMensaje pm = (PaqueteMensaje) p;
-            Platform.runLater(() -> textAreaChat.appendText(pm.getMensaje() + "\n"));
+            String mensaje = pm.getMensaje();
+            mostrarMensajeEnChat(mensaje , pm.getRemitente());
+        }
+
+        if(p.getTipo() == TipoPaquete.ARCHIVO){
+            PaqueteArchivo par = (PaqueteArchivo) p;
+            Platform.runLater(()->{
+
+                mostrarArchivoEnChat(par);
+
+            });
         }
 
         if (p.getTipo() == TipoPaquete.NOTIFICACION) {
@@ -115,6 +233,44 @@ public class ClienteController implements PaqueteListener {
                     "ms");
         }
 
+    }
+
+
+
+    private void mostrarArchivoEnChat(PaqueteArchivo paqueteArchivo) {
+        if (paqueteArchivo.getTipoArchivo().equals("imagen")) {
+            // Mostrar la imagen en el chat
+            Image image = new Image(new ByteArrayInputStream(paqueteArchivo.getContenido()));
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(100); // Ajustar el ancho de la imagen
+            imageView.setPreserveRatio(true);
+
+            //hbx
+            HBox hbox = new HBox(new Text("Imagen enviada por" + paqueteArchivo.getUsuario()), imageView);
+            textAreaChat2.getItems().add(hbox);
+            // Añadir la imagen al chat
+            textAreaChat.appendText("\n"); // Espacio antes de la imagen
+            textAreaChat.appendText("[Imagen enviada por " + paqueteArchivo.getUsuario() + "]\n"); // Mensaje de confirmación
+            textAreaChat.appendText("\n"); // Espacio después de la imagen
+        } else {
+            // Mostrar un enlace descargable para otros tipos de archivos
+            Hyperlink enlaceDescarga = new Hyperlink(paqueteArchivo.getNombre());
+            enlaceDescarga.setOnAction(event -> {
+                // Guardar el archivo localmente y abrirlo
+                File archivo = new File("ruta/local/" + paqueteArchivo.getNombre());
+                try (FileOutputStream fileOutputStream = new FileOutputStream(archivo)) {
+                    fileOutputStream.write(paqueteArchivo.getContenido());
+                    Desktop.getDesktop().open(archivo);
+                } catch (IOException e) {
+                    System.err.println("Error al abrir el archivo: " + e.getMessage());
+                }
+            });
+
+            // Añadir el enlace al chat
+            textAreaChat.appendText("\n"); // Espacio antes del enlace
+            textAreaChat.appendText("[Archivo enviado por " + paqueteArchivo.getUsuario() + "]\n"); // Mensaje de confirmación
+            textAreaChat.appendText("\n"); // Espacio después del enlace
+        }
     }
 
     @Override
@@ -221,7 +377,7 @@ public class ClienteController implements PaqueteListener {
 
     }
 
-    public void mostrarBanner2(String mensaje) {
+    public void mostrarBanner2(String mensaje ) {
         Platform.runLater(() -> {
             Label label = new Label(mensaje);
             label.setStyle("""
@@ -275,6 +431,56 @@ public class ClienteController implements PaqueteListener {
 
     }
 
+    private void inicializarBannerComandos() {
+        // Crear el banner
+        bannerComandos.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-width: 1px;");
+        //bannerComandos.setPrefSize(200, 100); // Tamaño del banner
+
+        // Añadir opciones al banner
+        double yPos = 10; // Posición vertical inicial
+        for (String comando : comandos) {
+            Button botonComando = new Button(comando);
+            botonComando.setStyle("-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14px;");
+            botonComando.setOnAction(event -> {
+                textAreaMensaje.setText(comando + " "); // Insertar el comando en el textAreaMensaje
+                ocultarBannerComandos(); // Ocultar el banner
+            });
+            botonComando.setLayoutX(10); // Posición horizontal
+            botonComando.setLayoutY(yPos); // Posición vertical
+            bannerComandos.getChildren().add(botonComando);
+            yPos += 30; // Espacio entre opciones
+        }
+
+        // Añadir el banner al layout principal
+
+
+
+        // Ocultar el banner inicialmente
+        bannerComandos.setVisible(false);
+    }
+
+    private void mostrarBannerComandos() {
+        if (bannerComandos != null) {
+
+            AnchorPane.setTopAnchor(bannerComandos, textAreaMensaje.getLayoutY() - 150); // Ajusta la posición
+            AnchorPane.setLeftAnchor(bannerComandos, textAreaMensaje.getLayoutX());
+            bannerComandos.toFront();
+
+            // Mostrar el banner
+            bannerComandos.setVisible(true);
+        }
+    }
+
+    private void ocultarBannerComandos() {
+        if (bannerComandos != null) {
+            bannerComandos.setVisible(false);
+        }
+    }
+
+    public void toggleThemeOnClick(ActionEvent event){
+
+    }
+
     public void onDesconexionServidor() {
         mostrarBanner2("Se ha perdido la conexión con el servidor. Redirigiendo al login...");
 
@@ -283,5 +489,45 @@ public class ClienteController implements PaqueteListener {
         pause.play();
     }
 
+    @FXML
+    void btnAdjuntarOnclick(ActionEvent event) {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Seleccionar archivo");
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif"),
+                new FileChooser.ExtensionFilter("Documentos", "*.pdf", "*.docx", "*.txt")
+        );
+        File archivoSeleccionado = fileChooser.showOpenDialog(null); // Abrir el diálogo de selección de archivos
 
-}
+        if (archivoSeleccionado != null) {
+            String tipoArchivo = cliente.getTipoArchivo(archivoSeleccionado);
+            cliente.archivo(archivoSeleccionado, tipoArchivo); // Enviar el archivo al servidor
+
+           if(tipoArchivo.endsWith("imagen"))mostrarImagenEnChat(archivoSeleccionado);
+           // TODO AMPLIAR
+        }
+    }
+
+
+    private void mostrarImagenEnChat(File imagen) {
+        Platform.runLater(() -> {
+            Image image = new Image(imagen.toURI().toString());
+
+            // Crear el ImageView y configurar su tamaño
+            ImageView imageView = new ImageView(image);
+            imageView.setFitWidth(100); // Ajustar el ancho de la imagen
+            imageView.setPreserveRatio(true); // Mantener la proporción de la imagen
+
+         // Espacio antes de la imagen
+            textAreaChat.appendText("[Imagen enviada]\n"); // Mensaje de confirmación
+            
+        });
+    }
+    }
+
+
+
+
+
+
+

@@ -4,6 +4,10 @@ import dam.psp.cliente.controller.ConexionServidor;
 import dam.psp.cliente.controller.PaqueteListener;
 import dam.psp.cliente.model.paquete.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class Cliente {
     private final String nickname;
     private final ConexionServidor conexionServidor;
@@ -51,6 +55,28 @@ public class Cliente {
 
         enviarPaquete(p);
 
+    }
+
+    public void archivo(File archivo, String tipo) {
+        try (FileInputStream fileInputStream = new FileInputStream(archivo)) {
+            // Leer el contenido del archivo
+            byte[] contenidoArchivo = new byte[(int) archivo.length()];
+            fileInputStream.read(contenidoArchivo);
+
+            // Crear el paquete de tipo archivo
+            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.ARCHIVO,this.nickname, archivo.getName(), tipo, contenidoArchivo);
+
+            // Enviar el paquete al servidor
+            enviarPaquete(p);
+
+            System.out.println("Archivo enviado: " + archivo.getName());
+        } catch (IOException e) {
+            System.err.println("Error al enviar el archivo: " + e.getMessage());
+        }
+    }
+
+    public String getTipoArchivo(File file){
+        return conexionServidor.getTipoArchivo(file);
     }
     /*
     public void autenticar(String usuario, String password) {

@@ -9,4 +9,5 @@ public enum TipoPaquete {
     ERROR,
     AUTENTICACION,
     DESCONECTAR
+
 }

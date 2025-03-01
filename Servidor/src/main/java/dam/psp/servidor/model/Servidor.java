@@ -152,8 +152,24 @@ public class Servidor {
 
                  desconectarCliente(clienteSocket, out, in, cliente, p);
             }
+            case ARCHIVO -> {
+                System.out.println("RECIBIDO UN ARCHIVO");
+                archivoCliente(clienteSocket, in,out,cliente,p);
+
+            }
             default -> System.out.println("Tipo de Paquete no reconocido");
         }
+
+    }
+
+    private void archivoCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
+        PaqueteArchivo par = (PaqueteArchivo) p;
+        System.out.println("Archivo recibido de  tipo" + par.getTipoArchivo() +  " de "+ cliente.getNickname());
+        cliente.enviarPaquete(par);
+
+        addActivity(((PaqueteArchivo) p).getUsuario() +" ENVIA ARCHIVO");
+
+        broadcast(p);
 
     }
 

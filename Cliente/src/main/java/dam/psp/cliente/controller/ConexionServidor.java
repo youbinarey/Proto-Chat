@@ -217,6 +217,7 @@ public class ConexionServidor {
             case MENSAJE -> enviarMensaje(p);
             case PING -> enviarPING(p);
             case DESCONECTAR -> enviarDesconexion(p);
+            case ARCHIVO -> enviarArchivo(p);
             default -> System.out.println("Tipo de paquete no reconocido.");
         }
     }
@@ -240,8 +241,25 @@ public class ConexionServidor {
         }
     }
 
+    public void enviarArchivo(Paquete p){
+        try {
+            out.writeObject(p);
+            out.flush();
+            System.out.println("Archivo enviado al servidor.");
+        } catch (IOException e) {
+            System.err.println("Error al enviar el archivo: " + e.getMessage());
+        }
+    }
 
-
-
+    public String getTipoArchivo(File archivo) {
+        String nombreArchivo = archivo.getName().toLowerCase();
+        if (nombreArchivo.endsWith(".png") || nombreArchivo.endsWith(".jpg") || nombreArchivo.endsWith(".jpeg") || nombreArchivo.endsWith(".gif")) {
+            return "imagen";
+        } else if (nombreArchivo.endsWith(".pdf") || nombreArchivo.endsWith(".docx") || nombreArchivo.endsWith(".txt")) {
+            return "documento";
+        } else {
+            return "archivo";
+        }
+    }
 
 }

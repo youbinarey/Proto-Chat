@@ -111,3 +111,9 @@
     -fx-border-radius: 5px;
     -fx-padding: 5px;
 }
+
+.list-view .list-cell {
+    -fx-border-width: 0; /* Elimina el borde de las celdas */
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-padding: 0; /* Elimina el padding */
+}

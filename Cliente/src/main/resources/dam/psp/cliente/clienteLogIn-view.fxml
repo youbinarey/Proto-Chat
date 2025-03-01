@@ -20,8 +20,8 @@
                   <AnchorPane maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" BorderPane.alignment="CENTER">
                      <children>
                         <TextField fx:id="txtUser" layoutX="125.0" layoutY="62.0" prefHeight="35.0" prefWidth="150.0" promptText="Usuario" styleClass="password-field" />
-                        <Button fx:id="btnLogIn" alignment="CENTER" contentDisplay="CENTER" layoutX="171.0" layoutY="158.0" mnemonicParsing="false" onAction="#btnLogInOnClick" text="Log In" />
                         <PasswordField fx:id="txtPass" layoutX="126.0" layoutY="111.0" prefHeight="30.0" prefWidth="150.0" promptText="Contraseña" styleClass="password-field" stylesheets="@../../../css/styleLogin.css" />
+                        <Button fx:id="btnLogIn" alignment="CENTER" contentDisplay="CENTER" layoutX="171.0" layoutY="158.0" mnemonicParsing="false" onAction="#btnLogInOnClick" text="Log In" />
                         <Label fx:id="lblvalidation" alignment="CENTER" contentDisplay="CENTER" layoutX="108.0" layoutY="38.0" prefHeight="18.0" prefWidth="185.0" textAlignment="CENTER" textFill="WHITE" />
                      </children>
                   </AnchorPane>

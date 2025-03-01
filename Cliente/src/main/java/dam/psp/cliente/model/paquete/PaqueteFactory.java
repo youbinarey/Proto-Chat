@@ -10,8 +10,17 @@ public class PaqueteFactory {
             case DESCONECTAR -> {return crearPaqueteDesconectar(parametros);}
             case NOTIFICACION -> {return crearPaqueteNotificacion(parametros);}
             case MENSAJE -> {return crearPaqueteMensaje(parametros);}
+            case ARCHIVO -> {return  crearPaqueteArchivo(parametros);}
             default -> throw new IllegalArgumentException("Tipo de paquete no válido: " + tipo);
         }
+    }
+
+    private static Paquete crearPaqueteArchivo(Object[] parametros) {
+        String usuario = (String) parametros[0];
+        String nombre= (String) parametros[1];
+        String tipoArchivo = (String) parametros[2];
+        byte[]contenido = (byte[]) parametros[3];
+        return new PaqueteArchivo(usuario,nombre,tipoArchivo,contenido);
     }
 
     private static Paquete crearPaqueteMensaje(Object... parametros) {
