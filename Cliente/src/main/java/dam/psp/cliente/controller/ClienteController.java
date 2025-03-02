@@ -1,7 +1,6 @@
 package dam.psp.cliente.controller;
 
 import com.gluonhq.charm.glisten.control.AutoCompleteTextField;
-import com.jfoenix.controls.JFXTextArea;
 import com.jfoenix.controls.JFXToggleButton;
 import dam.psp.cliente.model.Cliente;
 import dam.psp.cliente.model.paquete.*;
@@ -12,7 +11,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,7 +23,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -37,12 +34,12 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URI;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-
-import java.util.function.Function;
-import java.util.stream.Collectors;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ClienteController implements PaqueteListener {
 
@@ -50,7 +47,7 @@ public class ClienteController implements PaqueteListener {
     public AnchorPane bannerComandos;
     public AutoCompleteTextField<String> auto;
     public JFXToggleButton toggleTheme;
-    public ListView <HBox> textAreaChat2;
+    public ListView <HBox> listViewChat;
     private Cliente cliente;
     public TextArea textAreaMensaje;
     public Button btnEnviar;
@@ -64,11 +61,6 @@ public class ClienteController implements PaqueteListener {
             "/salir",
             "/usuarios"
     );
-
-
-
-    public JFXTextArea textAreaChat;
-
 
 
     @FXML
@@ -87,7 +79,7 @@ public class ClienteController implements PaqueteListener {
 
     public void initialize() {
         // Configurar el ListView con una celda personalizada
-        textAreaChat2.setCellFactory(param -> new ListCell<HBox>() {
+        listViewChat.setCellFactory(param -> new ListCell<HBox>() {
             @Override
             protected void updateItem(HBox hbox, boolean empty) {
                 super.updateItem(hbox, empty);
@@ -96,11 +88,10 @@ public class ClienteController implements PaqueteListener {
                     setGraphic(null);
                 } else {
                     setGraphic(hbox);
+
                 }
             }
         });
-
-
 
 
         actualizaHora();
@@ -129,6 +120,7 @@ public class ClienteController implements PaqueteListener {
 
 
         textAreaMensaje.textProperty().addListener((observableValue, s, t1) ->{
+            detectURL(t1);
             if(s.endsWith("/")){
                 mostrarMenuComandos();
             }else{
@@ -163,6 +155,14 @@ public class ClienteController implements PaqueteListener {
             stage.setOnCloseRequest(this::handleWindowClose);
         });
     }
+
+    private boolean detectURL(String mensaje) {
+        String regex = "(https?://\\S+)";
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(mensaje);
+        return matcher.find();
+    }
+
 
     private void mostrarMenuComandos() {
         if (listViewComandos != null) {
@@ -212,8 +212,8 @@ public class ClienteController implements PaqueteListener {
             // Espacio entre el nombre de usuario y el mensaje
             //hbox.setMaxWidth(400); // Ajusta el ancho máximo del HBox
 
-            textAreaChat2.getItems().add(hbox);
-            textAreaChat2.scrollTo(textAreaChat2.getItems().size() - 1);
+            listViewChat.getItems().add(hbox);
+            listViewChat.scrollTo(listViewChat.getItems().size() - 1);
         });
     }
 
@@ -221,11 +221,20 @@ public class ClienteController implements PaqueteListener {
     public void mensajeRecibido(Paquete p) {
 
         if (p.getTipo() == TipoPaquete.MENSAJE) {
+
             PaqueteMensaje pm = (PaqueteMensaje) p;
             String mensaje = pm.getMensaje();
             System.out.println(mensaje);
+            //Si mensaje contiene url aplica formato y mostrarMensaje
+            Platform.runLater(()-> {
+                if(detectURL(mensaje)){
+                    mostrarMensajeEnChatConURL(mensaje, pm.getRemitente());
+                }else{
+                    mostrarMensajeEnChat(mensaje , pm.getRemitente());
+                }
 
-            mostrarMensajeEnChat(mensaje , pm.getRemitente());
+            });
+
         }
 
         if(p.getTipo() == TipoPaquete.ARCHIVO){
@@ -251,43 +260,38 @@ public class ClienteController implements PaqueteListener {
 
     }
 
+    private void mostrarMensajeEnChatConURL(String mensaje, String usuario) {
+        Text textoUsuario = new Text(usuario + ": ");
+        textoUsuario.getStyleClass().add("nombre-usuario");
 
+        HBox hbox = new HBox(textoUsuario);
+        hbox.getStyleClass().add("mensaje-container"); // Estilo CSS
 
-    private void mostrarArchivoEnChat(PaqueteArchivo paqueteArchivo) {
-        if (paqueteArchivo.getTipoArchivo().equals("imagen")) {
-            // Mostrar la imagen en el chat
-            Image image = new Image(new ByteArrayInputStream(paqueteArchivo.getContenido()));
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(100); // Ajustar el ancho de la imagen
-            imageView.setPreserveRatio(true);
-
-            //hbx
-            HBox hbox = new HBox(new Text("Imagen enviada por" + paqueteArchivo.getUsuario()), imageView);
-            textAreaChat2.getItems().add(hbox);
-            // Añadir la imagen al chat
-            textAreaChat.appendText("\n"); // Espacio antes de la imagen
-            textAreaChat.appendText("[Imagen enviada por " + paqueteArchivo.getUsuario() + "]\n"); // Mensaje de confirmación
-            textAreaChat.appendText("\n"); // Espacio después de la imagen
-        } else {
-            // Mostrar un enlace descargable para otros tipos de archivos
-            Hyperlink enlaceDescarga = new Hyperlink(paqueteArchivo.getNombre());
-            enlaceDescarga.setOnAction(event -> {
-                // Guardar el archivo localmente y abrirlo
-                File archivo = new File("ruta/local/" + paqueteArchivo.getNombre());
-                try (FileOutputStream fileOutputStream = new FileOutputStream(archivo)) {
-                    fileOutputStream.write(paqueteArchivo.getContenido());
-                    Desktop.getDesktop().open(archivo);
-                } catch (IOException e) {
-                    System.err.println("Error al abrir el archivo: " + e.getMessage());
-                }
-            });
-
-            // Añadir el enlace al chat
-            textAreaChat.appendText("\n"); // Espacio antes del enlace
-            textAreaChat.appendText("[Archivo enviado por " + paqueteArchivo.getUsuario() + "]\n"); // Mensaje de confirmación
-            textAreaChat.appendText("\n"); // Espacio después del enlace
+        String[] palabras = mensaje.split(" ");
+        for (String palabra : palabras) {
+            if (palabra.matches("(https?://\\S+)")) {
+                Hyperlink link = new Hyperlink(palabra);
+                link.setOnAction(event -> {
+                    try {
+                        Desktop.getDesktop().browse(new URI(palabra));
+                    } catch (Exception e) {
+                        System.out.println("Error al abrir URL: " + e.getMessage());
+                    }
+                });
+                link.getStyleClass().add("mensaje-url"); // CSS para diferenciar enlaces
+                hbox.getChildren().add(link);
+            } else {
+                Text textoMensaje = new Text(palabra + " ");
+                textoMensaje.getStyleClass().add("mensaje-usuario");
+                hbox.getChildren().add(textoMensaje);
+            }
         }
+
+        listViewChat.getItems().add(hbox);
+        listViewChat.scrollTo(listViewChat.getItems().size() - 1);
+
     }
+
 
     @Override
     public void updateUsuariosConectados(List<String> listaUsuarios) {
@@ -513,33 +517,85 @@ public class ClienteController implements PaqueteListener {
                 new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif"),
                 new FileChooser.ExtensionFilter("Documentos", "*.pdf", "*.docx", "*.txt")
         );
+
         File archivoSeleccionado = fileChooser.showOpenDialog(null); // Abrir el diálogo de selección de archivos
 
         if (archivoSeleccionado != null) {
             String tipoArchivo = cliente.getTipoArchivo(archivoSeleccionado);
             cliente.archivo(archivoSeleccionado, tipoArchivo); // Enviar el archivo al servidor
 
-           if(tipoArchivo.endsWith("imagen"))mostrarImagenEnChat(archivoSeleccionado);
+           //if(tipoArchivo.endsWith("imagen"))mostrarImagenEnChat(archivoSeleccionado);
            // TODO AMPLIAR
         }
     }
 
 
-    private void mostrarImagenEnChat(File imagen) {
-        Platform.runLater(() -> {
-            Image image = new Image(imagen.toURI().toString());
 
-            // Crear el ImageView y configurar su tamaño
-            ImageView imageView = new ImageView(image);
-            imageView.setFitWidth(100); // Ajustar el ancho de la imagen
-            imageView.setPreserveRatio(true); // Mantener la proporción de la imagen
 
-         // Espacio antes de la imagen
-            textAreaChat.appendText("[Imagen enviada]\n"); // Mensaje de confirmación
-            
+    private void mostrarArchivoEnChat(PaqueteArchivo paqueteArchivo) {
+            Platform.runLater(()-> {
+                if (paqueteArchivo.getTipoArchivo().equals("imagen")) {
+                    enviarImagen(paqueteArchivo);
+                } else {
+                enviarEnlace(paqueteArchivo);
+                }
+            });
+
+    }
+    private void enviarEnlace(PaqueteArchivo paqueteArchivo) {
+        // Crear el enlace para descargar el archivo
+        Hyperlink enlaceDescarga = new Hyperlink(paqueteArchivo.getNombre());
+        enlaceDescarga.setOnAction(event -> {
+            // Guardar el archivo localmente y abrirlo
+            File archivo = new File("ruta/local/" + paqueteArchivo.getNombre());
+            try (FileOutputStream fileOutputStream = new FileOutputStream(archivo)) {
+                fileOutputStream.write(paqueteArchivo.getContenido());
+                Desktop.getDesktop().open(archivo);
+            } catch (IOException e) {
+                System.err.println("Error al abrir el archivo: " + e.getMessage());
+            }
         });
+
+        // Estilo del enlace
+        enlaceDescarga.setStyle("-fx-text-fill: blue; -fx-underline: true;");
+
+        // Crear el texto del nombre de usuario
+        Text textoUsuario = new Text(paqueteArchivo.getUsuario() + ": ");
+        textoUsuario.getStyleClass().add("nombre-usuario");
+
+        // Contenedor con el nombre de usuario y el enlace
+        HBox hbox = new HBox(textoUsuario, enlaceDescarga);
+        hbox.setSpacing(5); // Espacio entre el nombre de usuario y el enlace
+
+        // Agregar el HBox al ListView
+        listViewChat.getItems().add(hbox);
+
+        // Desplazarse automáticamente al último mensaje
+        listViewChat.scrollTo(listViewChat.getItems().size() - 1);
     }
+
+    private void enviarImagen(PaqueteArchivo paqueteArchivo) {
+        // Crear la imagen
+        Image image = new Image(new ByteArrayInputStream(paqueteArchivo.getContenido()));
+        ImageView imageView = new ImageView(image);
+        imageView.setFitWidth(100); // Ajustar el ancho de la imagen
+        imageView.setPreserveRatio(true);
+
+        // Crear el texto del nombre de usuario
+        Text textoUsuario = new Text(paqueteArchivo.getUsuario() + ": ");
+        textoUsuario.getStyleClass().add("nombre-usuario");
+
+        // Crear el HBox para contener el nombre de usuario y la imagen
+        HBox hbox = new HBox(textoUsuario, imageView);
+        hbox.setSpacing(5); // Espacio entre el nombre de usuario y la imagen
+
+        // Agregar el HBox al ListView
+        listViewChat.getItems().add(hbox);
+
+        // Desplazarse automáticamente al último mensaje
+        listViewChat.scrollTo(listViewChat.getItems().size() - 1);
     }
+}
 
 
 

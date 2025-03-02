@@ -124,6 +124,17 @@
     -fx-pref-width: 100%; /* Ajusta el ancho al 100% del espacio disponible */
 }
 
+.list-cell:selected {
+    -fx-background-color: #cce5ff; /* Color de fondo cuando la celda está seleccionada */
+}
+
+.hyperlink {
+    -fx-text-fill: blue; /* Color del texto del Hyperlink */
+    -fx-underline: true; /* Subrayar el texto */
+}
+
+
+
 .mensaje-usuario {
     -fx-fill: black; /* Color del texto */
     -fx-wrap-text: true; /* Permite el salto de línea */

@@ -107,7 +107,7 @@ public class Servidor {
 
                 PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
 
-                logPaquete(p, null);
+                logPaquete(p, cliente);
 
 
                 try {
@@ -121,21 +121,18 @@ public class Servidor {
             case CONECTAR -> {
                 System.out.println("RECIBIDO UN PAQUETE CONECTAR");
 
-
                 conectarCliente((PaqueteConectar) p, out, in, clienteSocket);
-                logPaquete(p,cliente);
+
 
 
             }
             case MENSAJE -> {
                 System.out.println("RECIBIDO UN PAQUETE MENSAJE");
                 mensajeCliente(clienteSocket, in, out, cliente, p);
-                logPaquete(p,cliente);
 
             }
             case PING -> {
                 pingCliente(clienteSocket,in,out,cliente,p);
-                logPaquete(p,cliente);
 
             }
 
@@ -143,13 +140,11 @@ public class Servidor {
                 System.out.println("RECIBIDO UN PAQUETE DESCONECTAR");
 
                  desconectarCliente(clienteSocket, out, in, cliente, p);
-                logPaquete(p,cliente);
 
             }
             case ARCHIVO -> {
                 System.out.println("RECIBIDO UN ARCHIVO");
                 archivoCliente(clienteSocket, in,out,cliente,p);
-                logPaquete(p,cliente);
 
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
@@ -160,14 +155,16 @@ public class Servidor {
     private void archivoCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
         PaqueteArchivo par = (PaqueteArchivo) p;
         System.out.println("Archivo recibido de  tipo" + par.getTipoArchivo() + " de " + cliente.getNickname());
-        cliente.enviarPaquete(par);
+        logPaquete(p,cliente);
         broadcast(p);
+
 
     }
 
     private void pingCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
             PaquetePing pp = (PaquetePing) p;
             System.out.println("Ping recibido de " + cliente.getNickname()+ " en " + pp.getTimestamp());
+        logPaquete(p,cliente);
 
             // envia Ping de vuelta
         Paquete pong = PaqueteFactory.crearPaquete(pp.getTipo(), cliente.getNickname());
@@ -185,8 +182,7 @@ public class Servidor {
         }else{
             System.out.println("Error: El cliente ya está conectado: ");
         }
-
-
+        logPaquete(pc,cliente);
         try {
             Thread.sleep(50L);
             enviarListaUsuarios();
@@ -208,12 +204,13 @@ public class Servidor {
     //TODO
      synchronized void desconectarCliente(Socket clienteSocket, ObjectOutputStream out, ObjectInputStream in, ClienteHandler cliente, Paquete p) {
         // Verificar si el cliente sigue en la sala antes de desconectarlo
+
         if (!sala.contieneCliente(cliente)) {
             return; // Si no está en la sala, ya ha sido desconectado, así que salimos
         }
 
         sala.leaveCliente(cliente);
-
+         logPaquete(p,cliente);
          broadcastNotify(p,cliente);
          enviarListaUsuarios();
 
@@ -263,7 +260,8 @@ public class Servidor {
 
         System.out.println(leerMensaje(p,cliente));
 
-        addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
+        logPaquete(p,cliente);
+
 
         //Procesar mensaje
         broadcastMensaje((PaqueteMensaje) p , cliente);
@@ -299,8 +297,8 @@ public class Servidor {
     public void logPaquete(Paquete p,ClienteHandler cliente) {
         LocalTime time = LocalTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-        if(p.getTipo() == TipoPaquete.AUTENTICACION){
 
+        if(cliente == null){
             addActivity(p.getIP() + "@"+ p.getTipo()  +" - "+  time.format(formato));
 
         }else {
