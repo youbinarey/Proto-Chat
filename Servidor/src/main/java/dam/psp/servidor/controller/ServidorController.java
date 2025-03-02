@@ -91,7 +91,7 @@ public class ServidorController {
             DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss");
             String horaFormateada = horaActual.format(formato);
 
-            timeLbl.setText("Hora: " + horaFormateada); // Mostrar la hora en la interfaz
+            timeLbl.setText(horaFormateada); // Mostrar la hora en la interfaz
         }));
 
         // Hacer que el Timeline se ejecute indefinidamente

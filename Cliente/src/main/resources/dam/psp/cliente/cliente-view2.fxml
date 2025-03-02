@@ -23,8 +23,8 @@
             <bottom>
                <AnchorPane id="panel-escribir" prefHeight="118.0" prefWidth="800.0">
 
-                     <Button id="btn-enviar" fx:id="btnEnviar" layoutX="678.0" layoutY="53.0" onAction="#btnEnviarOnClick" text="Enviar" />
-                  <Button id="btn-adjuntar" fx:id="btnAdjuntar" layoutX="95.0" layoutY="53.0" onAction="#btnAdjuntarOnclick" text="📎" />
+                     <Button id="btn-enviar" fx:id="btnEnviar" layoutX="661.0" layoutY="51.0" onAction="#btnEnviarOnClick" prefHeight="38.0" prefWidth="54.0" text="▶" />
+                  <Button id="btn-adjuntar" fx:id="btnAdjuntar" layoutX="106.0" layoutY="52.0" onAction="#btnAdjuntarOnclick" prefHeight="35.0" prefWidth="55.0" text="📷" />
                   <TextArea fx:id="textAreaMensaje" layoutX="161.0" layoutY="45.0" prefHeight="50.0" prefRowCount="1" prefWidth="500.0" promptText="Escribe un mensaje..." style="-fx-background-radius: 10px;" wrapText="true" />
                   <ListView fx:id="listViewComandos" layoutX="171.0" layoutY="-6.0" prefHeight="104.0" prefWidth="128.0" />
                </AnchorPane>
@@ -32,12 +32,12 @@
             <top>
                <AnchorPane prefHeight="18.0" prefWidth="800.0" styleClass="top-bar" stylesheets="@../../../../../../../Servidor/src/main/resources/css/styles.css" BorderPane.alignment="CENTER">
                   <children>
-                     <Label fx:id="serverTxt" alignment="CENTER" layoutX="361.0" layoutY="10.0" prefHeight="30.0" prefWidth="78.0" styleClass="title" text="SERVER" textFill="WHITE">
+                     <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" layoutX="327.0" layoutY="14.0" prefHeight="30.0" prefWidth="146.0" styleClass="title" text="PSPCHAT" textAlignment="CENTER" textFill="WHITE">
                         <font>
                            <Font name="System Bold" size="12.0" />
                         </font>
                      </Label>
-                     <Label fx:id="timeLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="298.0" layoutY="45.0" prefHeight="20.0" prefWidth="204.0" styleClass="server-time" stylesheets="@../../../../../../../Servidor/src/main/resources/css/styles.css" text="Hora" textFill="WHITE">
+                     <Label fx:id="timeLbl" alignment="CENTER" contentDisplay="CENTER" layoutX="298.0" layoutY="45.0" prefHeight="20.0" prefWidth="204.0" styleClass="server-time" stylesheets="@../../../../../../../Servidor/src/main/resources/css/styles.css" text="HORA" textFill="WHITE">
                         <font>
                            <Font name="System Bold" size="12.0" />
                         </font>
@@ -52,7 +52,7 @@
                   <children>
                      <JFXTextArea fx:id="textAreaChat" layoutX="188.0" layoutY="39.0" prefHeight="231.0" prefWidth="496.0" style="-fx-background-color: grey;" unFocusColor="#d71e1e" visible="false" />
                      <AnchorPane id="panel-usuarios" prefHeight="216.0" prefWidth="113.0">
-                        <Label id="titulo-usuarios" alignment="CENTER" contentDisplay="CENTER" layoutX="15.0" layoutY="23.0" prefHeight="20.0" prefWidth="100.0" text="Usuarios" />
+                        <Label id="titulo-usuarios" alignment="CENTER" contentDisplay="CENTER" layoutX="15.0" layoutY="26.0" prefHeight="20.0" prefWidth="100.0" text="Usuarios" />
                         <ListView id="list-usuarios" fx:id="listUsuarios" layoutY="48.0" minHeight="-Infinity" minWidth="-Infinity" prefHeight="196.0" prefWidth="129.0">
                            <opaqueInsets>
                               <Insets />

@@ -435,7 +435,7 @@ public class ClienteController implements PaqueteListener {
             String horaFormateada = horaActual.format(formato);
 
             // Mostrar la hora en el Label
-            timeLbl.setText("Hora: " + horaFormateada);
+            timeLbl.setText(horaFormateada);
         }));
 
         // Hacer que el Timeline se ejecute indefinidamente
