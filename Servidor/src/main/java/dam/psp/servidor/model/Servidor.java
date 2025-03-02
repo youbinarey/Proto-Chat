@@ -106,7 +106,9 @@ public class Servidor {
                 System.out.println("Recibido paquete autenticacion " + p.getIP());
 
                 PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
-                logPaquete(p, cliente);
+
+                logPaquete(p, null);
+
 
                 try {
                     //si autenticar es true manda true a la conexion
@@ -298,11 +300,12 @@ public class Servidor {
         LocalTime time = LocalTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
         if(p.getTipo() == TipoPaquete.AUTENTICACION){
-            addActivity(cliente.getNickname() + "@"+ p.getTipo() + "//" + p.getIP() +" - "+  time.format(formato));
 
-        }else {
             addActivity(p.getIP() + "@"+ p.getTipo()  +" - "+  time.format(formato));
 
+        }else {
+
+            addActivity(cliente.getNickname() + "@"+ p.getTipo() + "//" + p.getIP() +" - "+  time.format(formato));
         }
     }
 
