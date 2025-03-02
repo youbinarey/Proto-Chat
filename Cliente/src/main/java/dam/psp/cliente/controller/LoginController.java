@@ -21,6 +21,14 @@ import javafx.util.Duration;
 import java.io.IOException;
 import java.util.List;
 
+/**
+ * Controlador para el proceso de inicio de sesión del cliente.
+ *
+ * <p>Este controlador maneja los eventos relacionados con el inicio de sesión, la autenticación en el servidor y la
+ * transición hacia la vista del cliente.</p>
+ *
+ * @see PaqueteListener
+ */
 public class LoginController implements PaqueteListener {
 
     @FXML
@@ -31,37 +39,48 @@ public class LoginController implements PaqueteListener {
 
     @FXML
     private TextField txtUser;
+
     @FXML
     private Label lblvalidation;
 
     private ConexionServidor conexionServidor;
     private Cliente cliente;
 
-
+    /**
+     * Constructor del controlador que inicializa la conexión con el servidor.
+     */
     public LoginController() {
         this.conexionServidor = ConexionServidor.getInstance();
     }
 
+    /**
+     * Evento que se activa cuando el usuario hace clic en el botón de inicio de sesión.
+     * Verifica si los campos de usuario y contraseña están completos y, si es así, intenta autenticar al usuario.
+     *
+     * @param event Evento generado por el clic del usuario en el botón de inicio de sesión.
+     */
     @FXML
     void btnLogInOnClick(ActionEvent event) {
-
-
         String usuario = txtUser.getText();
         String password = txtPass.getText();
-
 
         if (!usuario.isEmpty() && !password.isEmpty()) {
             btnLogIn.setVisible(false);
             Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
             verifyLogin(p);
         } else {
-
             isFieldEmpty();
             lblvalidation.setText("Completa todos los campos");
             lblvalidation.setStyle("-fx-text-fill: yellow;");
         }
     }
 
+    /**
+     * Verifica la autenticación del usuario con el servidor en un hilo separado.
+     * Muestra un indicador de carga mientras se realiza la autenticación.
+     *
+     * @param p Paquete que contiene las credenciales del usuario.
+     */
     private void verifyLogin(Paquete p) {
         btnLogIn.setVisible(false);
         StackPane loadingPane = createLoadingIndicator();
@@ -73,13 +92,11 @@ public class LoginController implements PaqueteListener {
         setLoadingIndicatorPosition(loadingPane, txtPass, root);
         addLoadingIndicatorAnimation(loadingPane);
 
-
         // Ejecutar autenticación en un hilo separado
         new Thread(() -> {
             try {
                 // Intentar autenticar con el servidor
                 Boolean autenticado = conexionServidor.autenticar(p);
-
 
                 Platform.runLater(() -> {
                     root.getChildren().remove(loadingPane);  // Eliminar indicador
@@ -87,8 +104,7 @@ public class LoginController implements PaqueteListener {
                     if (autenticado == null) {
                         btnLogIn.setVisible(true);
                         setLblvalidationErrorConexion();
-                    }else if(autenticado){
-
+                    } else if (autenticado) {
                         setLblvalidation(true);
                         cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
                         System.out.println(cliente.getNickname());
@@ -103,7 +119,6 @@ public class LoginController implements PaqueteListener {
                 });
 
             } catch (Exception e) {
-
                 Platform.runLater(() -> {
                     root.getChildren().remove(loadingPane);  // Eliminar indicador
                     btnLogIn.setVisible(true);
@@ -113,17 +128,22 @@ public class LoginController implements PaqueteListener {
         }).start();
     }
 
-
-
-
-
+    /**
+     * Establece el texto y el color de la etiqueta de validación cuando ocurre un error de conexión.
+     */
     private void setLblvalidationErrorConexion() {
         String mensaje = "Error de conexión al servidor";
         String lblColor = "-fx-text-fill: red;";
         this.lblvalidation.setText(mensaje);
         this.lblvalidation.setStyle(lblColor);
     }
-    // Iniciar animacion y comportamiento
+
+    /**
+     * Inicia la animación del indicador de carga.
+     * Realiza una animación de rotación y escala en el indicador de carga.
+     *
+     * @param loadingPane El contenedor del indicador de carga.
+     */
     private void addLoadingIndicatorAnimation(StackPane loadingPane) {
         ProgressIndicator loadingIndicator = (ProgressIndicator) loadingPane.getChildren().get(0);
 
@@ -144,9 +164,13 @@ public class LoginController implements PaqueteListener {
         scale.play();
     }
 
-
-
-    // Posicionamiento dentro del contenedor
+    /**
+     * Establece la posición del indicador de carga dentro del contenedor de la interfaz de usuario.
+     *
+     * @param loadingPane El contenedor del indicador de carga.
+     * @param passwordField El campo de contraseña donde se posicionará el indicador.
+     * @param root El contenedor raíz donde se colocará el indicador de carga.
+     */
     private void setLoadingIndicatorPosition(StackPane loadingPane, PasswordField passwordField, AnchorPane root) {
         double x = passwordField.getLayoutX();
         double y = passwordField.getLayoutY();
@@ -155,13 +179,15 @@ public class LoginController implements PaqueteListener {
 
         // Agregar el indicador al root
         root.getChildren().add(loadingPane);
-
     }
 
-    // Crear el indicador de progreso
+    /**
+     * Crea el indicador de progreso para mostrar mientras se espera la autenticación.
+     *
+     * @return El contenedor del indicador de progreso.
+     */
     private StackPane createLoadingIndicator() {
         StackPane loadingPane = new StackPane();
-        //loadingPane.setStyle("-fx-background-color: rgba(0, 0, 0, 0.5); -fx-background-radius: 12;");
 
         ProgressIndicator loadingIndicator = new ProgressIndicator();
         loadingIndicator.setPrefSize(50, 50);
@@ -171,20 +197,18 @@ public class LoginController implements PaqueteListener {
         return loadingPane;
     }
 
-
-
-
-
-
-
-    private void loadClienteView(Cliente cliente){
-        try{
+    /**
+     * Carga la vista del cliente después de un inicio de sesión exitoso.
+     *
+     * @param cliente El objeto cliente que contiene la información del usuario autenticado.
+     */
+    private void loadClienteView(Cliente cliente) {
+        try {
             String fxmlPath = "/dam/psp/cliente/cliente-view2.fxml";
-         FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             ClienteController clienteController = loader.getController();
             clienteController.setCliente(cliente);
-
 
             conexionServidor.setMessageListener(clienteController);
 
@@ -193,30 +217,33 @@ public class LoginController implements PaqueteListener {
         } catch (IOException e) {
             System.err.println("Error en loadCliente: " + e.getMessage());
             e.printStackTrace();
-
         }
     }
 
-    // Da informacion al usuairo de que la validacion ha sido erronea
-    public void setLblvalidation (Boolean login ){
+    /**
+     * Actualiza el texto de validación según el resultado del intento de inicio de sesión.
+     *
+     * @param login {@code true} si el inicio de sesión fue exitoso, {@code false} en caso contrario.
+     */
+    public void setLblvalidation(Boolean login) {
         String mensaje;
         String lblColor;
-        if(login){
-            mensaje = ("Login con éxito");
-            lblColor = ("-fx-text-fill: white;");
-
-        }else{
-            mensaje = ("Datos incorrectos");
-            lblColor = ("-fx-text-fill: red;");
+        if (login) {
+            mensaje = "Login con éxito";
+            lblColor = "-fx-text-fill: white;";
+        } else {
+            mensaje = "Datos incorrectos";
+            lblColor = "-fx-text-fill: red;";
             txtPass.clear();
             txtPass.setStyle("-fx-border-color: transparent;");
         }
         this.lblvalidation.setText(mensaje);
         this.lblvalidation.setStyle(lblColor);
-
     }
 
-    //Comprobar campos vacios
+    /**
+     * Comprueba si los campos de usuario y contraseña están vacíos y aplica un estilo visual.
+     */
     private void isFieldEmpty() {
         boolean userEmpty = txtUser.getText().isEmpty();
         boolean passEmpty = txtPass.getText().isEmpty();
@@ -227,11 +254,11 @@ public class LoginController implements PaqueteListener {
 
     @Override
     public void mensajeRecibido(Paquete p) {
-
+        // Implementar lógica de mensaje recibido si es necesario.
     }
 
     @Override
     public void updateUsuariosConectados(List<String> listaUsuarios) {
-
+        // Implementar lógica de actualización de usuarios conectados si es necesario.
     }
 }

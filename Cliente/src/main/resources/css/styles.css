@@ -146,3 +146,8 @@
     -fx-fill: blue; /* Color del texto */
     -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario */
 }
+
+.mensaje-url {
+    -fx-text-fill: blue;
+    -fx-underline: true;
+}

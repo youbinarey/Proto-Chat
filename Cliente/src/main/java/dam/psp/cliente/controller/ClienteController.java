@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -28,7 +29,6 @@ import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 import javafx.util.Duration;
 import javafx.scene.image.ImageView;
-
 import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -41,6 +41,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+
+
+/**
+ * Controlador principal de la vista cliente, maneja los eventos y la lógica de la aplicación de chat.
+ * Implementa PaqueteListener para procesar los paquetes recibidos del servidor.
+ */
 public class ClienteController implements PaqueteListener {
 
     public Button btnAdjuntar;
@@ -56,7 +62,7 @@ public class ClienteController implements PaqueteListener {
     public ListView<String> listUsuarios;
     private ObservableList<String> usuariosList;
     private final ObservableList<String> comandos = FXCollections.observableArrayList(
-            "/ayuda",
+            "/wheater",
             "/ping",
             "/salir",
             "/usuarios"
@@ -75,10 +81,22 @@ public class ClienteController implements PaqueteListener {
     @FXML
     private ListView<String> listViewComandos;
 
-
-
+    /**
+     * Método de inicialización de la vista cliente. Configura las vistas y eventos.
+     */
     public void initialize() {
-        // Configurar el ListView con una celda personalizada
+        configurarListViewChat();
+        configurarListViewComandos();
+        configurarEventosTeclado();
+        configurarTextAreaMensaje();
+        configurarCierreVentana();
+        actualizaHora();
+    }
+
+    /**
+     * Configura el comportamiento de la lista de chat.
+     */
+    private void configurarListViewChat() {
         listViewChat.setCellFactory(param -> new ListCell<HBox>() {
             @Override
             protected void updateItem(HBox hbox, boolean empty) {
@@ -88,13 +106,14 @@ public class ClienteController implements PaqueteListener {
                     setGraphic(null);
                 } else {
                     setGraphic(hbox);
-
                 }
             }
         });
-
-
-        actualizaHora();
+    }
+    /**
+     * Configura la lista de comandos disponibles en la interfaz.
+     */
+    private void configurarListViewComandos() {
         listViewComandos.setItems(comandos); // Asignar la lista de comandos
         listViewComandos.setVisible(false); // Ocultar inicialmente
         listViewComandos.setPrefSize(200, 100);
@@ -108,30 +127,48 @@ public class ClienteController implements PaqueteListener {
             if (event.getCode() == KeyCode.ENTER) {
                 String comandoSeleccionado = listViewComandos.getSelectionModel().getSelectedItem();
                 if (comandoSeleccionado != null) {
-                    textAreaMensaje.setText(comandoSeleccionado + " "); // Insertar el comando
+
+                    eventoComandoSeleccionado(comandoSeleccionado);
                     ocultarMenuComandos(); // Ocultar el menú
                 }
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 ocultarMenuComandos(); // Ocultar el menú al presionar Escape
             }
         });
+    }
 
-        //inicializarBannerComandos();
+    private void eventoComandoSeleccionado(String comando) {
+        switch (comando){
+            case  "/ping" -> cliente.ping();
+            case "/wheater" -> mostrarBanner2("La temperatura es de " + cliente.getWeather());
+            default -> System.out.println("Comando no reconocido");
+        }
+    }
 
 
-        textAreaMensaje.textProperty().addListener((observableValue, s, t1) ->{
+
+    /**
+     * Configura el comportamiento del TextArea para el mensaje.
+     */
+    private void configurarTextAreaMensaje() {
+        textAreaMensaje.textProperty().addListener((observableValue, s, t1) -> {
             detectURL(t1);
-            if(s.endsWith("/")){
+            if (s.endsWith("/")) {
                 mostrarMenuComandos();
-            }else{
+            } else {
                 ocultarMenuComandos();
             }
             ajustarAltura();
-        } );
+        });
 
         usuariosList = FXCollections.observableArrayList();
         listUsuarios.setItems(usuariosList);
+    }
 
+    /**
+     * Configura los eventos del teclado para la interacción en la aplicación.
+     */
+    private void configurarEventosTeclado() {
         textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.isShiftDown() && event.getCode() == KeyCode.ENTER) {
                 textAreaMensaje.appendText("\n");
@@ -149,13 +186,24 @@ public class ClienteController implements PaqueteListener {
                 event.consume();
             }
         });
+    }
 
+    /**
+     * Configura el comportamiento del cierre de la ventana.
+     */
+    private void configurarCierreVentana() {
         Platform.runLater(() -> {
             Stage stage = (Stage) btnLogOut.getScene().getWindow();
             stage.setOnCloseRequest(this::handleWindowClose);
         });
     }
 
+    /**
+     * Detecta si un mensaje contiene una URL.
+     *
+     * @param mensaje El mensaje a evaluar.
+     * @return true si el mensaje contiene una URL, false en caso contrario.
+     */
     private boolean detectURL(String mensaje) {
         String regex = "(https?://\\S+)";
         Pattern pattern = Pattern.compile(regex);
@@ -163,7 +211,9 @@ public class ClienteController implements PaqueteListener {
         return matcher.find();
     }
 
-
+    /**
+     * Muestra el menú de comandos cuando se detecta que el usuario está escribiendo un comando.
+     */
     private void mostrarMenuComandos() {
         if (listViewComandos != null) {
             listViewComandos.toFront(); // Mover el menú al frente
@@ -172,18 +222,31 @@ public class ClienteController implements PaqueteListener {
         }
     }
 
+
+    /**
+     * Oculta el menú de comandos cuando no detecta el input '/'.
+     */
     private void ocultarMenuComandos() {
         if (listViewComandos != null) {
             listViewComandos.setVisible(false); // Ocultar el menú
         }
     }
 
+    /**
+     * Maneja el evento de cierre de la ventana.
+     * Desconecta al cliente cuando la ventana se cierra.
+     *
+     * @param event El evento de cierre de ventana.
+     */
     private void handleWindowClose(WindowEvent event) {
         if (cliente != null) {
             cliente.desconectar();
         }
     }
 
+    /**
+     * Envía el mensaje escrito en el TextArea.
+     */
     private void enviarMensaje() {
         String mensaje = textAreaMensaje.getText();
         if(!mensaje.isEmpty()){
@@ -194,11 +257,20 @@ public class ClienteController implements PaqueteListener {
 
     }
 
+    /**
+     * Ajusta la altura del TextArea dependiendo del número de líneas.
+     */
     private void ajustarAltura() {
         int lineas = textAreaMensaje.getText().split("\n").length;
         textAreaMensaje.setPrefRowCount(Math.min(lineas, 5));
     }
 
+    /**
+     * Muestra el mensaje recibido en el chat.
+     *
+     * @param mensaje El mensaje recibido.
+     * @param usuario El usuario que envió el mensaje.
+     */
     private void mostrarMensajeEnChat(String mensaje, String usuario) {
         Platform.runLater(() -> {
             Text textoUsuario = new Text(usuario + ": ");
@@ -217,55 +289,63 @@ public class ClienteController implements PaqueteListener {
         });
     }
 
+
     @Override
     public void mensajeRecibido(Paquete p) {
 
-        if (p.getTipo() == TipoPaquete.MENSAJE) {
+        switch (p.getTipo()){
+            case  MENSAJE -> {
+                PaqueteMensaje pm = (PaqueteMensaje) p;
+                String mensaje = pm.getMensaje();
+                System.out.println(mensaje);
+                //Si mensaje contiene url aplica formato y mostrarMensaje
+                Platform.runLater(()-> {
+                    if(detectURL(mensaje)){
+                        mostrarMensajeEnChatConURL(mensaje, pm.getRemitente());
+                    }else{
+                        mostrarMensajeEnChat(mensaje , pm.getRemitente());
+                    }
 
-            PaqueteMensaje pm = (PaqueteMensaje) p;
-            String mensaje = pm.getMensaje();
-            System.out.println(mensaje);
-            //Si mensaje contiene url aplica formato y mostrarMensaje
-            Platform.runLater(()-> {
-                if(detectURL(mensaje)){
-                    mostrarMensajeEnChatConURL(mensaje, pm.getRemitente());
-                }else{
-                    mostrarMensajeEnChat(mensaje , pm.getRemitente());
-                }
-
-            });
-
-        }
-
-        if(p.getTipo() == TipoPaquete.ARCHIVO){
-            PaqueteArchivo par = (PaqueteArchivo) p;
-            Platform.runLater(()->{
-
-                mostrarArchivoEnChat(par);
-
-            });
-        }
-
-        if (p.getTipo() == TipoPaquete.NOTIFICACION) {
-            PaqueteNotificacion pn = (PaqueteNotificacion) p;
-            Platform.runLater(() -> mostrarBanner2(pn.getEvento()));
-        }
-
-        if (p.getTipo() == TipoPaquete.PING) {
-            PaquetePing ping = (PaquetePing) p;
-            long latencia = System.currentTimeMillis() - ping.getTimestamp();
-            mostrarBanner2("Latencia con el chat -> " + latencia +
-                    "ms");
+                });
+            }
+            case NOTIFICACION -> {PaqueteNotificacion pn = (PaqueteNotificacion) p;
+            Platform.runLater(() -> mostrarBanner2(pn.getEvento()));}
+            case ARCHIVO -> {
+                PaqueteArchivo par = (PaqueteArchivo) p;
+                Platform.runLater(()-> mostrarArchivoEnChat(par));
+            }
+            case  PING -> {
+                PaquetePing ping = (PaquetePing) p;
+                long latencia = System.currentTimeMillis() - ping.getTimestamp();
+                mostrarBanner2("Latencia con el chat -> " + latencia +
+                        "ms");
+            }
+            default -> System.err.println("Tipo de paquete no reconocido: " + p.getTipo());
         }
 
     }
+    @Override
+    public void updateUsuariosConectados(List<String> listaUsuarios) {
+        Platform.runLater(() -> {
+            usuariosList.setAll(listaUsuarios);
+            //mostrarBanner("Nuevo usuario en la sala");
+        });
 
+    }
+
+
+    /**
+     * Muestra un mensaje con una URL en el chat.
+     *
+     * @param mensaje El mensaje con la URL.
+     * @param usuario El remitente del mensaje.
+     */
     private void mostrarMensajeEnChatConURL(String mensaje, String usuario) {
         Text textoUsuario = new Text(usuario + ": ");
         textoUsuario.getStyleClass().add("nombre-usuario");
 
         HBox hbox = new HBox(textoUsuario);
-        hbox.getStyleClass().add("mensaje-container"); // Estilo CSS
+        hbox.getStyleClass().add("mensaje-container");
 
         String[] palabras = mensaje.split(" ");
         for (String palabra : palabras) {
@@ -293,14 +373,6 @@ public class ClienteController implements PaqueteListener {
     }
 
 
-    @Override
-    public void updateUsuariosConectados(List<String> listaUsuarios) {
-        Platform.runLater(() -> {
-            usuariosList.setAll(listaUsuarios);
-            //mostrarBanner("Nuevo usuario en la sala");
-        });
-
-    }
 
 
     @FXML
@@ -349,7 +421,9 @@ public class ClienteController implements PaqueteListener {
     }
 
 
-    // Método para actualizar la hora cada segundo
+    /**
+     * Actualiza la hora actual en la interfaz.
+     */
     public void actualizaHora() {
         // Crear un Timeline para actualizar la hora cada segundo
         Timeline time = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
