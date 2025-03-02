@@ -115,5 +115,23 @@
 .list-view .list-cell {
     -fx-border-width: 0; /* Elimina el borde de las celdas */
     -fx-background-color: transparent; /* Fondo transparente */
-    -fx-padding: 0; /* Elimina el padding */
+    -fx-padding: 5px; /* Añade un pequeño padding para mejor espaciado */
+    -fx-wrap-text: true; /* Permite el salto de línea en las celdas */
+}
+.list-view .list-cell .hbox {
+    -fx-spacing: 5px; /* Espacio entre el nombre de usuario y el mensaje */
+    -fx-alignment: center-left; /* Alinea el contenido a la izquierda */
+    -fx-pref-width: 100%; /* Ajusta el ancho al 100% del espacio disponible */
+}
+
+.mensaje-usuario {
+    -fx-fill: black; /* Color del texto */
+    -fx-wrap-text: true; /* Permite el salto de línea */
+    -fx-text-alignment: left; /* Alinea el texto a la izquierda */
+}
+
+.nombre-usuario {
+    -fx-font-weight: bold; /* Texto en negrita */
+    -fx-fill: blue; /* Color del texto */
+    -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario */
 }

@@ -52,7 +52,7 @@ public class LoginController implements PaqueteListener {
 
         if (!usuario.isEmpty() && !password.isEmpty()) {
             btnLogIn.setVisible(false);
-            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, "Antonio", "abc123");
+            Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
             verifyLogin(p);
         } else {
 

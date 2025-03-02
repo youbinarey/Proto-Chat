@@ -59,7 +59,7 @@
                            </opaqueInsets>
                         </ListView>
                      </AnchorPane>
-                     <ListView fx:id="textAreaChat2" layoutX="253.0" layoutY="44.0" nodeOrientation="LEFT_TO_RIGHT" opacity="0.49" prefHeight="259.0" prefWidth="492.0" stylesheets="@../../../css/styles.css" />
+                     <ListView fx:id="textAreaChat2" layoutX="253.0" layoutY="44.0" opacity="0.49" prefHeight="259.0" prefWidth="492.0" stylesheets="@../../../css/styles.css" />
                   </children>
                </AnchorPane>
             </center>

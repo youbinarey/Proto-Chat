@@ -40,20 +40,6 @@ public class Servidor {
         }
     }
 
-    public static void main(String[] args) {
-        DatabaseManager dbManager = new DatabaseManager();
-
-        if (dbManager.logInUser("Antonio", "abc123")) {
-            System.out.println("USUARIO Y CONTRASEÑA CORRECTAS");
-        }
-
-        Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.MENSAJE, "yo", "holaaa");
-
-
-        System.out.println(p.getTipo());
-
-
-    }
 
     public void setControlador(ServidorController controlador) {
         this.controlador = controlador;
@@ -119,8 +105,8 @@ public class Servidor {
             case AUTENTICACION -> {
                 System.out.println("Recibido paquete autenticacion " + p.getIP());
 
-                PaqueteAutenticacion pa = (PaqueteAutenticacion) p;// convierte el paquete para acceder a sus metodos
-                addActivity(pa.getIP()+ "@" + pa.getTipo() );
+                PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
+                logPaquete(p, cliente);
 
                 try {
                     //si autenticar es true manda true a la conexion
@@ -135,26 +121,33 @@ public class Servidor {
 
 
                 conectarCliente((PaqueteConectar) p, out, in, clienteSocket);
+                logPaquete(p,cliente);
 
 
             }
             case MENSAJE -> {
                 System.out.println("RECIBIDO UN PAQUETE MENSAJE");
                 mensajeCliente(clienteSocket, in, out, cliente, p);
+                logPaquete(p,cliente);
 
             }
             case PING -> {
                 pingCliente(clienteSocket,in,out,cliente,p);
+                logPaquete(p,cliente);
+
             }
 
             case DESCONECTAR -> {
                 System.out.println("RECIBIDO UN PAQUETE DESCONECTAR");
 
                  desconectarCliente(clienteSocket, out, in, cliente, p);
+                logPaquete(p,cliente);
+
             }
             case ARCHIVO -> {
                 System.out.println("RECIBIDO UN ARCHIVO");
                 archivoCliente(clienteSocket, in,out,cliente,p);
+                logPaquete(p,cliente);
 
             }
             default -> System.out.println("Tipo de Paquete no reconocido");
@@ -164,11 +157,8 @@ public class Servidor {
 
     private void archivoCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p) {
         PaqueteArchivo par = (PaqueteArchivo) p;
-        System.out.println("Archivo recibido de  tipo" + par.getTipoArchivo() +  " de "+ cliente.getNickname());
+        System.out.println("Archivo recibido de  tipo" + par.getTipoArchivo() + " de " + cliente.getNickname());
         cliente.enviarPaquete(par);
-
-        addActivity(((PaqueteArchivo) p).getUsuario() +" ENVIA ARCHIVO");
-
         broadcast(p);
 
     }
@@ -186,16 +176,12 @@ public class Servidor {
 
     private synchronized void conectarCliente(PaqueteConectar pc, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket) {
         ClienteHandler cliente = createCliente(pc.getUsuario(),pc.getIP(), out, in, clienteSocket);
-
         if(clienteSocket != null){
             // Notificar a la sala que un nuevo cliente se ha conectado
             sala.joinCliente(cliente);
-
-
-            addActivity(pc.getUsuario() + "@" + pc.getTipo() + "//" + pc.getIP());
             broadcastNotify(pc,cliente);
         }else{
-            addActivity("Error: El cliente ya está conectado: " + pc.getUsuario());
+            System.out.println("Error: El cliente ya está conectado: ");
         }
 
 
@@ -226,8 +212,6 @@ public class Servidor {
 
         sala.leaveCliente(cliente);
 
-        //LOG DEL SERVIDOR
-         addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
          broadcastNotify(p,cliente);
          enviarListaUsuarios();
 
@@ -271,35 +255,23 @@ public class Servidor {
 
 
 
-    public void addChat(PaqueteMensaje pm, ClienteHandler cliente) {
 
-        sala.setChat(sala.getChat() + "\n" + cliente.getNickname() + " dice: " + pm.getMensaje());
-    }
-
+    //captura el mensaje y notifica a todos
     void  mensajeCliente(Socket clienteSocket, ObjectInputStream in, ObjectOutputStream out, ClienteHandler cliente, Paquete p){
-        //captura el mensaje y notifica a todos
+
         System.out.println(leerMensaje(p,cliente));
-
-        //Crea el factory
-        Paquete pm = PaqueteFactory.crearPaquete(p.getTipo(), cliente.getNickname(), leerMensaje(p,cliente));
-
 
         addActivity(cliente.getNickname() + "@" + p.getTipo() + "//" + p.getIP());
 
-
         //Procesar mensaje
-        broadcastMensaje(pm, cliente);
+        broadcastMensaje((PaqueteMensaje) p , cliente);
     }
 
     //TODO refactorizar leerMensaje
     private synchronized void broadcastMensaje(Paquete p, ClienteHandler cliente) {
        PaqueteMensaje pm = (PaqueteMensaje) p;
-
-        logPaquete(p, cliente);
-        addChat(pm,cliente);
-
-
         broadcast(p);
+
         System.out.println("BROADCASTMENSAJE ENVIADO");
     }
 
@@ -321,12 +293,17 @@ public class Servidor {
     }
 
 
-        // TODO CREA UN BUENFORMATO DE LOG
+
     public void logPaquete(Paquete p,ClienteHandler cliente) {
         LocalTime time = LocalTime.now();
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+        if(p.getTipo() == TipoPaquete.AUTENTICACION){
+            addActivity(cliente.getNickname() + "@"+ p.getTipo() + "//" + p.getIP() +" - "+  time.format(formato));
 
-        addActivity(p.getTipo() + " - " + p.getIP() +" - "+  time.format(formato));
+        }else {
+            addActivity(p.getIP() + "@"+ p.getTipo()  +" - "+  time.format(formato));
+
+        }
     }
 
     public String leerMensaje(Paquete p, ClienteHandler cliente) {

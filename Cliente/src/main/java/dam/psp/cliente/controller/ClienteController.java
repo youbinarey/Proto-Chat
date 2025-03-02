@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -24,6 +25,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -97,6 +99,7 @@ public class ClienteController implements PaqueteListener {
                 }
             }
         });
+
 
 
 
@@ -196,12 +199,23 @@ public class ClienteController implements PaqueteListener {
         textAreaMensaje.setPrefRowCount(Math.min(lineas, 5));
     }
 
-       private void mostrarMensajeEnChat(String mensaje, String usuario){
-        Platform.runLater(()->{
-            HBox hbox = new HBox(new Text(usuario + ": " + mensaje));
+    private void mostrarMensajeEnChat(String mensaje, String usuario) {
+        Platform.runLater(() -> {
+            Text textoUsuario = new Text(usuario + ": ");
+            textoUsuario.getStyleClass().add("nombre-usuario");
+
+            Text textoMensaje = new Text(mensaje);
+            textoMensaje.getStyleClass().add("mensaje-usuario");
+            //textoMensaje.setWrappingWidth(400); // Ajusta este valor según el ancho deseado
+
+            HBox hbox = new HBox(textoUsuario, textoMensaje);
+            // Espacio entre el nombre de usuario y el mensaje
+            //hbox.setMaxWidth(400); // Ajusta el ancho máximo del HBox
+
             textAreaChat2.getItems().add(hbox);
+            textAreaChat2.scrollTo(textAreaChat2.getItems().size() - 1);
         });
-       }
+    }
 
     @Override
     public void mensajeRecibido(Paquete p) {
@@ -209,6 +223,8 @@ public class ClienteController implements PaqueteListener {
         if (p.getTipo() == TipoPaquete.MENSAJE) {
             PaqueteMensaje pm = (PaqueteMensaje) p;
             String mensaje = pm.getMensaje();
+            System.out.println(mensaje);
+
             mostrarMensajeEnChat(mensaje , pm.getRemitente());
         }
 
