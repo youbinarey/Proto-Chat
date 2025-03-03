@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalTime;
 import java.util.Arrays;
 
 import org.json.JSONObject;
@@ -59,7 +60,10 @@ public class OpenMeteoWeather {
 
             // URL de la API de Open-Meteo
             String urlString = "https://api.open-meteo.com/v1/forecast?latitude="
-                    + lat + "&longitude=" + lon + "&hourly=temperature_2m";
+                    + lat + "&longitude=" + lon + "&current_weather=true"
+                    + "&timezone=Europe/Madrid";
+
+
 
             // Hacer la solicitud a OpenMeteo
             HttpURLConnection connection = (HttpURLConnection) new URL(urlString).openConnection();
@@ -81,19 +85,19 @@ public class OpenMeteoWeather {
            //respuesta
             JSONObject jsonResponse = new JSONObject(response.toString());
 
-            // La clave para las temperaturas horarias
-            if (jsonResponse.has("hourly")) {
-                JSONObject hourlyData = jsonResponse.getJSONObject("hourly");
-                // Obtener el primer valor de la temperatura
-                if (hourlyData.has("temperature_2m")) {
+            // Verificar si la clave "current_weather" está presente
+            if (jsonResponse.has("current_weather")) {
+                JSONObject currentWeather = jsonResponse.getJSONObject("current_weather");
 
-                    double currentTemperature = hourlyData.getJSONArray("temperature_2m").getDouble(0);
+                // Obtener la temperatura actual
+                if (currentWeather.has("temperature")) {
+                    double currentTemperature = currentWeather.getDouble("temperature");
                     return currentTemperature + "°C";
                 } else {
-                    return "Error: 'temperature_2m' not found in hourly data.";
+                    return "Error: 'temperature' not found in current_weather.";
                 }
             } else {
-                return "Error: 'hourly' key not found in the response.";
+                return "Error: 'current_weather' key not found in the response.";
             }
 
         } catch (Exception e) {

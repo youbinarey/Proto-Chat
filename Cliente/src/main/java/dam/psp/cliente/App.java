@@ -10,7 +10,7 @@ import java.io.IOException;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        for(int i = 0;i < 11; i++){
+        for(int i = 1;i <= 1; i++){
             openNewWindow(i);
         }
     }

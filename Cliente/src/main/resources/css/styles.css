@@ -1,26 +1,21 @@
 /* Estilo general */
 .root {
-    background-color: #1e1e1e; /* Fondo oscuro */
-    -fx-background-color: #1e1e1e; /* Fondo oscuro */
-    -fx-font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
+    -fx-background-color: #2D3142; /* Fondo oscuro */
+    -fx-font-family: "Montserrat", sans-serif; /* Fuente sans-serif moderna */
 }
 
 /* --- Parte Superior --- */
 .top-bar {
-    padding: 10px;
-    -fx-padding: 10px;
-    -fx-spacing: 20px;
-    background-color: linear-gradient(to bottom, #252526, #1e1e1e);
-    -fx-background-color: linear-gradient(to bottom, #252526, #1e1e1e);
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+
+
 }
 
 .title {
     color: #ffffff; /* Texto blanco */
     -fx-text-fill: #ffffff; /* Texto blanco */
-    font-size: 20px;
-    -fx-font-size: 20px;
+    -fx-font-size: 24px;
     font-weight: bold;
+    -fx-letter-spacing: 20px;
     -fx-font-weight: bold;
     -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 2, 0, 0, 0);
 }
@@ -34,18 +29,21 @@
 
 /* --- Parte Izquierda --- */
 .user-list {
-    background-color: #2d2d30; /* Fondo oscuro */
-    -fx-background-color: #2d2d30; /* Fondo oscuro */
-    color: #ffffff; /* Texto blanco */
-    -fx-text-fill: #ffffff; /* Texto blanco */
-    border-color: #3c3c3c; /* Borde gris */
-    -fx-border-color: #3c3c3c; /* Borde gris */
-    border-width: 1px;
-    -fx-border-width: 1px;
-    padding: 10px;
-    -fx-padding: 10px;
+    -fx-background-color: #253237;
+    -fx-background-radius: 10px;
+    -fx-text-fill: #ffffff;
+    -fx-border:1x;
+    -fx-border-color: #EF8354;
+    -fx-border-width: 3px;
+    -fx-border-radius: 10px;
+    -fx-padding: 5px;
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+
 }
+.user-list .list-cell {
+    -fx-alignment: center; /* Center the content of the cells */
+}
+
 
 /* --- Parte Central --- */
 .log-area {
@@ -62,8 +60,7 @@
     -fx-background-color: #1e1e1e; /* Fondo oscuro */
     color: #0d330d; /* Texto verde (estilo terminal) */
     -fx-text-fill: #005e00; /* Texto verde (estilo terminal) */
-    font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
-    -fx-font-family: "Fira Code", monospace; /* Fuente monoespaciada moderna */
+
     font-size: 14px;
     -fx-font-size: 14px;
     border-color: #3c3c3c; /* Borde gris */
@@ -76,19 +73,6 @@
 }
 .textAreaColor {
     -fx-background-color:-jevelsea-lined-notepad;
-}
-
-/* --- Parte Derecha --- */
-.right-panel {
-    background-color: #2d2d30; /* Fondo oscuro */
-    -fx-background-color: #2d2d30; /* Fondo oscuro */
-    border-color: #3c3c3c; /* Borde gris */
-    -fx-border-color: #3c3c3c; /* Borde gris */
-    border-width: 1px;
-    -fx-border-width: 1px;
-    padding: 10px;
-    -fx-padding: 10px;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
 }
 
 /* --- Parte Inferior --- */
@@ -125,7 +109,8 @@
 }
 
 .list-cell:selected {
-    -fx-background-color: #cce5ff; /* Color de fondo cuando la celda está seleccionada */
+    -fx-background-color: #cce5ff;
+     -fx-text-fill: #EF8354/* Color de fondo cuando la celda está seleccionada */
 }
 
 .hyperlink {
@@ -151,3 +136,70 @@
     -fx-text-fill: blue;
     -fx-underline: true;
 }
+
+
+/* Botones con diseño moderno y compacto */
+.button-enviar, .button-adjuntar {
+    -fx-background-color: #EF8354; /* coral */
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-background-radius: 15px; /* Bordes más redondeados */
+    -fx-padding: 8px 12px; /* Padding más compacto */
+    -fx-pref-width: 30px; /* Ancho reducido */
+    -fx-pref-height: 30px; /* Altura reducida */
+    -fx-border-width: 0px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 1); /* Sombra más suave */
+    -fx-alignment: center;
+    -fx-cursor: hand; /* Cambia el cursor a una mano */
+    -fx-transition: all 0.2s ease-in-out; /* Transición más rápida */
+}
+
+/* Efecto hover más suave */
+.button-enviar:hover, .button-adjuntar:hover {
+    -fx-background-color: #F7C1AA; /* Verde más oscuro */
+    -fx-scale-x: 1.05; /* Escala más pequeña */
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 2); /* Sombra más pronunciada al hacer hover */
+}
+
+/* Estilo de las imágenes dentro de los botones */
+.button-enviar .graphic, .button-adjuntar .graphic {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 1, 1, 0); /* Sombra más suave en la imagen */
+    -fx-alignment: center; /* Centrar el icono */
+}
+
+/* Ajuste de los botones en general */
+.button {
+    -fx-padding: 8px 12px; /* Padding más compacto */
+    -fx-background-radius: 15px; /* Bordes más redondeados */
+    -fx-font-size: 14px; /* Tamaño de fuente más pequeño */
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+    -fx-transition: 0.2s ease; /* Transición más rápida */
+    -fx-cursor: hand; /* Cambia el cursor a una mano */
+}
+
+/* Botones desactivados */
+.button:disabled {
+    -fx-background-color: #a0a0a0; /* Gris más claro */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    -fx-opacity: 0.7; /* Opacidad reducida */
+}
+
+/* Botón de 'Log out' */
+.btnLogOut {
+    -fx-background-color: #d32f2f; /* Rojo para log out */
+    -fx-text-fill: white;
+    -fx-padding: 8px 12px; /* Padding más compacto */
+    -fx-background-radius: 15px; /* Bordes más redondeados */
+    -fx-font-weight: bold;
+    -fx-transition: 0.2s ease; /* Transición más rápida */
+    -fx-cursor: hand; /* Cambia el cursor a una mano */
+}
+
+.btnLogOut:hover {
+    -fx-background-color: #c62828; /* Rojo más oscuro al pasar el mouse */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 2); /* Sombra más pronunciada al hacer hover */
+}
+
+
+

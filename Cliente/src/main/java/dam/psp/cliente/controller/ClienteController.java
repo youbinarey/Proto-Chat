@@ -55,7 +55,7 @@ public class ClienteController implements PaqueteListener {
     public JFXToggleButton toggleTheme;
     public ListView <HBox> listViewChat;
     private Cliente cliente;
-    public TextArea textAreaMensaje;
+    public TextArea inputUser;
     public Button btnEnviar;
 
     public Button btnLogOut;
@@ -116,11 +116,6 @@ public class ClienteController implements PaqueteListener {
     private void configurarListViewComandos() {
         listViewComandos.setItems(comandos); // Asignar la lista de comandos
         listViewComandos.setVisible(false); // Ocultar inicialmente
-        listViewComandos.setPrefSize(200, 100);
-
-        // Posicionar el ListView cerca del textAreaMensaje
-        AnchorPane.setTopAnchor(listViewComandos, textAreaMensaje.getLayoutY() - 100); // Ajusta la posición
-        AnchorPane.setLeftAnchor(listViewComandos, textAreaMensaje.getLayoutX());
 
         // Manejar la selección de una opción
         listViewComandos.setOnKeyPressed(event -> {
@@ -133,6 +128,8 @@ public class ClienteController implements PaqueteListener {
                 }
             } else if (event.getCode() == KeyCode.ESCAPE) {
                 ocultarMenuComandos(); // Ocultar el menú al presionar Escape
+            }else{
+                ocultarBannerComandos();
             }
         });
     }
@@ -151,13 +148,14 @@ public class ClienteController implements PaqueteListener {
      * Configura el comportamiento del TextArea para el mensaje.
      */
     private void configurarTextAreaMensaje() {
-        textAreaMensaje.textProperty().addListener((observableValue, s, t1) -> {
+        inputUser.textProperty().addListener((observableValue, s, t1) -> {
             detectURL(t1);
-            if (s.endsWith("/")) {
+            if (t1.endsWith("/")) {
                 mostrarMenuComandos();
             } else {
                 ocultarMenuComandos();
             }
+
             ajustarAltura();
         });
 
@@ -169,9 +167,9 @@ public class ClienteController implements PaqueteListener {
      * Configura los eventos del teclado para la interacción en la aplicación.
      */
     private void configurarEventosTeclado() {
-        textAreaMensaje.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+        inputUser.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
             if (event.isShiftDown() && event.getCode() == KeyCode.ENTER) {
-                textAreaMensaje.appendText("\n");
+                inputUser.appendText("\n");
                 event.consume();
                 return;
             }
@@ -230,6 +228,11 @@ public class ClienteController implements PaqueteListener {
         if (listViewComandos != null) {
             listViewComandos.setVisible(false); // Ocultar el menú
         }
+
+        if (inputUser != null) {
+            inputUser.requestFocus(); // Solicitar el foco en el TextArea
+        }
+
     }
 
     /**
@@ -248,10 +251,10 @@ public class ClienteController implements PaqueteListener {
      * Envía el mensaje escrito en el TextArea.
      */
     private void enviarMensaje() {
-        String mensaje = textAreaMensaje.getText();
+        String mensaje = inputUser.getText();
         if(!mensaje.isEmpty()){
             cliente.enviarMensaje(mensaje);
-            textAreaMensaje.clear();
+            inputUser.clear();
             ajustarAltura();
         }
 
@@ -261,8 +264,8 @@ public class ClienteController implements PaqueteListener {
      * Ajusta la altura del TextArea dependiendo del número de líneas.
      */
     private void ajustarAltura() {
-        int lineas = textAreaMensaje.getText().split("\n").length;
-        textAreaMensaje.setPrefRowCount(Math.min(lineas, 5));
+        int lineas = inputUser.getText().split("\n").length;
+        inputUser.setPrefRowCount(Math.min(lineas, 5));
     }
 
     /**
@@ -409,9 +412,9 @@ public class ClienteController implements PaqueteListener {
 
     @FXML
     void btnEnviarOnClick(ActionEvent event) {
-        if (!textAreaMensaje.getText().isEmpty()) {
-            cliente.enviarMensaje(textAreaMensaje.getText());
-            textAreaMensaje.clear();
+        if (!inputUser.getText().isEmpty()) {
+            cliente.enviarMensaje(inputUser.getText());
+            inputUser.clear();
         }
     }
 
@@ -536,7 +539,7 @@ public class ClienteController implements PaqueteListener {
             Button botonComando = new Button(comando);
             botonComando.setStyle("-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14px;");
             botonComando.setOnAction(event -> {
-                textAreaMensaje.setText(comando + " "); // Insertar el comando en el textAreaMensaje
+                inputUser.setText(comando + " "); // Insertar el comando en el textAreaMensaje
                 ocultarBannerComandos(); // Ocultar el banner
             });
             botonComando.setLayoutX(10); // Posición horizontal
@@ -556,8 +559,8 @@ public class ClienteController implements PaqueteListener {
     private void mostrarBannerComandos() {
         if (bannerComandos != null) {
 
-            AnchorPane.setTopAnchor(bannerComandos, textAreaMensaje.getLayoutY() - 150); // Ajusta la posición
-            AnchorPane.setLeftAnchor(bannerComandos, textAreaMensaje.getLayoutX());
+            AnchorPane.setTopAnchor(bannerComandos, inputUser.getLayoutY() - 150); // Ajusta la posición
+            AnchorPane.setLeftAnchor(bannerComandos, inputUser.getLayoutX());
             bannerComandos.toFront();
 
             // Mostrar el banner
