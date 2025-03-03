@@ -62,9 +62,9 @@ public class ClienteController implements PaqueteListener {
     public ListView<String> listUsuarios;
     private ObservableList<String> usuariosList;
     private final ObservableList<String> comandos = FXCollections.observableArrayList(
-            "/wheater",
+            "/tiempo",
             "/ping",
-            "/salir",
+            "/bye",
             "/usuarios"
     );
 
@@ -137,7 +137,8 @@ public class ClienteController implements PaqueteListener {
     private void eventoComandoSeleccionado(String comando) {
         switch (comando){
             case  "/ping" -> cliente.ping();
-            case "/wheater" -> mostrarBanner2("La temperatura es de " + cliente.getWeather());
+            case "/tiempo" -> mostrarBanner2("La temperatura es de " + cliente.getWeather());
+            case "/bye" -> {cliente.desconectar(); goLoging();}
             default -> System.out.println("Comando no reconocido");
         }
     }

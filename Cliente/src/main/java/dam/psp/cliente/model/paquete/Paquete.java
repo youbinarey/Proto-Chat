@@ -3,6 +3,9 @@ package dam.psp.cliente.model.paquete;
 import dam.psp.cliente.util.Network;
 
 import java.io.Serializable;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.util.Enumeration;
 
 /**
  * Clase abstracta que representa un paquete de datos.
@@ -23,7 +26,8 @@ public abstract class Paquete implements Serializable {
      * @param tipo Tipo de paquete que se está creando.
      */
     public Paquete(TipoPaquete tipo) {
-        this.IP = Network.getMyIp(); // Obtiene la IP local del dispositivo.
+        //this.IP = Network.getMyIp();//
+        this.IP  = getPrivateIp();// Obtiene la IP publica local del dispositivo.
         this.tipo = tipo;
     }
 
@@ -43,5 +47,28 @@ public abstract class Paquete implements Serializable {
      */
     public String getIP() {
         return IP;
+    }
+
+    public static void main(String[] args) {
+            System.out.println("Ip privada "+  getPrivateIp());
+
+    }
+    public static String getPrivateIp() {
+        try {
+            Enumeration<NetworkInterface> interfaces = NetworkInterface.getNetworkInterfaces();
+            while (interfaces.hasMoreElements()) {
+                NetworkInterface networkInterface = interfaces.nextElement();
+                Enumeration<InetAddress> addresses = networkInterface.getInetAddresses();
+                while (addresses.hasMoreElements()) {
+                    InetAddress inetAddress = addresses.nextElement();
+                    if (!inetAddress.isLoopbackAddress() && inetAddress.isSiteLocalAddress()) {
+                        return inetAddress.getHostAddress();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "127.0.0.1"; // Default to localhost if no private IP is found
     }
 }

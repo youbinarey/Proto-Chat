@@ -11,7 +11,7 @@ public class Network {
     public static String getMyIp() {
         StringBuilder response = new StringBuilder();
 
-        try {
+        try {                                                                         
                 // URL de un servicio que devuelve la IP pública
                 URL url = new URL("https://api.ipify.org");
 

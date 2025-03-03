@@ -41,8 +41,16 @@
 
 }
 .user-list .list-cell {
-    -fx-alignment: center; /* Center the content of the cells */
+    -fx-alignment: center;
+    -fx-text-fill: #ffffff;
+     /* Center the content of the cells */
 }
+.user-list .list-cell:selected {
+    -fx-alignment: center;
+    -fx-text-fill: #EF8354;
+     /* Center the content of the cells */
+}
+
 
 
 /* --- Parte Central --- */

@@ -28,7 +28,7 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("clienteLogIn-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();
-        stage.setTitle("Cliente " + index);
+        stage.setTitle("Cliente" );
         stage.setScene(scene);
         stage.show();
     }

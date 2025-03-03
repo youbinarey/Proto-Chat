@@ -34,7 +34,6 @@ public class App extends Application {
             }
         });
 
-
         stage.setTitle("Servidor");
         stage.setScene(scene);
         stage.show();
