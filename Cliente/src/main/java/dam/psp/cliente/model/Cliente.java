@@ -29,7 +29,6 @@ public class Cliente {
      */
     public Cliente(String nombre, PaqueteListener listener) {
         this.nickname = nombre;
-
         this.conexionServidor = ConexionServidor.getInstance();
         this.conexionServidor.setMessageListener(listener);
     }

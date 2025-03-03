@@ -114,7 +114,7 @@ public class DatabaseManager {
      */
     public static void main(String[] args) {
         DatabaseManager dbManager = new DatabaseManager();
-        dbManager.insertUser("alberto", "chandomonte");
+        dbManager.insertUser("Yeray", "dam");
         dbManager.closeConnection();
     }
 }

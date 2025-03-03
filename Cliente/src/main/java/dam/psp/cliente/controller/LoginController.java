@@ -61,6 +61,7 @@ public class LoginController implements PaqueteListener {
      */
     @FXML
     void btnLogInOnClick(ActionEvent event) {
+        lblvalidation.setText("");
         String usuario = txtUser.getText();
         String password = txtPass.getText();
 
@@ -68,10 +69,8 @@ public class LoginController implements PaqueteListener {
             btnLogIn.setVisible(false);
             Paquete p = PaqueteFactory.crearPaquete(TipoPaquete.AUTENTICACION, usuario, password);
             verifyLogin(p);
-        } else {
+        }else{
             isFieldEmpty();
-            lblvalidation.setText("Completa todos los campos");
-            lblvalidation.setStyle("-fx-text-fill: yellow;");
         }
     }
 
@@ -122,7 +121,7 @@ public class LoginController implements PaqueteListener {
                 Platform.runLater(() -> {
                     root.getChildren().remove(loadingPane);  // Eliminar indicador
                     btnLogIn.setVisible(true);
-                    setLblvalidationErrorConexion(); // Mostrar mensaje de error de conexión
+                    setLblvalidationErrorConexion();
                 });
             }
         }).start();
@@ -172,8 +171,8 @@ public class LoginController implements PaqueteListener {
      * @param root El contenedor raíz donde se colocará el indicador de carga.
      */
     private void setLoadingIndicatorPosition(StackPane loadingPane, PasswordField passwordField, AnchorPane root) {
-        double x = passwordField.getLayoutX();
-        double y = passwordField.getLayoutY();
+        double x = btnLogIn.getLayoutX();
+        double y = btnLogIn.getLayoutY();
         loadingPane.setLayoutX(x);
         loadingPane.setLayoutY(y);
 
@@ -250,6 +249,9 @@ public class LoginController implements PaqueteListener {
 
         txtUser.setStyle(userEmpty ? "-fx-border-color: yellow;" : "-fx-border-color: transparent;");
         txtPass.setStyle(passEmpty ? "-fx-border-color: yellow;" : "-fx-border-color: transparent;");
+        lblvalidation.setText("Completa todos los campos");
+        lblvalidation.setStyle("-fx-text-fill: yellow;");
+
     }
 
     @Override
