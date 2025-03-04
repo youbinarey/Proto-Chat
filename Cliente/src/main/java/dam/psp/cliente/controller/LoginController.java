@@ -102,7 +102,8 @@ public class LoginController implements PaqueteListener {
 
                     if (autenticado == null) {
                         btnLogIn.setVisible(true);
-                        setLblvalidationErrorConexion();
+                        System.out.println("Ya hay un usuario en el chat");
+                        setLblvalidationUsuarioActivo();
                     } else if (autenticado) {
                         setLblvalidation(true);
                         cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
@@ -112,6 +113,7 @@ public class LoginController implements PaqueteListener {
                         pause.setOnFinished(event -> loadClienteView(cliente));
                         pause.play();
                     } else {
+                        setLblvalidationErrorConexion();
                         btnLogIn.setVisible(true);
                         setLblvalidation(false);
                     }
@@ -135,6 +137,12 @@ public class LoginController implements PaqueteListener {
         String lblColor = "-fx-text-fill: red;";
         this.lblvalidation.setText(mensaje);
         this.lblvalidation.setStyle(lblColor);
+    }
+    private void setLblvalidationUsuarioActivo() {
+        String mensaje = "Ya hay un usuario con este nickname en la sala";
+        //String lblColor = "-fx-text-fill: red;";
+        this.lblvalidation.setText(mensaje);
+        //this.lblvalidation.setStyle(lblColor);
     }
 
     /**

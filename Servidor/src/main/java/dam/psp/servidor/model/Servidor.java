@@ -8,6 +8,7 @@ import dam.psp.servidor.config.Config;
 import dam.psp.servidor.controller.ServidorController;
 import javafx.application.Platform;
 
+import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -259,29 +260,43 @@ public class Servidor {
     }
 
     /**
-     * Autentica a un usuario verificando sus credenciales en la base de datos si .
+     * Autentica a un usuario verificando sus credenciales en la base de datos.
      *
-     * @param p El paquete de autenticación que contiene el nombre de usuario y la contraseña.
-     * @return {@code true} si la autenticación es exitosa, {@code false} en caso contrario.
+     * @param p   El paquete que contiene el nombre de usuario y la contraseña.
+     * @param out El ObjectOutputStream para enviar la respuesta al cliente.
      */
     private void autenticar(Paquete p, ObjectOutputStream out) {
-        PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
 
-        if(sala.isNicknameInSala(pa.getUsuario())){
+
+        PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
+        boolean request = false;
+
+        // Usar try-with-resources para manejar la conexión a la base de datos
+        DatabaseManager dbManager = new DatabaseManager();
+            // Verificar credenciales en la base de datos
+            request = dbManager.logInUser(pa.getUsuario(), pa.getPassword());
+        dbManager.closeConnection();
+
+
+        // Verificar si el usuario ya está en la sala
+        if (sala.isNicknameInSala(pa.getUsuario()) && request) {
+            // Si el usuario ya está en la sala, enviar un PaqueteError
             Paquete pe = PaqueteFactory.crearPaquete(TipoPaquete.ERROR, pa.getUsuario());
             try {
                 out.writeObject(pe);
+                System.out.println("enviar apqeute error");
+
             } catch (IOException e) {
-                System.err.println("Error autenticando" + e.getMessage());
+                System.err.println("Error al enviar PaqueteError: " + e.getMessage());
             }
-        }else{
-            DatabaseManager dbManager = new DatabaseManager();
-            boolean request = dbManager.logInUser(pa.getUsuario(), pa.getPassword());
-            dbManager.closeConnection();
+        } else {
+            // Si el usuario no está en la sala, enviar el resultado de la autenticación
             try {
                 out.writeObject(request);
+                System.out.println("SE ENVIA TRUE O FALSE: " + request);
+
             } catch (IOException e) {
-                System.err.println("Error autenticando" + e.getMessage());
+                System.err.println("Error al enviar respuesta de autenticación: " + e.getMessage());
             }
         }
     }

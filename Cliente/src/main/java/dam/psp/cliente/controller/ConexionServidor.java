@@ -106,10 +106,7 @@ public class ConexionServidor {
                 }
             } else if (response instanceof PaqueteError paqueteError) {
                 System.err.println("Error de autenticación: " + paqueteError.getUsuario() + " ya está en el chat");
-                return false;
-            } else {
-                System.err.println("Respuesta desconocida del servidor.");
-                return false;
+                return null;
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error en autenticación: " + e.getMessage());
