@@ -11,6 +11,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
@@ -23,8 +24,10 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.scene.text.TextFlow;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
@@ -39,7 +42,6 @@ import java.net.URI;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -57,11 +59,11 @@ public class ClienteController implements PaqueteListener {
     public JFXToggleButton toggleTheme;
     public ListView <HBox> listViewChat;
     public StackPane rootPane;
-
+    public AnchorPane chatBackground;
     private Cliente cliente;
+    private boolean isFileChooserOpen = false;
     public TextArea inputUser;
     public Button btnEnviar;
-
     public Button btnLogOut;
     public ListView<String> listUsuarios;
     private ObservableList<String> usuariosList;
@@ -141,7 +143,7 @@ public class ClienteController implements PaqueteListener {
     private void eventoComandoSeleccionado(String comando) {
         switch (comando){
             case  "/ping" -> cliente.ping();
-            case "/tiempo" -> mostrarBanner2("La temperatura es de " + cliente.getWeather());
+            case "/tiempo" -> mostrarBanner("La temperatura es de " + cliente.getWeather());
             case "/bye" -> {cliente.desconectar(); goLoging();}
             default -> System.out.println("Comando no reconocido");
         }
@@ -281,17 +283,33 @@ public class ClienteController implements PaqueteListener {
      */
     private void mostrarMensajeEnChat(String mensaje, String usuario) {
         Platform.runLater(() -> {
+            // Crear un Text para el nombre del usuario
             Text textoUsuario = new Text(usuario + ": ");
             textoUsuario.getStyleClass().add("nombre-usuario");
 
-            Text textoMensaje = new Text(mensaje);
+            // Obtener la hora actual
+            String currentTime = timeLbl.getText().substring(0, 5);
+
+            // Crear un Text para el mensaje
+            Text textoMensaje = new Text(mensaje + " ");
             textoMensaje.getStyleClass().add("mensaje-usuario");
-            //textoMensaje.setWrappingWidth(400); // Ajusta este valor según el ancho deseado
 
-            HBox hbox = new HBox(textoUsuario, textoMensaje);
-            // Espacio entre el nombre de usuario y el mensaje
-            //hbox.setMaxWidth(400); // Ajusta el ancho máximo del HBox
+            // Crear un Text para la hora
+            Text textoHora = new Text(currentTime);
+            textoHora.getStyleClass().add("texto-hora");
 
+            // Crear un TextFlow para manejar el flujo de texto
+            TextFlow textFlow = new TextFlow(textoUsuario, textoMensaje, new Text(" "), textoHora);
+            textFlow.setMaxWidth(430); // Establecer un ancho máximo para el ajuste de línea
+
+            // Crear un HBox para el mensaje
+            HBox hbox = new HBox(textFlow);
+            hbox.getStyleClass().add("mensaje-contenedor");
+            hbox.setMaxWidth(Region.USE_PREF_SIZE); // Ajustar el ancho al contenido
+            hbox.setAlignment(Pos.BASELINE_CENTER); // Alinear el contenido
+            hbox.setFillHeight(false); // Evitar que ocupe toda la altura
+
+            // Añadir el HBox al ListView
             listViewChat.getItems().add(hbox);
             listViewChat.scrollTo(listViewChat.getItems().size() - 1);
         });
@@ -317,7 +335,7 @@ public class ClienteController implements PaqueteListener {
                 });
             }
             case NOTIFICACION -> {PaqueteNotificacion pn = (PaqueteNotificacion) p;
-            Platform.runLater(() -> mostrarBanner2(pn.getEvento()));}
+            Platform.runLater(() -> mostrarBanner(pn.getEvento()));}
             case ARCHIVO -> {
                 PaqueteArchivo par = (PaqueteArchivo) p;
                 Platform.runLater(()-> mostrarArchivoEnChat(par));
@@ -325,7 +343,7 @@ public class ClienteController implements PaqueteListener {
             case  PING -> {
                 PaquetePing ping = (PaquetePing) p;
                 long latencia = System.currentTimeMillis() - ping.getTimestamp();
-                mostrarBanner2("Latencia con el chat -> " + latencia +
+                mostrarBanner("Latencia con el chat -> " + latencia +
                         "ms");
             }
             default -> System.err.println("Tipo de paquete no reconocido: " + p.getTipo());
@@ -456,7 +474,7 @@ public class ClienteController implements PaqueteListener {
 
 
 
-    public void mostrarBanner2(String mensaje ) {
+    public void mostrarBanner(String mensaje ) {
         Platform.runLater(() -> {
             Label label = new Label(mensaje);
             label.setStyle("""
@@ -514,7 +532,6 @@ public class ClienteController implements PaqueteListener {
 
 
 
-
     private void ocultarBannerComandos() {
         if (bannerComandos != null) {
             bannerComandos.setVisible(false);
@@ -535,7 +552,7 @@ public class ClienteController implements PaqueteListener {
     }
 
     public void onDesconexionServidor() {
-        mostrarBanner2("Se ha perdido la conexión con el servidor. Redirigiendo al login...");
+        mostrarBanner("Se ha perdido la conexión con el servidor. Redirigiendo al login...");
 
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> goLoging());
@@ -611,8 +628,28 @@ public class ClienteController implements PaqueteListener {
         // Crear la imagen
         Image image = new Image(new ByteArrayInputStream(paqueteArchivo.getContenido()));
         ImageView imageView = new ImageView(image);
-        imageView.setFitWidth(100); // Ajustar el ancho de la imagen
+        imageView.setFitWidth(300); // Ajustar el ancho de la imagen
         imageView.setPreserveRatio(true);
+
+        // Agregar evento de clic para descargar la imagen
+        imageView.setOnMouseClicked(event -> {
+            if(event.getClickCount() == 2 && !isFileChooserOpen){
+                isFileChooserOpen = true;
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.setTitle("Guardar imagen");
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Imágenes", "*.png", "*.jpg", "*.jpeg", "*.gif"));
+                File file = fileChooser.showSaveDialog(null);
+                if (file != null) {
+                    try (FileOutputStream fos = new FileOutputStream(file)) {
+                        fos.write(paqueteArchivo.getContenido());
+                    } catch (IOException e) {
+                        System.err.println("Error al guardar la imagen: " + e.getMessage());
+                    }
+                }
+                isFileChooserOpen =false;
+            }
+
+        });
 
         // Crear el texto del nombre de usuario
         Text textoUsuario = new Text(paqueteArchivo.getUsuario() + ": ");
@@ -620,7 +657,10 @@ public class ClienteController implements PaqueteListener {
 
         // Crear el HBox para contener el nombre de usuario y la imagen
         HBox hbox = new HBox(textoUsuario, imageView);
-        hbox.setSpacing(5); // Espacio entre el nombre de usuario y la imagen
+        hbox.setSpacing(50);
+        hbox.getStyleClass().add("mensaje-contenedor");
+        hbox.setMaxWidth(Region.USE_PREF_SIZE);
+        hbox.setFillHeight(false);// Espacio entre el nombre de usuario y la imagen
 
         // Agregar el HBox al ListView
         listViewChat.getItems().add(hbox);

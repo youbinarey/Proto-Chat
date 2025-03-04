@@ -61,6 +61,8 @@ public class LoginController implements PaqueteListener {
      */
     @FXML
     void btnLogInOnClick(ActionEvent event) {
+        editable(false);
+
         lblvalidation.setText("");
         String usuario = txtUser.getText();
         String password = txtPass.getText();
@@ -72,6 +74,13 @@ public class LoginController implements PaqueteListener {
         }else{
             isFieldEmpty();
         }
+
+    }
+
+    private void editable(boolean editable) {
+        txtUser.setEditable(editable);
+        ;
+        txtPass.setEditable(editable);
     }
 
     /**
@@ -117,6 +126,8 @@ public class LoginController implements PaqueteListener {
                         btnLogIn.setVisible(true);
                         setLblvalidation(false);
                     }
+
+
                 });
 
             } catch (Exception e) {
@@ -126,7 +137,9 @@ public class LoginController implements PaqueteListener {
                     setLblvalidationErrorConexion();
                 });
             }
+
         }).start();
+
     }
 
     /**
@@ -137,12 +150,16 @@ public class LoginController implements PaqueteListener {
         String lblColor = "-fx-text-fill: red;";
         this.lblvalidation.setText(mensaje);
         this.lblvalidation.setStyle(lblColor);
+
+
     }
     private void setLblvalidationUsuarioActivo() {
         String mensaje = "Ya hay un usuario con este nickname en la sala";
         //String lblColor = "-fx-text-fill: red;";
         this.lblvalidation.setText(mensaje);
         //this.lblvalidation.setStyle(lblColor);
+
+
     }
 
     /**
@@ -211,7 +228,7 @@ public class LoginController implements PaqueteListener {
      */
     private void loadClienteView(Cliente cliente) {
         try {
-            String fxmlPath = "/dam/psp/cliente/cliente-view.fxml";
+            String fxmlPath = "/dam/psp/cliente/cliente-view2.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             ClienteController clienteController = loader.getController();
@@ -246,6 +263,9 @@ public class LoginController implements PaqueteListener {
         }
         this.lblvalidation.setText(mensaje);
         this.lblvalidation.setStyle(lblColor);
+        editable(true);
+
+
     }
 
     /**
@@ -259,6 +279,8 @@ public class LoginController implements PaqueteListener {
         txtPass.setStyle(passEmpty ? "-fx-border-color: yellow;" : "-fx-border-color: transparent;");
         lblvalidation.setText("Completa todos los campos");
         lblvalidation.setStyle("-fx-text-fill: yellow;");
+        editable(true);
+
 
     }
 

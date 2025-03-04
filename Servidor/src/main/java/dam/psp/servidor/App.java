@@ -21,6 +21,7 @@ public class App extends Application {
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("servidor-view2.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
+
         // Configurar el evento para cuando la ventana se cierre
         stage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
@@ -36,7 +37,7 @@ public class App extends Application {
 
         stage.setTitle("Servidor");
         stage.setScene(scene);
-        stage.show();
+         stage.show();
 
     }
 

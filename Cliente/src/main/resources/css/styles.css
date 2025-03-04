@@ -31,7 +31,11 @@
 }
 
 .light-theme .server-time {
-    -fx-text-fill: #5c5c5c; /* Texto gris oscuro */
+    -fx-text-fill: #708090; /* Texto gris oscuro
+        #808080
+
+        #5c5c5c
+     */
 }
 
 .light-theme .user-list {
@@ -48,8 +52,21 @@
     -fx-text-fill: #EF8354; /* Color coral para selección */
 }
 
+
+
+.texto-hora {
+    -fx-text-fill: #4B0082;
+    -fx-font-weight: bold;
+    -fx-font-size: 8px;
+    -fx-wrap-text: true; /* Habilitar el ajuste de línea */
+    -fx-max-width: 100px; /* Establecer un ancho máximo */
+}
+
+
+
+
 .light-theme .list-viewChat {
-    -fx-background-color: white; /* Fondo blanco */
+
     -fx-text-fill: #005e00; /* Texto verde */
     -fx-border-color: #cccccc; /* Borde gris */
 }
@@ -60,7 +77,7 @@
 }
 
 .light-theme .button-enviar, .light-theme .button-adjuntar {
-    -fx-background-color:  -fx-background-color: linear-gradient(to bottom, #0088cc, #005f8a);	; /* Coral */
+   -fx-background-color: linear-gradient(to bottom, #0088cc, #005f8a);
     -fx-text-fill: white; /* Texto blanco */
 }
 
@@ -129,17 +146,33 @@
 /* --- Parte Central --- */
 .list-viewChat {
     -fx-background-radius: 30px;
-    -fx-background-color: #ffffff; /* Fondo blanco */
+    -fx-background-color: transparent; /* Fondo transparente */
     -fx-text-fill: #005e00; /* Texto verde */
-    /* Borde estilo marco */
-    -fx-border-color: #5c5c5c;
-;
-    -fx-border-width: 20px;  /* Ancho del borde: arriba, derecha, abajo, izquierda */
-    -fx-border-radius: 5; /* Radio del borde: arriba-izquierda, arriba-derecha, abajo-derecha, abajo-izquierda */
-
+    -fx-border-color: #5c5c5c; /* Color del borde */
+    -fx-border-width: 22px; /* Ancho del borde */
+    -fx-border-radius: 5px; /* Radio del borde */
     -fx-padding: 1px; /* Espaciado interno */
-    /* Sombra para dar efecto de profundidad */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0.2, 0, 5);
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0.2, 0, 5); /* Sombra */
+}
+
+.mensaje-contenedor {
+    -fx-background-color: rgba(144, 238, 144, 0.7); /* Fondo semitransparente */
+    -fx-text-fill: #006400;
+    -fx-padding: 5px; /* Espaciado interno */
+    -fx-background-radius: 10px; /* Bordes redondeados */
+    -fx-border-radius: 10px; /* Bordes redondeados */
+
+}
+
+.list-viewChatBackground{
+-fx-background-image: url("../img/BackgroundDark.png"); /* Ruta de la imagen de fondo */
+        -fx-background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+        -fx-background-position: center;
+}
+.light-theme .list-viewChatBackground{
+-fx-background-image: url("../img/backGroundImage.jpg"); /* Ruta de la imagen de fondo */
+        -fx-background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+        -fx-background-position: center;
 }
 
 .textAreaColor {
@@ -172,6 +205,7 @@
     -fx-background-color: transparent; /* Fondo transparente */
     -fx-padding: 5px; /* Añade un pequeño padding para mejor espaciado */
     -fx-wrap-text: true; /* Permite el salto de línea en las celdas */
+
 }
 .list-view .list-cell .hbox {
     -fx-spacing: 5px; /* Espacio entre el nombre de usuario y el mensaje */
@@ -195,13 +229,26 @@
     -fx-fill: black; /* Color del texto */
     -fx-wrap-text: true; /* Permite el salto de línea */
     -fx-text-alignment: left; /* Alinea el texto a la izquierda */
+    /*
+        #333333 gris oscuro
+        #000000 negro
+        #00008B azul socuro
+        */
 }
 
 .nombre-usuario {
-    -fx-font-weight: bold; /* Texto en negrita */
-    -fx-fill:  #1abc9c; /* Color del texto */
-    -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario */
+     -fx-font-weight: bold;
+        -fx-fill: #4B0082;
+    -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario*/
+
+    /*
+    #006400 verde oscuro
+        #000080 azul marino
+        #4B0082 Morado oscuro
+    */
+
 }
+
 
 .mensaje-url {
     -fx-text-fill: blue;
@@ -216,7 +263,7 @@
 .button-enviar  {
     -fx-background-color: #1DB954; /* coral */
     -fx-text-fill: white; /* Texto blanco */
-    -fx-background-radius: 15px;
+
 
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 1); /* Sombra más suave */
     -fx-alignment: center;

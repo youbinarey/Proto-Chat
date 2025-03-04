@@ -30,6 +30,7 @@ public class App extends Application {
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();
         stage.setTitle("Cliente" );
+        stage.setResizable(false);
         stage.setScene(scene);
         stage.show();
     }
