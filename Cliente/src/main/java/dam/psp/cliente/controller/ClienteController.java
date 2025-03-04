@@ -23,6 +23,7 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -38,6 +39,7 @@ import java.net.URI;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,6 +56,8 @@ public class ClienteController implements PaqueteListener {
     public AutoCompleteTextField<String> auto;
     public JFXToggleButton toggleTheme;
     public ListView <HBox> listViewChat;
+    public StackPane rootPane;
+
     private Cliente cliente;
     public TextArea inputUser;
     public Button btnEnviar;
@@ -450,30 +454,7 @@ public class ClienteController implements PaqueteListener {
     }
 
 
-    // BANNER NOTIFICACION
-// Método para mostrar el banner
-    public void mostrarBanner(String mensaje) {
-        Platform.runLater(() -> {
-            Label label = new Label(mensaje);
-            label.setStyle("-fx-background-color: green; -fx-text-fill: white; -fx-padding: 10px;");
 
-            FadeTransition fade = new FadeTransition(Duration.seconds(5), label);
-            fade.setFromValue(1.0);
-            fade.setToValue(0.0);
-            fade.setOnFinished(event -> label.setVisible(false));
-
-            AnchorPane root = (AnchorPane) serverTxt.getParent();
-            if (root == null) return;
-
-            AnchorPane.setTopAnchor(label, 0.0);
-            AnchorPane.setLeftAnchor(label, 0.0);
-            AnchorPane.setRightAnchor(label, 0.0);
-
-            root.getChildren().add(label);
-            fade.play();
-        });
-
-    }
 
     public void mostrarBanner2(String mensaje ) {
         Platform.runLater(() -> {
@@ -486,6 +467,7 @@ public class ClienteController implements PaqueteListener {
                         -fx-padding: 15px;
                         -fx-border-radius: 8px;
                         -fx-background-radius: 8px;
+                        -fx-alignment: center;
                         -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 10, 0, 0, 4);
                     """);
 
@@ -495,15 +477,15 @@ public class ClienteController implements PaqueteListener {
             // Inicializar en posición superior fuera de la pantalla
             label.setTranslateY(-50);
             AnchorPane.setTopAnchor(label, 10.0);
-            AnchorPane.setLeftAnchor(label, 20.0);
-            AnchorPane.setRightAnchor(label, 20.0);
+            AnchorPane.setLeftAnchor(label, 110.0);
+            AnchorPane.setRightAnchor(label, 450.0);
 
             root.getChildren().add(label);
 
             // Animación de entrada: desplazar hacia abajo y aparecer
             TranslateTransition slideIn = new TranslateTransition(Duration.millis(500), label);
             slideIn.setFromY(-50);
-            slideIn.setToY(0);
+            slideIn.setToY(10);
             slideIn.setInterpolator(Interpolator.EASE_OUT);
 
             FadeTransition fadeOut = new FadeTransition(Duration.seconds(1.5), label);
@@ -529,45 +511,9 @@ public class ClienteController implements PaqueteListener {
 
     }
 
-    private void inicializarBannerComandos() {
-        // Crear el banner
-        bannerComandos.setStyle("-fx-background-color: #f0f0f0; -fx-border-color: #ccc; -fx-border-width: 1px;");
-        //bannerComandos.setPrefSize(200, 100); // Tamaño del banner
-
-        // Añadir opciones al banner
-        double yPos = 10; // Posición vertical inicial
-        for (String comando : comandos) {
-            Button botonComando = new Button(comando);
-            botonComando.setStyle("-fx-background-color: transparent; -fx-text-fill: #333; -fx-font-size: 14px;");
-            botonComando.setOnAction(event -> {
-                inputUser.setText(comando + " "); // Insertar el comando en el textAreaMensaje
-                ocultarBannerComandos(); // Ocultar el banner
-            });
-            botonComando.setLayoutX(10); // Posición horizontal
-            botonComando.setLayoutY(yPos); // Posición vertical
-            bannerComandos.getChildren().add(botonComando);
-            yPos += 30; // Espacio entre opciones
-        }
-
-        // Añadir el banner al layout principal
 
 
 
-        // Ocultar el banner inicialmente
-        bannerComandos.setVisible(false);
-    }
-
-    private void mostrarBannerComandos() {
-        if (bannerComandos != null) {
-
-            AnchorPane.setTopAnchor(bannerComandos, inputUser.getLayoutY() - 150); // Ajusta la posición
-            AnchorPane.setLeftAnchor(bannerComandos, inputUser.getLayoutX());
-            bannerComandos.toFront();
-
-            // Mostrar el banner
-            bannerComandos.setVisible(true);
-        }
-    }
 
     private void ocultarBannerComandos() {
         if (bannerComandos != null) {
@@ -575,8 +521,17 @@ public class ClienteController implements PaqueteListener {
         }
     }
 
-    public void toggleThemeOnClick(ActionEvent event){
+    @FXML
+    public void toggleThemeOnClick(ActionEvent event) {
+        System.out.println("is toggle button active: " + toggleTheme.isSelected());
 
+        if (toggleTheme.isSelected()) {
+            rootPane.getStyleClass().remove("dark-theme"); // Remueve la clase oscura
+            rootPane.getStyleClass().add("light-theme");   // Aplica la clase clara
+        } else {
+            rootPane.getStyleClass().remove("light-theme"); // Remueve la clase clara
+            rootPane.getStyleClass().add("dark-theme");     // Aplica la clase oscura
+        }
     }
 
     public void onDesconexionServidor() {

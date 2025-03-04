@@ -203,7 +203,7 @@ public class LoginController implements PaqueteListener {
      */
     private void loadClienteView(Cliente cliente) {
         try {
-            String fxmlPath = "/dam/psp/cliente/cliente-view2.fxml";
+            String fxmlPath = "/dam/psp/cliente/cliente-view.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             ClienteController clienteController = loader.getController();

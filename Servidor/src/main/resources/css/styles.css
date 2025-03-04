@@ -1,60 +1,140 @@
 /* Estilo general */
 .root {
-    -fx-font-family: "Segoe UI", sans-serif;
-    -fx-background-color: #2c2f33;
+    -fx-background-color: #2D3142; /* Fondo oscuro */
+    -fx-font-family: "Montserrat", sans-serif; /* Fuente sans-serif moderna */
 }
 
-/* Panel de usuarios */
-#panel-usuarios {
-    -fx-background-color: #23272a;
-    -fx-padding: 10px;
+/* --- Parte Superior --- */
+.top-bar {
+
+
 }
 
-#titulo-usuarios {
-    -fx-text-fill: white;
+.title {
+    color: #ffffff; /* Texto blanco */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    -fx-font-size: 24px;
+    font-weight: bold;
+    -fx-letter-spacing: 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 2, 0, 0, 0);
+}
+
+.server-time {
+    color: #cccccc; /* Texto gris claro */
+    -fx-text-fill: #cccccc; /* Texto gris claro */
+    font-size: 14px;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
 }
 
-#list-usuarios {
-    -fx-background-color: #2f3136;
-    -fx-text-fill: white;
-}
-
-/* Panel del chat */
-#panel-chat {
-    -fx-background-color: #36393f;
-    -fx-padding: 10px;
-}
-
-#list-mensajes {
-    -fx-background-color: #2f3136;
-    -fx-text-fill: white;
-}
-
-/* Panel de escritura */
-#panel-escribir {
-    -fx-background-color: #40444b;
-    -fx-padding: 10px;
-}
-
-#campo-mensaje {
+/* --- Parte Izquierda --- */
+.user-list {
+    -fx-background-color: #253237;
     -fx-background-radius: 10px;
-    -fx-background-color: #2f3136;
-    -fx-text-fill: white;
+    -fx-text-fill: #ffffff;
+    -fx-border-radius: 10px;
+    -fx-padding: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+
+}
+.user-list .list-cell {
+    -fx-alignment: center;
+    -fx-text-fill: #ffffff;
+     /* Center the content of the cells */
+}
+.user-list .list-cell:selected {
+    -fx-alignment: center;
+    -fx-text-fill: #EF8354;
+     /* Center the content of the cells */
 }
 
-#btn-enviar, #btn-adjuntar {
-    -fx-background-radius: 10px;
-    -fx-background-color: #7289da;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-cursor: hand;
+
+
+/* --- Parte Central --- */
+.log-area {
+    -jevelsea-lined-notepad:
+        linear-gradient (
+            from 0px 0px to0px 11px,
+            repetat,
+            gainsboro,
+            gainsboro 6.25%,
+            #252526 6.25%,
+            #252526
+        );
+    background-color: #1e1e1e; /* Fondo oscuro */
+    -fx-background-color: #1e1e1e; /* Fondo oscuro */
+
+    -fx-text-fill: #005e00; /* Texto verde (estilo terminal) */
+
+    font-size: 14px;
+    -fx-font-size: 14px;
+    border-color: #3c3c3c; /* Borde gris */
+    -fx-border-color: #3c3c3c; /* Borde gris */
+
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+.textAreaColor {
+    -fx-background-color:-jevelsea-lined-notepad;
 }
 
-/* Efectos */
-#btn-enviar:hover, #btn-adjuntar:hover {
-    -fx-background-color: #5b6eae;
-    -fx-scale-x: 1.05;
-    -fx-scale-y: 1.05;
+
+
+
+.list-view .list-cell {
+    -fx-border-width: 0; /* Elimina el borde de las celdas */
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-padding: 5px; /* Añade un pequeño padding para mejor espaciado */
+    -fx-wrap-text: true; /* Permite el salto de línea en las celdas */
 }
+.list-view .list-cell .hbox {
+    -fx-spacing: 5px; /* Espacio entre el nombre de usuario y el mensaje */
+    -fx-alignment: center-left; /* Alinea el contenido a la izquierda */
+    -fx-pref-width: 100%; /* Ajusta el ancho al 100% del espacio disponible */
+}
+
+.list-cell:selected {
+    -fx-background-color: #cce5ff;
+     -fx-text-fill: #EF8354/* Color de fondo cuando la celda está seleccionada */
+}
+
+.hyperlink {
+    -fx-text-fill: blue; /* Color del texto del Hyperlink */
+    -fx-underline: true; /* Subrayar el texto */
+}
+
+
+
+.mensaje-usuario {
+    -fx-fill: black; /* Color del texto */
+    -fx-wrap-text: true; /* Permite el salto de línea */
+    -fx-text-alignment: left; /* Alinea el texto a la izquierda */
+}
+
+.nombre-usuario {
+    -fx-font-weight: bold; /* Texto en negrita */
+    -fx-fill: blue; /* Color del texto */
+    -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario */
+}
+
+.mensaje-url {
+    -fx-text-fill: blue;
+    -fx-underline: true;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

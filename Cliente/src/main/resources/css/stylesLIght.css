@@ -1,92 +1,15 @@
 /* Estilo general */
 .root {
-    -fx-background-color:#2D3142;
+    -fx-background-color: #ffffff;
     -fx-font-family: "Montserrat", sans-serif; /* Fuente sans-serif moderna */
-}
-
-.light-theme {
-    -fx-background-color: c5e2f6;
-}
-
-.light-theme .toggle-button {
-    -fx-text-fill: black;
-    -fx-font-size: 14px;
-    -fx-font-weight: bold;
-
-}
-.dark-theme .toggle-button {
-    -fx-text-fill: white;
-     -fx-font-size: 14px;
-     -fx-font-weight: bold;/* Color del texto en el tema oscuro */
-}
-.toggle-button {
-    -fx-text-fill: white;
-     -fx-font-size: 14px;
-     -fx-font-weight: bold;/* Color del texto en el tema oscuro */
-}
-
-.light-theme .title {
-    -fx-text-fill: #2D3142; /* Texto oscuro para contraste */
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 2, 0, 0, 0); /* Sombra más suave */
-}
-
-.light-theme .server-time {
-    -fx-text-fill: #5c5c5c; /* Texto gris oscuro */
-}
-
-.light-theme .user-list {
-    -fx-background-color: #f0f0f0; /* Fondo gris claro */
-    -fx-text-fill: #2D3142; /* Texto oscuro */
-    -fx-border-color: #cccccc; /* Borde gris */
-}
-
-.light-theme .user-list .list-cell {
-    -fx-text-fill: #2D3142; /* Texto oscuro */
-}
-
-.light-theme .user-list .list-cell:selected {
-    -fx-text-fill: #EF8354; /* Color coral para selección */
-}
-
-.light-theme .list-viewChat {
-    -fx-background-color: white; /* Fondo blanco */
-    -fx-text-fill: #005e00; /* Texto verde */
-    -fx-border-color: #cccccc; /* Borde gris */
-}
-
-.light-theme .status-bar {
-    -fx-background-color: #f0f0f0; /* Fondo gris claro */
-    -fx-text-fill: #2D3142; /* Texto oscuro */
-}
-
-.light-theme .button-enviar, .light-theme .button-adjuntar {
-    -fx-background-color:  -fx-background-color: linear-gradient(to bottom, #0088cc, #005f8a);	; /* Coral */
-    -fx-text-fill: white; /* Texto blanco */
-}
-
-.light-theme .button-enviar:hover, .light-theme .button-adjuntar:hover {
-    -fx-background-color: #F7C1AA; /* Coral más claro al hacer hover */
-}
-
-.light-theme .btnLogOut {
-    -fx-background-color: #d32f2f; /* Rojo */
-    -fx-text-fill: white; /* Texto blanco */
-}
-
-.light-theme .btnLogOut:hover {
-    -fx-background-color: #c62828; /* Rojo más oscuro al hacer hover */
-}
-
-.dark-theme {
-    -fx-background-color: #2D3142;
 }
 
 /* --- Parte Superior --- */
 
 
 .title {
-    color: #ffffff; /* Texto blanco */
-    -fx-text-fill: #ffffff; /* Texto blanco */
+    color: #253237; /* Texto blanco */
+    -fx-text-fill: #253237; /* Texto blanco */
     -fx-font-size: 24px;
     font-weight: bold;
     -fx-letter-spacing: 20px;
@@ -106,6 +29,7 @@
     -fx-background-color: #253237;
     -fx-background-radius: 10px;
     -fx-text-fill: #ffffff;
+    -fx-border:1px;
     -fx-border-color: #EF8354;
     -fx-border-width: 0px;
     -fx-border-radius: 10px;
@@ -199,7 +123,7 @@
 
 .nombre-usuario {
     -fx-font-weight: bold; /* Texto en negrita */
-    -fx-fill:  #1abc9c; /* Color del texto */
+    -fx-fill: blue; /* Color del texto */
     -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario */
 }
 
@@ -208,13 +132,13 @@
     -fx-underline: true;
 }
 .button-adjuntar{
-    -fx-background-color: #1DB954; /* coral */
+    -fx-background-color: #EF8354; /* coral */
 }
 
 /* Botones con diseño moderno y compacto */
 /* Botones con diseño moderno y compacto */
 .button-enviar  {
-    -fx-background-color: #1DB954; /* coral */
+    -fx-background-color: #EF8354; /* coral */
     -fx-text-fill: white; /* Texto blanco */
     -fx-background-radius: 15px;
 
