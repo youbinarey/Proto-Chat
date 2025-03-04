@@ -24,8 +24,16 @@ public class PaqueteFactory {
             case NOTIFICACION -> {return crearPaqueteNotificacion(parametros);}
             case MENSAJE -> {return crearPaqueteMensaje(parametros);}
             case ARCHIVO -> {return  crearPaqueteArchivo(parametros);}
+            case ERROR -> {
+                return crearPaqueteError(parametros);
+            }
             default -> throw new IllegalArgumentException("Tipo de paquete no válido: " + tipo);
         }
+    }
+
+    private static Paquete crearPaqueteError(Object[] parametros) {
+        String usuario = (String) parametros[0];
+        return new PaqueteError(usuario);
     }
 
     /**

@@ -177,12 +177,7 @@ public class Servidor {
             case AUTENTICACION -> {
                 System.out.println("Recibido UN PAQUETE CONECTAR " + p.getIP());
                 logPaquete(p, cliente);
-                try {
-                    // Si la autenticación es correcta, envía una respuesta positiva
-                    out.writeObject(autenticar((PaqueteAutenticacion) p));
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                autenticar(p, out);
             }
             case CONECTAR -> {
                 System.out.println("RECIBIDO UN PAQUETE CONECTAR");
@@ -264,18 +259,32 @@ public class Servidor {
     }
 
     /**
-     * Autentica a un usuario verificando sus credenciales en la base de datos.
+     * Autentica a un usuario verificando sus credenciales en la base de datos si .
      *
-     * @param pa El paquete de autenticación que contiene el nombre de usuario y la contraseña.
+     * @param p El paquete de autenticación que contiene el nombre de usuario y la contraseña.
      * @return {@code true} si la autenticación es exitosa, {@code false} en caso contrario.
      */
-    private boolean autenticar(PaqueteAutenticacion pa) {
-        DatabaseManager dbManager = new DatabaseManager();
-        boolean request = dbManager.logInUser(pa.getUsuario(), pa.getPassword());
-        dbManager.closeConnection();
-        return request;
-    }
+    private void autenticar(Paquete p, ObjectOutputStream out) {
+        PaqueteAutenticacion pa = (PaqueteAutenticacion) p;
 
+        if(sala.isNicknameInSala(pa.getUsuario())){
+            Paquete pe = PaqueteFactory.crearPaquete(TipoPaquete.ERROR, pa.getUsuario());
+            try {
+                out.writeObject(pe);
+            } catch (IOException e) {
+                System.err.println("Error autenticando" + e.getMessage());
+            }
+        }else{
+            DatabaseManager dbManager = new DatabaseManager();
+            boolean request = dbManager.logInUser(pa.getUsuario(), pa.getPassword());
+            dbManager.closeConnection();
+            try {
+                out.writeObject(request);
+            } catch (IOException e) {
+                System.err.println("Error autenticando" + e.getMessage());
+            }
+        }
+    }
 
 
     /**

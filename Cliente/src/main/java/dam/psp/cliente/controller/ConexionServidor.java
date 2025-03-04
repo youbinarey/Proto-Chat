@@ -81,7 +81,7 @@ public class ConexionServidor {
     public synchronized Boolean autenticar(Paquete p) {
         if (clienteConectado) {
             System.err.println("Ya hay una sesión iniciada. No es necesario autenticar nuevamente.");
-            return false;
+            return null;
         }
 
         try {
@@ -94,12 +94,21 @@ public class ConexionServidor {
             out.writeObject(p);
             out.flush();
 
-            Boolean acceso = (Boolean) in.readObject();
-            if (acceso) {
-                System.out.println("Autenticación exitosa.");
-                return true;
+
+            Object response = in.readObject();
+            if (response instanceof Boolean acceso) {
+                if (acceso) {
+                    System.out.println("Autenticación exitosa.");
+                    return true;
+                } else {
+                    System.out.println("Autenticación fallida.");
+                    return false;
+                }
+            } else if (response instanceof PaqueteError paqueteError) {
+                System.err.println("Error de autenticación: " + paqueteError.getUsuario() + " ya está en el chat");
+                return false;
             } else {
-                System.out.println("Autenticación fallida.");
+                System.err.println("Respuesta desconocida del servidor.");
                 return false;
             }
         } catch (IOException | ClassNotFoundException e) {
