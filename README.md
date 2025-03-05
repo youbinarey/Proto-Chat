@@ -4,7 +4,7 @@
 
 ## **Introducción** 🎬
 
-Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**..
+Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**.
 
 Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarga de distribuir los mensajes y gestionar las conexiones.
 
@@ -132,11 +132,12 @@ Si la entrega fuera dos semanas más tarde seguiría trabajando en este proyecto
 <br/>
 
 ## 🔧 **Posibles mejoras**
-✅ Implementación de una API REST para mejorar la gestión de usuarios y mensajes.  
-✅ Soporte para mensajes privados entre usuarios.  
-✅ Encriptación de mensajes para mayor seguridad 🔐.  
-✅ Integración con WebSockets para optimizar la comunicación.  
-✅ Migrarlo a Aplicación web o móvil y extender su uso a dispositivos Android/iOS 📱.  
+- Implementación de una API REST para mejorar - la gestión de usuarios y mensajes.  
+ - Soporte para mensajes privados entre usuarios.  
+- Encriptación de mensajes para mayor seguridad 🔐.  
+ - Integración con WebSockets para optimizar la comunicación.  
+ - Migrarlo a Aplicación web o móvil y extender su uso a dispositivos Android/iOS 📱.  
+ - Integrar personalización de entorno.(Fondos, tipos de letras, avatar...).  
 
 
 
