@@ -106,13 +106,17 @@ public class LoginController implements PaqueteListener {
                 // Intentar autenticar con el servidor
                 Boolean autenticado = conexionServidor.autenticar(p);
 
+
                 Platform.runLater(() -> {
                     root.getChildren().remove(loadingPane);  // Eliminar indicador
+
+
 
                     if (autenticado == null) {
                         btnLogIn.setVisible(true);
                         System.out.println("Ya hay un usuario en el chat");
                         setLblvalidationUsuarioActivo();
+
                     } else if (autenticado) {
                         setLblvalidation(true);
                         cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
@@ -126,7 +130,6 @@ public class LoginController implements PaqueteListener {
                         btnLogIn.setVisible(true);
                         setLblvalidation(false);
                     }
-
 
                 });
 
@@ -154,11 +157,13 @@ public class LoginController implements PaqueteListener {
 
     }
     private void setLblvalidationUsuarioActivo() {
-        String mensaje = "Ya hay un usuario con este nickname en la sala";
-        //String lblColor = "-fx-text-fill: red;";
-        this.lblvalidation.setText(mensaje);
-        //this.lblvalidation.setStyle(lblColor);
+        System.out.println("lega aqui??");
 
+        String mensaje1 = "Ya hay un usuario con este nickname en la sala";
+        String mensaje2 = " Este equipo ya tiene una sesión iniciad";
+        String mensaje = conexionServidor.isClienteConectado() ? mensaje2 : mensaje1;
+        this.lblvalidation.setText(mensaje);
+        editable(true);
 
     }
 

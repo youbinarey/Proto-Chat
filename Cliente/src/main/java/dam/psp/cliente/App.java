@@ -11,7 +11,7 @@ import java.util.Objects;
 public class App extends Application {
     @Override
     public void start(Stage stage) throws IOException {
-        for(int i = 1;i <= 1; i++){
+        for(int i = 1;i <= 2; i++){
             openNewWindow(i);
         }
     }
@@ -25,7 +25,6 @@ public class App extends Application {
 
 
     private void openNewWindow(int index) throws IOException {
-        // Cargar la misma FXML, pero puedes cambiar cualquier cosa si quieres personalizar las ventanas
         FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("clienteLogIn-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
         Stage stage = new Stage();

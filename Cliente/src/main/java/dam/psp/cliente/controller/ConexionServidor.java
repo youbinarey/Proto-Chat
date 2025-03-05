@@ -29,6 +29,10 @@ public class ConexionServidor {
         clienteConectado = false;
     }
 
+    public boolean isClienteConectado() {
+        return clienteConectado;
+    }
+
     /**
      * Obtiene la instancia única de la clase ConexionServidor.
      *
@@ -79,10 +83,13 @@ public class ConexionServidor {
 
      */
     public synchronized Boolean autenticar(Paquete p) {
+
         if (clienteConectado) {
-            System.err.println("Ya hay una sesión iniciada. No es necesario autenticar nuevamente.");
+            System.err.println("Este equipo ya tiene una sesion iniciada. No es necesario autenticar nuevamente.");
             return null;
         }
+
+
 
         try {
             socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);

@@ -14,7 +14,7 @@ import java.util.List;
 public class Sala {
 
     // Máximo número de clientes que puede tener la sala
-    private final int MAX_CLIENTES = 10;
+    private final int MAX_CLIENTES = 1;
     // Número actual de clientes conectados a la sala
     private int numClientes;
 
