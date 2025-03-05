@@ -141,7 +141,7 @@ public class Servidor {
      */
     private synchronized ClienteHandler createCliente(String nickname, String IP, ObjectOutputStream out, ObjectInputStream in, Socket clienteSocket) {
 
-        if (!sala.isNicknameInSala(nickname)) {
+        if (!sala.isNicknameInSala(nickname) && sala.getNumClientes() < sala.MAX_CLIENTES) {
             ClienteHandler clienteHandler = new ClienteHandler(nickname, IP, out, in, clienteSocket, this);
             new Thread(clienteHandler).start();
             return clienteHandler;
@@ -176,7 +176,7 @@ public class Servidor {
 
         switch (p.getTipo()) {
             case AUTENTICACION -> {
-                System.out.println("Recibido UN PAQUETE CONECTAR " + p.getIP());
+                System.out.println("Recibido UN PAQUETE AUTENTICAR " + p.getIP());
                 logPaquete(p, cliente);
                 autenticar(p, out);
             }
@@ -249,6 +249,7 @@ public class Servidor {
             broadcastNotify(pc, cliente);
         } else {
             System.out.println("Error: El cliente ya está conectado.");
+            desconectarCliente(clienteSocket,out,in,cliente,pc);
         }
         logPaquete(pc, cliente);
         try {

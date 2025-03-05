@@ -14,7 +14,7 @@ import java.util.List;
 public class Sala {
 
     // Máximo número de clientes que puede tener la sala
-    private final int MAX_CLIENTES = 1;
+    public final int MAX_CLIENTES = 10;
     // Número actual de clientes conectados a la sala
     private int numClientes;
 
@@ -45,6 +45,7 @@ public class Sala {
             } else {
                 System.out.println("No se puede agregar a " + cliente.getNickname());
             }
+
         });
     }
 
@@ -122,5 +123,9 @@ public class Sala {
         }
         System.out.println("SALA: El cliente puede unirse a la sala");
         return false;
+    }
+
+    public int getNumClientes() {
+        return numClientes;
     }
 }

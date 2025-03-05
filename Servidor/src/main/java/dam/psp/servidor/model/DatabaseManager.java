@@ -113,8 +113,9 @@ public class DatabaseManager {
      * @param args Argumentos de la línea de comandos (no se usan).
      */
     public static void main(String[] args) {
+
         DatabaseManager dbManager = new DatabaseManager();
-        dbManager.insertUser("alberto", "chandomonte");
+        dbManager.insertUser("Damian", "castelao");
         dbManager.closeConnection();
     }
 }

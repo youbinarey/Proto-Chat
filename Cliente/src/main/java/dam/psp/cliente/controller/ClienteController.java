@@ -575,7 +575,7 @@ public class ClienteController implements PaqueteListener {
     }
 
     public void onDesconexionServidor() {
-        mostrarBanner("Se ha perdido la conexión con el servidor. Redirigiendo al login...");
+        mostrarBanner("Se ha perdido la conexión.");
 
         PauseTransition pause = new PauseTransition(Duration.seconds(3));
         pause.setOnFinished(event -> goLoging());
