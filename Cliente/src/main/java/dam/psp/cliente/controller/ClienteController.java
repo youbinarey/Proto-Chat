@@ -324,21 +324,18 @@ public class ClienteController implements PaqueteListener {
                 PaqueteMensaje pm = (PaqueteMensaje) p;
                 String mensaje = pm.getMensaje();
                 System.out.println(mensaje);
-                //Si mensaje contiene url aplica formato y mostrarMensaje
-                Platform.runLater(()-> {
+
                     if(detectURL(mensaje)){
                         mostrarMensajeEnChatConURL(mensaje, pm.getRemitente());
-                    }else{
-                        mostrarMensajeEnChat(mensaje , pm.getRemitente());
+                    }else {
+                        mostrarMensajeEnChat(mensaje, pm.getRemitente());
                     }
-
-                });
             }
             case NOTIFICACION -> {PaqueteNotificacion pn = (PaqueteNotificacion) p;
-            Platform.runLater(() -> mostrarBanner(pn.getEvento()));}
+                if(!pn.getUsuario().equalsIgnoreCase(cliente.getNickname())) mostrarBanner(pn.getEvento());}
             case ARCHIVO -> {
                 PaqueteArchivo par = (PaqueteArchivo) p;
-                Platform.runLater(()-> mostrarArchivoEnChat(par));
+                mostrarArchivoEnChat(par);
             }
             case  PING -> {
                 PaquetePing ping = (PaquetePing) p;

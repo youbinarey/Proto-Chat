@@ -4,7 +4,7 @@
 
 ## **Introducción** 🎬
 
-Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**, ofreciendo una experiencia fluida y sencilla.
+Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**..
 
 Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarga de distribuir los mensajes y gestionar las conexiones.
 
@@ -20,10 +20,10 @@ Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarg
 ✅ **PostgreSQL** - Base de datos relacional para almacenamiento persistente de datos  
 ✅ **Railway** - Plataforma en la nube para desplegar y gestionar PostgreSQL 🚄  
 ✅ Bcrypt - Algoritmo de hashing para el almacenamiento seguro de contraseñas 🔒  
-❌ **Desarrollo de API propia** (pendiente)  
+❌ **Desarrollo de API propia**   
 ✅ **Otras funcionalidades** 🛠️  
 
----
+<br/>
 
 ## **Funcionalidades principales** 🏛️
 
@@ -33,7 +33,7 @@ Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarg
 
 2. **Mensajes en tiempo real** 💬
    - Todos los mensajes son reenviados a los clientes conectados 
-   - Formato: `nickname: mensaje` 
+   - Formato: `nickname: mensaje <hora actual>` 
 
 3. **Notificación de nuevos usuarios** 🔔
    - El servidor avisa cuando alguien se une 
@@ -47,11 +47,12 @@ Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarg
 6. **Gestión de errores** ⚠️
    - Manejo de fallos en la conexión y mensajes vacíos 
 
----
+
+<br/>
 
 ## **Comunicación con paquetes** 📦
 
-Se ha implementado una clase `Paquete` que encapsula los datos enviados entre cliente y servidor. Esto evita inconsistencias en la comunicación y mejora la estructura del sistema.
+Se ha implementado una clase `Paquete` que encapsula los datos enviados entre cliente y servidor. Esto evita inconsistencias en la comunicación y solidifica la estructura del sistema.
 
 ### **Clase `Paquete` y su Factory** 🏗️
 
@@ -82,13 +83,13 @@ public class PaqueteFactory {
 🔹 **JAR Compartido** 📦
 Se ha generado un **JAR** con las clases de `Paquete`, para garantizar que tanto cliente como servidor operen con la misma estructura de datos.
 
----
+<br/>
 
 ## **Flujo de comunicación** 🔄
 
 1. **Autenticación** 🔐
    - Cliente envía un `PaqueteAutenticacion` con sus credenciales
-   - Servidor responde con `true` si es correcto, `false` si falla
+   - Servidor consulta en la base datos las creendenciale s y notifica.
 
 2. **Unión a la sala** 👥
    - Cliente envía un `PaqueteConectar` con su nickname
@@ -103,7 +104,7 @@ Se ha generado un **JAR** con las clases de `Paquete`, para garantizar que tanto
 5. **Cierre del servidor** ⛔
    - Todos los clientes reciben un `PaqueteDesconectar`
 
----
+<br/>
 
 ## **Extras y funcionalidades adicionales** 🌟
 
@@ -121,7 +122,22 @@ Se ha generado un **JAR** con las clases de `Paquete`, para garantizar que tanto
    - **Dark mode** (por defecto) 🌑
    - **Light mode** ☀️
 
----
+<br/>
+
+## **Conclusión** 🔮
+La implementación de paquetes me ha lastrado mucho ya que podía implementar `Json` y simplifacar muchos porblemas que me he encontrado mientras el proyecto crecía. No obstante nunca había utilizado el patrón de diseño `Factory` y me pareció una buena idea para aplicarlo.
+
+Si la entrega fuera dos semanas más tarde seguiría trabajando en este proyecto (los commits lo reflejan). A medida que avanzo, siempre quiero probar algo nuevo o mejorar lo anterior. Algo que no me gusta es que noto que he sobrecargado mucho el `controller` ademas de que tengo metodos que muy bien se pueden refactorizar. Es lo que tiene ir aprendiendo sobre la marcha, que te modifica constantemente el esquema inicial.
+
+<br/>
+
+## 🔧 **Posibles mejoras**
+✅ Implementación de una API REST para mejorar la gestión de usuarios y mensajes.  
+✅ Soporte para mensajes privados entre usuarios.  
+✅ Encriptación de mensajes para mayor seguridad 🔐.  
+✅ Integración con WebSockets para optimizar la comunicación.  
+✅ Migrarlo a Aplicación web o móvil y extender su uso a dispositivos Android/iOS 📱.  
+
 
 
 
