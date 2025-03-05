@@ -77,8 +77,7 @@
 }
 
 .light-theme .button-enviar, .light-theme .button-adjuntar {
-   -fx-background-color: linear-gradient(to bottom, #0088cc, #005f8a);
-    -fx-text-fill: white; /* Texto blanco */
+
 }
 
 .light-theme .button-enviar:hover, .light-theme .button-adjuntar:hover {
@@ -267,7 +266,6 @@
 
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 1); /* Sombra más suave */
     -fx-alignment: center;
-    -fx-cursor: hand; /* Cambia el cursor a una mano */
     -fx-transition: all 0.2s ease-in-out; /* Transición más rápida */
 }
 
@@ -307,6 +305,29 @@
 .btnLogOut:hover {
     -fx-background-color: #c62828; /* Rojo más oscuro al pasar el mouse */
     -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 2); /* Sombra más pronunciada al hacer hover */
+}
+
+.svg-escalado {
+    -fx-scale-x: 10; /* Escala 10 veces en el eje X */
+    -fx-scale-y: 10; /* Escala 10 veces en el eje Y */
+}
+
+/* Estilo personalizado para las celdas del ListView */
+.commandosCeldas:filled:selected {
+    -fx-background-color: black; /* Fondo negro */
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-font-weight: bold; /* Texto en negrita */
+}
+
+.commandosCeldas:filled:focused {
+    -fx-background-color: white; /* Fondo negro */
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-border-color: white; /* Borde blanco */
+    -fx-border-width: 1px; /* Grosor del borde */
+}
+.commandosCeldas {
+    -fx-background-color: black; /* Fondo negro */
+
 }
 
 

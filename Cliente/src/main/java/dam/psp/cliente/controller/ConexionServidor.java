@@ -82,14 +82,14 @@ public class ConexionServidor {
      * @return {@code true} si la autenticación fue exitosa, {@code false} en caso contrario.
 
      */
-    public synchronized Boolean autenticar(Paquete p) {
-
+    public synchronized Boolean[] autenticar(Paquete p) {
+            Boolean[] codigos = new Boolean[2];
         if (clienteConectado) {
             System.err.println("Este equipo ya tiene una sesion iniciada. No es necesario autenticar nuevamente.");
-            return null;
+            codigos[0]=true;
+            codigos[1] =false;
+            return codigos;
         }
-
-
 
         try {
             socket = new Socket(Config.SERVER_IP, Config.SERVER_PORT);
@@ -106,18 +106,25 @@ public class ConexionServidor {
             if (response instanceof Boolean acceso) {
                 if (acceso) {
                     System.out.println("Autenticación exitosa.");
-                    return true;
+                    codigos[0]=true;
+                    codigos[1] =true;
+                    return codigos;
                 } else {
                     System.out.println("Autenticación fallida.");
-                    return false;
+                    codigos[0]=false;
+                    codigos[1] =true;
+                    return codigos;
                 }
             } else if (response instanceof PaqueteError paqueteError) {
                 System.err.println("Error de autenticación: " + paqueteError.getUsuario() + " ya está en el chat");
-                return null;
+                codigos[0]=true;
+                codigos[1] =false;
+                return codigos;
             }
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Error en autenticación: " + e.getMessage());
             cerrarConexion();
+            return null;
         }
         return null;
     }

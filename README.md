@@ -4,166 +4,124 @@
 
 ## **Introducción** 🎬
 
-Este proyecto tiene como objetivo el desarrollo de un sistema de chat con arquitectura cliente/servidor utilizando *
-*sockets TCP/IP**. El servidor podrá gestionar múltiples conexiones de clientes de manera simultánea (hasta 10 usuarios)
-y permitirá que todos los participantes se comuniquen en una única sala de chat. La interfaz gráfica será implementada
-utilizando **JavaFX**, ofreciendo una experiencia fluida y sencilla para el usuario.
+Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**, ofreciendo una experiencia fluida y sencilla.
 
-El sistema de chat permitirá a los usuarios interactuar en tiempo real, enviar mensajes, unirse y abandonar la sala de
-chat, todo ello gestionado por el servidor que redistribuirá los mensajes a todos los clientes conectados.
+Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarga de distribuir los mensajes y gestionar las conexiones.
 
-### Tecnologías utilizadas e implementaciones:
+### **Tecnologías utilizadas** 🚀
 
-[✅] **JavaFX**: Framework para la creación de interfaces gráficas de usuario 🎨.  
-[✅] **Sockets TCP/IP**: Para la comunicación entre el cliente y el servidor 🌍.   
-[✅]**Maven**: Herramienta para la gestión de dependencias y construcción del proyecto ⚙️.  
-[✅] **IntelliJ IDEA**: Entorno de desarrollo integrado (IDE) utilizado para el desarrollo del proyecto 🧑‍💻.  
-[✅]Integracion de consumo de API https://open-meteo.com/en/docs.  
-[❌]Desarrollo de API propia.  
-[✅]Otras funcionalidades.
-  <br/>
+✅ **JavaFX** - Creación de interfaces gráficas 🎨  
+✅ **Sockets TCP/IP** - Comunicación entre cliente y servidor 🌍  
+✅ **Maven** - Gestión de dependencias y construcción ⚙️  
+✅ **IntelliJ IDEA** - Entorno de desarrollo 🧑‍💻  
+✅ **CSS** - Cascade Style Sheets  🖌️   
+✅ **CSS** - Cascade Style Sheets  🖌️   
+✅ **Consumo de API** - Integración con https://open-meteo.com/en/docs ☁️   
+✅ **PostgreSQL** - Base de datos relacional para almacenamiento persistente de datos  
+✅ **Railway** - Plataforma en la nube para desplegar y gestionar PostgreSQL 🚄  
+✅ Bcrypt - Algoritmo de hashing para el almacenamiento seguro de contraseñas 🔒  
+❌ **Desarrollo de API propia** (pendiente)  
+✅ **Otras funcionalidades** 🛠️  
 
-## **Funcionalidades requeridas** 🏛️
+---
 
+## **Funcionalidades principales** 🏛️
 
-1. **Conexión del cliente**
-    - El cliente se conecta al servidor proporcionando la IP y el puerto.[✅]
-    - El cliente debe ingresar un nickname para ser identificado en el chat.[✅]
+1. **Conexión del cliente** 🔌
+   - Se conecta proporcionando IP y puerto 
+   - Debe ingresar un nickname para identificarse 
 
-2. **Mensajes en tiempo real**
-    - Los mensajes enviados por cualquier usuario son reenviados a todos los clientes conectados.[✅]
-    - El formato de los mensajes es "nickname: mensaje".[✅]
+2. **Mensajes en tiempo real** 💬
+   - Todos los mensajes son reenviados a los clientes conectados 
+   - Formato: `nickname: mensaje` 
 
-3. **Notificación de nuevos usuarios**
-    - Cuando un nuevo cliente se conecta, el servidor notifica a todos los participantes del chat.[✅]
+3. **Notificación de nuevos usuarios** 🔔
+   - El servidor avisa cuando alguien se une 
 
-4. **Desconexión controlada**
-    - Cuando un cliente se desconecta, el servidor notifica a todos los participantes y actualiza la lista de usuarios
-      conectados.[✅]
+4. **Desconexión controlada** ❌
+   - El servidor notifica a los usuarios cuando alguien se desconecta 
 
-5. **Comando de salida**
-    - Los clientes pueden cerrar la conexión con el comando `/bye`.[✅]
+5. **Comando de salida** 🚪
+   - Los clientes pueden salir con `/bye` 
 
-6. **Control de errores**
-    - El sistema gestiona errores como fallos en la conexión o intentos de enviar mensajes vacíos.[✅]
+6. **Gestión de errores** ⚠️
+   - Manejo de fallos en la conexión y mensajes vacíos 
 
-  <br/>
-  
-## **Comunicación de Datos a través de Paquetes** 📦
+---
 
-En este sistema de chat, se ha implementado una clase que suplanta la utilización de un objeto como JSON para la comunicación entre el cliente y el servidor. Esta clase se encarga de encapsular los datos necesarios para la comunicación según su tipo, garantizando una estructura robsuta pero flexible para el intercambio de información.
+## **Comunicación con paquetes** 📦
 
-### **Clase `Paquete` y su Factory** 🛠️
+Se ha implementado una clase `Paquete` que encapsula los datos enviados entre cliente y servidor. Esto evita inconsistencias en la comunicación y mejora la estructura del sistema.
 
-La clase abstracta `Paquete` se utiliza como base para los diferentes tipos de paquetes que se envían entre el cliente y el servidor. Los paquetes encapsulan la dirección IP del emisor y el tipo de paquete (por ejemplo, autenticación, conexión, mensaje, archivo, etc.).
+### **Clase `Paquete` y su Factory** 🏗️
 
-- **`Paquete`**: Es la clase base que define la estructura común de todos los paquetes.
-- **`PaqueteFactory`**: Una clase de fábrica que crea instancias de los diferentes tipos de paquetes, como `PaqueteAutenticacion`, `PaqueteConectar`, `PaqueteMensaje`, etc., dependiendo del tipo especificado.
+🔹 **Inmutabilidad** - No se pueden modificar tras su creación 🔒  
+🔹 **Polimorfismo** - Diferentes tipos de paquetes pueden manejarse de forma genérica 🏷️  
+🔹 **Encapsulación de datos** - Cada paquete contiene la IP del emisor y su tipo 📜  
+🔹 **Extensibilidad** - Permite agregar nuevos tipos sin modificar el código existente 🛠️  
 
+Ejemplo de **`PaqueteFactory`**:
 ```java
 public class PaqueteFactory {
-
     public static Paquete crearPaquete(TipoPaquete tipo, Object... parametros){
-        switch (tipo){
-            case AUTENTICACION -> {return crearPaqueteAutenticacion(parametros);}
-            case CONECTAR -> {return crearPaqueteConectar(parametros);}
-            case PING -> {return crearPaquetePING(parametros);}
-            case DESCONECTAR -> {return crearPaqueteDesconectar(parametros);}
-            case NOTIFICACION -> {return crearPaqueteNotificacion(parametros);}
-            case MENSAJE -> {return crearPaqueteMensaje(parametros);}
-            case ARCHIVO -> {return  crearPaqueteArchivo(parametros);}
+        return switch (tipo) {
+            case AUTENTICACION -> crearPaqueteAutenticacion(parametros);
+            case CONECTAR -> crearPaqueteConectar(parametros);
+            case PING -> crearPaquetePING(parametros);
+            case DESCONECTAR -> crearPaqueteDesconectar(parametros);
+            case NOTIFICACION -> crearPaqueteNotificacion(parametros);
+            case MENSAJE -> crearPaqueteMensaje(parametros);
+            case ARCHIVO -> crearPaqueteArchivo(parametros);
+            case ERROR -> crearPaqueteError(parametros);
             default -> throw new IllegalArgumentException("Tipo de paquete no válido: " + tipo);
-        }
-        ....................................................
+        };
     }
+}
+```
 
-   ```
+🔹 **JAR Compartido** 📦
+Se ha generado un **JAR** con las clases de `Paquete`, para garantizar que tanto cliente como servidor operen con la misma estructura de datos.
 
-### **Creación de un JAR Compartido** 🛠️
+---
 
-Para conseguir la operabilidad entre el cliente y el servidor, se ha creado un archivo JAR que contiene las clases necesarias para manejar los paquetes. Este JAR actúa como una biblioteca compartida, lo que permite que tanto el cliente como el servidor operen con el mismo tipo de objeto `Paquete` independientemente de quién lo haya creado.
+## **Flujo de comunicación** 🔄
 
-De esta manera, el cliente y el servidor pueden compartir la misma estructura de datos y asegurarse de que ambos lados entienden el formato de los paquetes, evitando inconsistencias en la comunicación.
+1. **Autenticación** 🔐
+   - Cliente envía un `PaqueteAutenticacion` con sus credenciales
+   - Servidor responde con `true` si es correcto, `false` si falla
 
-El archivo JAR generado contiene las clases que permiten la creación, el envío y la recepción de paquetes, y puede ser importado tanto por el cliente como por el servidor para operar con los mismos tipos de datos. Gracias a eso se obtiene una comunicación segura entre ambos componentes del sistema.
+2. **Unión a la sala** 👥
+   - Cliente envía un `PaqueteConectar` con su nickname
+   - Servidor lo agrega y notifica a todos
 
-## **Flujo de Comunicación** 🔄
+3. **Mensajería en tiempo real** 💬
+   - Los clientes envían mensajes y el servidor los distribuye
 
-### 1. **Inicio** 🚀  
-El cliente inicia la conexión con el servidor utilizando la dirección IP y el puerto configurados. El servidor escucha en el puerto especificado y acepta la conexión del cliente.
+4. **Desconexión** 🚪
+   - Cliente envía `PaqueteDesconectar`, y el servidor avisa al resto
 
-- **Cliente**: Envía un paquete de tipo `CONECTAR` al servidor.
-- **Servidor**: Recibe el paquete y procesa la conexión, creando un nuevo `ClienteHandler` para manejar la comunicación con ese cliente.
+5. **Cierre del servidor** ⛔
+   - Todos los clientes reciben un `PaqueteDesconectar`
 
+---
 
+## **Extras y funcionalidades adicionales** 🌟
 
-### 2. **Autenticación** 🔐  
-El cliente debe autenticarse antes de unirse al chat. El servidor verifica las credenciales del usuario (nombre de usuario y contraseña hasheada) en la base de datos.
+🔹 **Comandos especiales** ⚡
+   - `/tiempo` - Muestra la temperatura actual usando la API del clima 🌡️
+   - `/ping` - Muestra la latencia entre cliente y servidor 📶
 
-- **Cliente**: Envía un paquete de tipo `AUTENTICACION` con las credenciales.
-- **Servidor**: Verifica las credenciales y responde con un booleano (`true` si la autenticación es exitosa, `false` en caso contrario).
+🔹 **Envío de archivos** 📎
+   - Permite compartir imágenes en el chat, descargables con doble clic 🖼️
 
+🔹 **Links detectados** 🔗
+   - Los enlaces enviados en el chat cambian de estilo visualmente para diferenciarlos
 
-
-### 3. **Unión a la sala** 🧑‍💻  
-Una vez autenticado, el cliente se une a la sala de chat. El servidor notifica a todos los clientes conectados que un nuevo usuario se ha unido.
-
-- **Cliente**: Envía un paquete de tipo `CONECTAR` con su nickname.
-- **Servidor**: Agrega al cliente a la sala y difunde una notificación a todos los clientes conectados.
-
-
-
-### 4. **Enviar mensajes** ✉️  
-Los clientes pueden enviar mensajes de texto al servidor, que los retransmite a todos los usuarios conectados.
-
-- **Cliente**: Envía un paquete de tipo `MENSAJE` con el contenido del mensaje.
-- **Servidor**: Recibe el mensaje y lo difunde a todos los clientes en la sala.
-
-
-
-### 5. **Enviar Imágenes** 📁  
-Los clientes pueden enviar archivos al servidor, que los retransmite a todos los usuarios conectados.
-
-- **Cliente**: Envía un paquete de tipo `ARCHIVO` con la imagen adjunta.
-- **Servidor**: Recibe el archivo y lo difunde a todos los clientes en la sala.
-
-
-
-### 6. **PING/PONG** 🏓  
-El servidor y los clientes pueden intercambiar paquetes `PING` y `PONG` para verificar la conexión.
-
-- **Cliente**: Envía un paquete de tipo `PING` al servidor.
-- **Servidor**: Responde con un paquete de tipo `PONG`.
-
-
-### 7. **Notificación de desconexión** 🛑  
-Cuando un cliente se desconecta, el servidor notifica a todos los usuarios en la sala.
-
-- **Cliente**: Envía un paquete de tipo `DESCONECTAR` al servidor.
-- **Servidor**: Elimina al cliente de la sala y difunde una notificación de desconexión.
-
-
-
-### 8. **Cerrar conexión** 🔒  
-El cliente puede cerrar su conexión con el servidor de manera segura.
-
-- **Cliente**: Envía un paquete de tipo `DESCONECTAR`.
-- **Servidor**: Cierra los recursos asociados al cliente (socket, flujos de entrada/salida) y notifica a los demás usuarios.
-
-
-
-### 9. **Detener el servidor** ⛔  
-Si el servidor se detiene, todos los clientes son desconectados y se les notifica.
-
-- **Servidor**: Envía un paquete de tipo `DESCONECTAR` a todos los clientes y cierra sus conexiones.
-- **Cliente**: Recibe la notificación y cierra su conexión
+🔹 **Temas personalizables** 🎨
+   - **Dark mode** (por defecto) 🌑
+   - **Light mode** ☀️
 
 ---
 
 
 
-# NOTAS
-- Empaquetar jar   
-```bash
-jar cvf Paquete.jar .\dam\psp\cliente\model\Paquete.class .\dam\psp\cliente\model\TipoPaquete.class
-```

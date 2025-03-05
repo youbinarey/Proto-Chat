@@ -70,8 +70,7 @@ public class ClienteController implements PaqueteListener {
     private final ObservableList<String> comandos = FXCollections.observableArrayList(
             "/tiempo",
             "/ping",
-            "/bye",
-            "/usuarios"
+            "/bye"
     );
 
 
@@ -157,10 +156,11 @@ public class ClienteController implements PaqueteListener {
     private void configurarTextAreaMensaje() {
         inputUser.textProperty().addListener((observableValue, s, t1) -> {
             detectURL(t1);
-            if (t1.endsWith("/")) {
+            if (t1.startsWith("/")) {
                 mostrarMenuComandos();
             } else {
                 ocultarMenuComandos();
+
             }
 
             ajustarAltura();
@@ -367,35 +367,61 @@ public class ClienteController implements PaqueteListener {
      * @param usuario El remitente del mensaje.
      */
     private void mostrarMensajeEnChatConURL(String mensaje, String usuario) {
-        Text textoUsuario = new Text(usuario + ": ");
-        textoUsuario.getStyleClass().add("nombre-usuario");
+        Platform.runLater(() -> {
+            // Crear un Text para el nombre del usuario
+            Text textoUsuario = new Text(usuario + ": ");
+            textoUsuario.getStyleClass().add("nombre-usuario");
 
-        HBox hbox = new HBox(textoUsuario);
-        hbox.getStyleClass().add("mensaje-container");
+            // Obtener la hora actual
+            String currentTime = timeLbl.getText().substring(0, 5);
 
-        String[] palabras = mensaje.split(" ");
-        for (String palabra : palabras) {
-            if (palabra.matches("(https?://\\S+)")) {
-                Hyperlink link = new Hyperlink(palabra);
-                link.setOnAction(event -> {
-                    try {
-                        Desktop.getDesktop().browse(new URI(palabra));
-                    } catch (Exception e) {
-                        System.out.println("Error al abrir URL: " + e.getMessage());
-                    }
-                });
-                link.getStyleClass().add("mensaje-url"); // CSS para diferenciar enlaces
-                hbox.getChildren().add(link);
-            } else {
-                Text textoMensaje = new Text(palabra + " ");
-                textoMensaje.getStyleClass().add("mensaje-usuario");
-                hbox.getChildren().add(textoMensaje);
+            // Crear un TextFlow para manejar el flujo de texto
+            TextFlow textFlow = new TextFlow();
+            textFlow.setMaxWidth(430); // Establecer un ancho máximo para el ajuste de línea
+
+            // Añadir el nombre del usuario al TextFlow
+            textFlow.getChildren().add(textoUsuario);
+
+            // Dividir el mensaje en palabras
+            String[] palabras = mensaje.split(" ");
+            for (String palabra : palabras) {
+                if (palabra.matches("(https?://\\S+)")) {
+                    // Si es una URL, crear un Hyperlink
+                    Hyperlink link = new Hyperlink(palabra + " ");
+                    link.setOnAction(event -> {
+                        try {
+                            Desktop.getDesktop().browse(new URI(palabra));
+                        } catch (Exception e) {
+                            System.out.println("Error al abrir URL: " + e.getMessage());
+                        }
+                    });
+                    link.getStyleClass().add("mensaje-url"); // Aplicar estilo CSS para el enlace
+                    textFlow.getChildren().add(link);
+                } else {
+                    // Si no es una URL, crear un Text normal
+                    Text textoMensaje = new Text(palabra + " ");
+                    textoMensaje.getStyleClass().add("mensaje-usuario");
+                    textFlow.getChildren().add(textoMensaje);
+                }
             }
-        }
 
-        listViewChat.getItems().add(hbox);
-        listViewChat.scrollTo(listViewChat.getItems().size() - 1);
+            // Añadir la hora al final del mensaje
+            Text textoHora = new Text(currentTime);
+            textoHora.getStyleClass().add("texto-hora");
+            textFlow.getChildren().add(new Text(" ")); // Espacio entre el mensaje y la hora
+            textFlow.getChildren().add(textoHora);
 
+            // Crear un HBox para el mensaje
+            HBox hbox = new HBox(textFlow);
+            hbox.getStyleClass().add("mensaje-contenedor");
+            hbox.setMaxWidth(Region.USE_PREF_SIZE); // Ajustar el ancho al contenido
+            hbox.setAlignment(Pos.BASELINE_CENTER); // Alinear el contenido
+            hbox.setFillHeight(false); // Evitar que ocupe toda la altura
+
+            // Añadir el HBox al ListView
+            listViewChat.getItems().add(hbox);
+            listViewChat.scrollTo(listViewChat.getItems().size() - 1);
+        });
     }
 
 
@@ -411,7 +437,7 @@ public class ClienteController implements PaqueteListener {
     private void goLoging() {
         try {
             // Cargar la vista del login
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dam/psp/cliente/clienteLogIn-view.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/dam/psp/cliente/clienteLogin-view.fxml"));
             Parent root = loader.load();
 
             // Obtener el escenario actual
@@ -574,7 +600,6 @@ public class ClienteController implements PaqueteListener {
             String tipoArchivo = cliente.getTipoArchivo(archivoSeleccionado);
             cliente.archivo(archivoSeleccionado, tipoArchivo); // Enviar el archivo al servidor
 
-           //if(tipoArchivo.endsWith("imagen"))mostrarImagenEnChat(archivoSeleccionado);
            // TODO AMPLIAR
         }
     }

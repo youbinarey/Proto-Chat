@@ -104,7 +104,7 @@ public class LoginController implements PaqueteListener {
         new Thread(() -> {
             try {
                 // Intentar autenticar con el servidor
-                Boolean autenticado = conexionServidor.autenticar(p);
+                Boolean[] autenticado = conexionServidor.autenticar(p);
 
 
                 Platform.runLater(() -> {
@@ -113,11 +113,10 @@ public class LoginController implements PaqueteListener {
 
 
                     if (autenticado == null) {
+                        setLblvalidationErrorConexion();
                         btnLogIn.setVisible(true);
-                        System.out.println("Ya hay un usuario en el chat");
-                        setLblvalidationUsuarioActivo();
 
-                    } else if (autenticado) {
+                    } else if (autenticado[0] && autenticado[1]) {
                         setLblvalidation(true);
                         cliente = new Cliente(((PaqueteAutenticacion) p).getUsuario(), (PaqueteListener) this);
                         System.out.println(cliente.getNickname());
@@ -125,10 +124,19 @@ public class LoginController implements PaqueteListener {
                         PauseTransition pause = new PauseTransition(Duration.seconds(1));
                         pause.setOnFinished(event -> loadClienteView(cliente));
                         pause.play();
-                    } else {
-                        setLblvalidationErrorConexion();
-                        btnLogIn.setVisible(true);
+                    } else if(!autenticado[0] && autenticado[1]){
                         setLblvalidation(false);
+
+                    }else if (autenticado[0] && !autenticado[1]){
+                        setLblvalidationUsuarioActivo();
+                        System.out.println("Ya hay un usuario en el chat");
+
+
+
+                    }else if(!autenticado[0] && !autenticado[1]) {
+
+                        System.out.println("Ya hay un usuario en el chat");
+                        setLblvalidationUsuarioActivo();
                     }
 
                 });
@@ -163,8 +171,14 @@ public class LoginController implements PaqueteListener {
         String mensaje2 = " Este equipo ya tiene una sesión iniciad";
         String mensaje = conexionServidor.isClienteConectado() ? mensaje2 : mensaje1;
         this.lblvalidation.setText(mensaje);
+        btnLogIn.setVisible(true);
         editable(true);
 
+    }
+    private void setLblvalidationErrorServer() {
+        System.out.println("ErroServer?");
+        this.lblvalidation.setText("No se puede conectar con el servidor");
+        editable(true);
     }
 
     /**
@@ -233,7 +247,7 @@ public class LoginController implements PaqueteListener {
      */
     private void loadClienteView(Cliente cliente) {
         try {
-            String fxmlPath = "/dam/psp/cliente/cliente-view2.fxml";
+            String fxmlPath = "/dam/psp/cliente/cliente-view.fxml";
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root = loader.load();
             ClienteController clienteController = loader.getController();
@@ -268,6 +282,7 @@ public class LoginController implements PaqueteListener {
         }
         this.lblvalidation.setText(mensaje);
         this.lblvalidation.setStyle(lblColor);
+        btnLogIn.setVisible(true);
         editable(true);
 
 

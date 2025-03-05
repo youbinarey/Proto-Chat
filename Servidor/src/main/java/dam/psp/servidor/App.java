@@ -18,7 +18,7 @@ public class App extends Application {
 
     @Override
     public void start(Stage stage) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("servidor-view2.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("servidor-view.fxml"));
         Scene scene = new Scene(fxmlLoader.load());
 
         // Configurar el evento para cuando la ventana se cierre
