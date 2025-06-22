@@ -1,0 +1,334 @@
+/* Estilo general */
+.root {
+    -fx-background-color:#2D3142;
+    -fx-font-family: "Montserrat", sans-serif; /* Fuente sans-serif moderna */
+}
+
+.light-theme {
+    -fx-background-color: c5e2f6;
+}
+
+.light-theme .toggle-button {
+    -fx-text-fill: black;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+
+}
+.dark-theme .toggle-button {
+    -fx-text-fill: white;
+     -fx-font-size: 14px;
+     -fx-font-weight: bold;/* Color del texto en el tema oscuro */
+}
+.toggle-button {
+    -fx-text-fill: white;
+     -fx-font-size: 14px;
+     -fx-font-weight: bold;/* Color del texto en el tema oscuro */
+}
+
+.light-theme .title {
+    -fx-text-fill: #2D3142; /* Texto oscuro para contraste */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 2, 0, 0, 0); /* Sombra más suave */
+}
+
+.light-theme .server-time {
+    -fx-text-fill: #708090; /* Texto gris oscuro
+        #808080
+
+        #5c5c5c
+     */
+}
+
+.light-theme .user-list {
+    -fx-background-color: #f0f0f0; /* Fondo gris claro */
+    -fx-text-fill: #2D3142; /* Texto oscuro */
+    -fx-border-color: #cccccc; /* Borde gris */
+}
+
+.light-theme .user-list .list-cell {
+    -fx-text-fill: #2D3142; /* Texto oscuro */
+}
+
+.light-theme .user-list .list-cell:selected {
+    -fx-text-fill: #EF8354; /* Color coral para selección */
+}
+
+
+
+.texto-hora {
+    -fx-text-fill: #4B0082;
+    -fx-font-weight: bold;
+    -fx-font-size: 8px;
+    -fx-wrap-text: true; /* Habilitar el ajuste de línea */
+    -fx-max-width: 100px; /* Establecer un ancho máximo */
+}
+
+
+
+
+.light-theme .list-viewChat {
+
+    -fx-text-fill: #005e00; /* Texto verde */
+    -fx-border-color: #cccccc; /* Borde gris */
+}
+
+.light-theme .status-bar {
+    -fx-background-color: #f0f0f0; /* Fondo gris claro */
+    -fx-text-fill: #2D3142; /* Texto oscuro */
+}
+
+.light-theme .button-enviar, .light-theme .button-adjuntar {
+
+}
+
+.light-theme .button-enviar:hover, .light-theme .button-adjuntar:hover {
+    -fx-background-color: #F7C1AA; /* Coral más claro al hacer hover */
+}
+
+.light-theme .btnLogOut {
+    -fx-background-color: #d32f2f; /* Rojo */
+    -fx-text-fill: white; /* Texto blanco */
+}
+
+.light-theme .btnLogOut:hover {
+    -fx-background-color: #c62828; /* Rojo más oscuro al hacer hover */
+}
+
+.dark-theme {
+    -fx-background-color: #2D3142;
+}
+
+/* --- Parte Superior --- */
+
+
+.title {
+    color: #ffffff; /* Texto blanco */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    -fx-font-size: 24px;
+    font-weight: bold;
+    -fx-letter-spacing: 20px;
+    -fx-font-weight: bold;
+    -fx-effect: dropshadow(gaussian, rgba(255, 255, 255, 0.5), 2, 0, 0, 0);
+}
+
+.server-time {
+    color: #cccccc; /* Texto gris claro */
+    -fx-text-fill: #cccccc; /* Texto gris claro */
+    font-size: 14px;
+    -fx-font-size: 14px;
+}
+
+/* --- Parte Izquierda --- */
+.user-list {
+    -fx-background-color: #253237;
+    -fx-background-radius: 10px;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #EF8354;
+    -fx-border-width: 0px;
+    -fx-border-radius: 10px;
+    -fx-padding: 5px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+
+}
+.user-list .list-cell {
+    -fx-alignment: center;
+    -fx-text-fill: #ffffff;
+     /* Center the content of the cells */
+}
+.user-list .list-cell:selected {
+    -fx-alignment: center;
+    -fx-text-fill: #EF8354;
+     /* Center the content of the cells */
+}
+
+
+
+/* --- Parte Central --- */
+.list-viewChat {
+    -fx-background-radius: 30px;
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-text-fill: #005e00; /* Texto verde */
+    -fx-border-color: #5c5c5c; /* Color del borde */
+    -fx-border-width: 22px; /* Ancho del borde */
+    -fx-border-radius: 5px; /* Radio del borde */
+    -fx-padding: 1px; /* Espaciado interno */
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 15, 0.2, 0, 5); /* Sombra */
+}
+
+.mensaje-contenedor {
+    -fx-background-color: rgba(144, 238, 144, 0.7); /* Fondo semitransparente */
+    -fx-text-fill: #006400;
+    -fx-padding: 5px; /* Espaciado interno */
+    -fx-background-radius: 10px; /* Bordes redondeados */
+    -fx-border-radius: 10px; /* Bordes redondeados */
+
+}
+
+.list-viewChatBackground{
+-fx-background-image: url("../img/BackgroundDark.png"); /* Ruta de la imagen de fondo */
+        -fx-background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+        -fx-background-position: center;
+}
+.light-theme .list-viewChatBackground{
+-fx-background-image: url("../img/backGroundImage.jpg"); /* Ruta de la imagen de fondo */
+        -fx-background-size: cover; /* Ajusta la imagen para cubrir todo el fondo */
+        -fx-background-position: center;
+}
+
+.textAreaColor {
+    -fx-background-color:-jevelsea-lined-notepad;
+}
+
+/* --- Parte Inferior --- */
+.status-bar {
+    background-color: #252526; /* Fondo más claro */
+    -fx-background-color: #252526; /* Fondo más claro */
+    color: #ffffff; /* Texto blanco */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    font-size: 14px;
+    -fx-font-size: 14px;
+    padding: 10px;
+    -fx-padding: 10px;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0, 0, 0);
+}
+
+/*Borde inputr*/
+.label-borde {
+    -fx-border-color: black;
+    -fx-border-width: 2px;
+    -fx-border-radius: 5px;
+    -fx-padding: 5px;
+}
+
+.list-view .list-cell {
+    -fx-border-width: 0; /* Elimina el borde de las celdas */
+    -fx-background-color: transparent; /* Fondo transparente */
+    -fx-padding: 5px; /* Añade un pequeño padding para mejor espaciado */
+    -fx-wrap-text: true; /* Permite el salto de línea en las celdas */
+
+}
+.list-view .list-cell .hbox {
+    -fx-spacing: 5px; /* Espacio entre el nombre de usuario y el mensaje */
+    -fx-alignment: center-left; /* Alinea el contenido a la izquierda */
+    -fx-pref-width: 100%; /* Ajusta el ancho al 100% del espacio disponible */
+}
+
+.list-cell:selected {
+    -fx-background-color: #cce5ff;
+     -fx-text-fill: #EF8354/* Color de fondo cuando la celda está seleccionada */
+}
+
+.hyperlink {
+    -fx-text-fill: blue; /* Color del texto del Hyperlink */
+    -fx-underline: true; /* Subrayar el texto */
+}
+
+
+
+.mensaje-usuario {
+    -fx-fill: black; /* Color del texto */
+    -fx-wrap-text: true; /* Permite el salto de línea */
+    -fx-text-alignment: left; /* Alinea el texto a la izquierda */
+    /*
+        #333333 gris oscuro
+        #000000 negro
+        #00008B azul socuro
+        */
+}
+
+.nombre-usuario {
+     -fx-font-weight: bold;
+        -fx-fill: #4B0082;
+    -fx-padding: 0 5px 0 0; /* Espacio a la derecha del nombre de usuario*/
+
+    /*
+    #006400 verde oscuro
+        #000080 azul marino
+        #4B0082 Morado oscuro
+    */
+
+}
+
+
+.mensaje-url {
+    -fx-text-fill: blue;
+    -fx-underline: true;
+}
+.button-adjuntar{
+    -fx-background-color: #1DB954; /* coral */
+}
+
+/* Botones con diseño moderno y compacto */
+/* Botones con diseño moderno y compacto */
+.button-enviar  {
+    -fx-background-color: #1DB954; /* coral */
+    -fx-text-fill: white; /* Texto blanco */
+
+
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.2), 5, 0, 0, 1); /* Sombra más suave */
+    -fx-alignment: center;
+    -fx-transition: all 0.2s ease-in-out; /* Transición más rápida */
+}
+
+/* Efecto hover más suave */
+.button-enviar:hover, .button-adjuntar:hover {
+    -fx-background-color: #F7C1AA; /* Verde más oscuro */
+    -fx-scale-x: 1.05; /* Escala más pequeña */
+    -fx-scale-y: 1.05;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 2); /* Sombra más pronunciada al hacer hover */
+}
+
+/* Estilo de las imágenes dentro de los botones */
+.button-enviar .graphic, .button-adjuntar .graphic {
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.3), 3, 1, 1, 0); /* Sombra más suave en la imagen */
+    -fx-alignment: center; /* Centrar el icono */
+}
+
+
+/* Botones desactivados */
+.button:disabled {
+    -fx-background-color: #a0a0a0; /* Gris más claro */
+    -fx-text-fill: #ffffff; /* Texto blanco */
+    -fx-opacity: 0.7; /* Opacidad reducida */
+}
+
+/* Botón de 'Log out' */
+.btnLogOut {
+    -fx-background-color: #d32f2f; /* Rojo para log out */
+    -fx-text-fill: white;
+    -fx-padding: 8px 12px; /* Padding más compacto */
+    -fx-background-radius: 15px; /* Bordes más redondeados */
+    -fx-font-weight: bold;
+    -fx-transition: 0.2s ease; /* Transición más rápida */
+    -fx-cursor: hand; /* Cambia el cursor a una mano */
+}
+
+.btnLogOut:hover {
+    -fx-background-color: #c62828; /* Rojo más oscuro al pasar el mouse */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.3), 8, 0, 0, 2); /* Sombra más pronunciada al hacer hover */
+}
+
+.svg-escalado {
+    -fx-scale-x: 10; /* Escala 10 veces en el eje X */
+    -fx-scale-y: 10; /* Escala 10 veces en el eje Y */
+}
+
+/* Estilo personalizado para las celdas del ListView */
+.commandosCeldas:filled:selected {
+    -fx-background-color: black; /* Fondo negro */
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-font-weight: bold; /* Texto en negrita */
+}
+
+.commandosCeldas:filled:focused {
+    -fx-background-color: white; /* Fondo negro */
+    -fx-text-fill: white; /* Texto blanco */
+    -fx-border-color: white; /* Borde blanco */
+    -fx-border-width: 1px; /* Grosor del borde */
+}
+.commandosCeldas {
+    -fx-background-color: black; /* Fondo negro */
+
+}
+
+
+
