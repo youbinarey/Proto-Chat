@@ -1,18 +1,38 @@
 # **Sistema de Chat Cliente/Servidor** 
 
----
+ [<img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/es.svg" alt="Español" width="24"/> Español](./README.md) &#124; [<img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/gb.svg" alt="English" width="24"/> English](./docs/README_EN.md) 
 
+
+## **Índice**
+- [Introducción](#introducción)
+- [Objetivo](#objetivo)
+- [Recursos utilizados](#recursos-utilizados)
+- [Funcionalidades principales](#funcionalidades-principales)
+- [Extras y funcionalidades adicionales](#extras-y-funcionalidades-adicionales)
+- [Comunicación](#comunicación)
+  - [Clase `Paquete` y su Factory](#clase-paquete-y-su-factory)
+- [Flujo de comunicación](#flujo-de-comunicación)
+- [Demo](#demo)
+  - [Autenticación](#autenticación)
+  - [Compartir imágenes](#compartir-imagenes)
+  - [Tema Oscuro y Claro](#tema-oscuro-y-claro)
+  - [Uso de comandos](#uso-de-comandos)
+  - [Notificaciones](#notificaciones)
+  - [Captura de Logs](#captura-de-logs)
+- [Posibles mejoras](#posibles-mejoras)
+
+---
 ## **Introducción** 
 
 Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**.
 
 Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarga de distribuir los mensajes y gestionar las conexiones.
 
-## Objetivo
-Llevar a cabo un chat sin utilizar **Json** para la comunicación entre los servicios.  
-Obligando a serializar objetos y encontrar la alternativa a que distintos nodos (Server y Cliente) puedan entenderse prescindiendo del estandár de comunicación.
+## **Objetivo**
+Desarrollar una **aplicación de escritorio** que simule un chat, prescindiendo del uso de  **Json** para la comunicación entre los servicios.  
+Obligando a serializar objetos y encontrar la alternativa a que distintos nodos (Server y Clientes) puedan entenderse prescindiendo del estandár de comunicación.
 
-## **Tecnologías utilizadas** 
+## **Recursos utilizados** 
 
 ✅ **JavaFX** - Creación de interfaces gráficas   
 ✅ **Sockets TCP/IP** - Comunicación entre cliente y servidor   
@@ -22,8 +42,7 @@ Obligando a serializar objetos y encontrar la alternativa a que distintos nodos 
 ✅ **Consumo de API** - Integración con https://open-meteo.com/en/docs ☁️   
 ✅ **PostgreSQL** - Base de datos relacional para almacenamiento persistente de datos  
 ✅ **Railway** - Plataforma en la nube para desplegar y gestionar PostgreSQL  
-✅ Bcrypt - Algoritmo de hashing para el almacenamiento seguro de contraseñas   
-❌ **Desarrollo de API propia**   
+✅ **Bcrypt** - Algoritmo de hashing para el almacenamiento seguro de contraseñas   
 ✅ **Otras funcionalidades** 
 
 <br/>
@@ -31,8 +50,8 @@ Obligando a serializar objetos y encontrar la alternativa a que distintos nodos 
 ## **Funcionalidades principales** 
 
 1. **Conexión del cliente** 🔌
-   - Se conecta proporcionando IP y puerto 
-   - Debe ingresar un nickname para identificarse 
+   - Acceso mendiante autenticación.
+   - Base de datos **PostgreSQL** desplegada en **Railway**.
 
 2. **Mensajes en tiempo real**
    - Todos los mensajes son reenviados a los clientes conectados 
@@ -44,16 +63,33 @@ Obligando a serializar objetos y encontrar la alternativa a que distintos nodos 
 4. **Desconexión controlada** 
    - El servidor notifica a los usuarios cuando alguien se desconecta 
 
-5. **Comando de salida** 
-   - Los clientes pueden salir con `/bye` 
-
 6. **Gestión de errores** 
-   - Manejo de fallos en la conexión y mensajes vacíos 
+   - Manejo de fallos en la conexión 
 
 
 <br/>
 
-## **Comunicación con paquetes** 
+
+## **Extras y funcionalidades adicionales** 
+
+🔹 **Comandos especiales** 
+   - `/tiempo` - Muestra la temperatura actual usando la API del clima 🌡️
+   - `/ping` - Muestra la latencia entre cliente y servidor
+   - Comprobar latencia con el servidor `/ping`
+
+🔹 **Envío de archivos** 
+   - Permite compartir imágenes en el chat, descargables con doble clic 
+
+🔹 **Links detectados** 
+   - Los enlaces enviados en el chat cambian de estilo visualmente para diferenciarlos
+
+🔹 **Temas personalizables** 
+   - **Dark mode** (por defecto) 
+   - **Light mode** 
+
+<br/>
+
+## **Comunicación** 
 
 Se ha implementado una clase `Paquete` que encapsula los datos enviados entre cliente y servidor. Esto evita inconsistencias en la comunicación y solidifica la estructura del sistema.
 
@@ -109,32 +145,42 @@ Se ha generado un **JAR** con las clases de `Paquete`, para garantizar que tanto
 
 <br/>
 
-## **Extras y funcionalidades adicionales** 
 
-🔹 **Comandos especiales** 
-   - `/tiempo` - Muestra la temperatura actual usando la API del clima 🌡️
-   - `/ping` - Muestra la latencia entre cliente y servidor 
+## **Demo**
+### **Autenticación**  
+Para acceder al chat es necesario **autenticarse**.  
+La base de datos no pertenece al sistema. Se realiza una petición **HTTP** a la plataforma que aloja la **BBDD**.
+![](./docs/assets/loggin.gif)
 
-🔹 **Envío de archivos** 
-   - Permite compartir imágenes en el chat, descargables con doble clic 
+### **Compartir imagenes**  
+Se puede tanto compartir imagenes del sistema en el chat, así como guardarlas.
+![](./docs/assets/compartir_img.gif)
 
-🔹 **Links detectados** 
-   - Los enlaces enviados en el chat cambian de estilo visualmente para diferenciarlos
+### **Tema Oscuro y Claro**   
+Se puede personalizar el entorno según los temas disponibles.
+![](./docs/assets/dark-light_mode.gif)
 
-🔹 **Temas personalizables** 
-   - **Dark mode** (por defecto) 
-   - **Light mode** 
+###  **Uso de comandos**  
+Al introducir **/** se habilita una seleción de comandos como si de un menú  *__IntelliSense__* se tratara.
+![](./docs/assets/commands.gif)
 
-<br/>
+###  **Notificaciones**  
+Los usuarios son notificados a través de un banner dinámico el acceso o abandono a la sala por parte de otros usuarios. 
+Guarda todos los registros de las actividades de los usuarios.
+![](./docs/assets/logs.gif)
 
+###  **Captura de Logs**  
+El servidor es reponsable de tramitar todas las acciones que el cliente demanda.  
+Guarda todos los registros de las actividades de los usuarios.
+![](./docs/assets/logs.gif)
 
-## 🔧 **Posibles mejoras**
+## **Posibles mejoras**
 - Implementación de una API REST para mejorar - la gestión de usuarios y mensajes.  
  - Soporte para mensajes privados entre usuarios.  
-- Encriptación de mensajes para mayor seguridad 🔐.  
+- Encriptación de mensajes para mayor seguridad.  
  - Integración con WebSockets para optimizar la comunicación.  
  - Migrarlo a Aplicación web o móvil y extender su uso a dispositivos Android/iOS 📱.  
- - Integrar personalización de entorno.(Fondos, tipos de letras, avatar...).  
+ - Integrar más personalización de entorno.(Fondos, tipos de letras, avatar...).  
 
 
 
