@@ -1,4 +1,4 @@
-# **Sistema de Chat Cliente/Servidor** 
+# **Prototipo de Sistema de Chat Cliente-Servidor** 
 
  [<img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/es.svg" alt="Español" width="24"/> Español](./README.md) &#124; [<img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/gb.svg" alt="English" width="24"/> English](./docs/README_EN.md) 
 
@@ -24,7 +24,7 @@
 ---
 ## **Introducción** 
 
-Este proyecto es un sistema de chat con arquitectura cliente/servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**.
+Este proyecto es un sistema de chat con arquitectura cliente-servidor basado en **sockets TCP/IP**. Permite hasta **10 usuarios simultáneos**, todos conectados en una única sala de chat. La interfaz gráfica está desarrollada con **JavaFX**.
 
 Los usuarios pueden interactuar entere sí en tiempo real. El servidor se encarga de distribuir los mensajes y gestionar las conexiones.
 
