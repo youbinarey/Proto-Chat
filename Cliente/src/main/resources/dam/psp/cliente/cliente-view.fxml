@@ -36,7 +36,7 @@
             <top>
                <AnchorPane maxWidth="1.7976931348623157E308" styleClass="top-bar" BorderPane.alignment="CENTER">
                   <children>
-                     <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" layoutX="344.0" layoutY="9.0" prefHeight="45.0" prefWidth="146.0" styleClass="title" text="PSPCHAT" textAlignment="CENTER" textFill="WHITE">
+                     <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" layoutX="344.0" layoutY="9.0" prefHeight="45.0" prefWidth="146.0" styleClass="title" text="ProtoCHAT" textAlignment="CENTER" textFill="WHITE">
                         <font>
                            <Font name="System Bold" size="24.0" />
                         </font>

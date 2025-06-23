@@ -16,7 +16,7 @@
                <top>
                   <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="80.0" prefWidth="476.0" BorderPane.alignment="CENTER">
                      <children>
-                        <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" layoutX="166.0" layoutY="23.0" prefHeight="35.0" prefWidth="145.0" styleClass="title" text="SERVER" textAlignment="CENTER" textFill="WHITE">
+                        <Label fx:id="serverTxt" alignment="CENTER" contentDisplay="CENTER" layoutX="150.0" layoutY="24.0" prefHeight="35.0" prefWidth="177.0" styleClass="title" text="ProtoSERVER" textAlignment="CENTER" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
