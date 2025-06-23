@@ -71,7 +71,9 @@ The system requires object serialization and finding alternatives so different n
 
 🔹 **Special Commands**
    - `/weather` – Shows the current temperature using the weather API 🌡️
-   - `/ping` – Displays the latency between client and server
+   - `/ping` – Displays the latency between client and server  
+   - `/bye` - Logout
+
 
 🔹 **File Sending**
    - Allows sharing images in the chat, downloadable by double-clicking
@@ -143,29 +145,28 @@ A **JAR** file containing the `Packet` classes is provided, ensuring both client
 ## **Demo**
 ### **Authentication**
 To access the chat, authentication is required.  
-The database does not belong to the system. An **HTTP** request is made to the platform hosting the **DB**.
+The database does not belong to the system. An **HTTP** request is made to the platform hosting the **DB**.  
 ![](./assets/loggin.gif)
 
 ### **Image Sharing**
-You can share images from your system in the chat, as well as save them.
+You can share images from your system in the chat, as well as save them.  
 ![](./assets/compartir_img.gif)
 
 ### **Dark and Light Theme**
-You can personalize the environment with available themes.
+You can personalize the environment with available themes.  
 ![](./assets/dark-light_mode.gif)
 
 ### **Command Usage**
-When typing **/**, a selection of commands is enabled, similar to an *__IntelliSense__* menu.
+When typing **/**, a selection of commands is enabled, similar to an *__IntelliSense__* menu.  
 ![](./assets/commands.gif)
 
 ### **Notifications**
-Users are notified via a dynamic banner when someone enters or leaves the room.  
-All user activity logs are saved.
+Users are notified via a dynamic banner when someone enters or leaves the room.   
 ![](./assets/logs.gif)
 
 ### **Log Capture**
-The server is responsible for handling all actions requested by the client.  
-All user activity logs are saved.
+The server is responsible for handling all actions requested by the client.   
+All user activity logs are saved.  
 ![](./assets/logs.gif)
 
 ## **Possible Improvements**
