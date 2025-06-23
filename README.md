@@ -1,4 +1,4 @@
-# **Prototipo de Sistema de Chat Cliente-Servidor** 
+# **Prototipo de Chat Cliente-Servidor** 
 
  [<img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/es.svg" alt="Español" width="24"/> Español](./README.md) &#124; [<img src="https://cdn.jsdelivr.net/gh/hjnilsson/country-flags/svg/gb.svg" alt="English" width="24"/> English](./docs/README_EN.md) 
 
