@@ -75,7 +75,7 @@ Obligando a serializar objetos y encontrar la alternativa a que distintos nodos 
 🔹 **Comandos especiales** 
    - `/tiempo` - Muestra la temperatura actual usando la API del clima 🌡️
    - `/ping` - Muestra la latencia entre cliente y servidor
-   - Comprobar latencia con el servidor `/ping`
+   - `/bye` - Logout
 
 🔹 **Envío de archivos** 
    - Permite compartir imágenes en el chat, descargables con doble clic 
@@ -157,21 +157,20 @@ Se puede tanto compartir imagenes del sistema en el chat, así como guardarlas.
 ![](./docs/assets/compartir_img.gif)
 
 ### **Tema Oscuro y Claro**   
-Se puede personalizar el entorno según los temas disponibles.
+Se puede personalizar el entorno según los temas disponibles.  
 ![](./docs/assets/dark-light_mode.gif)
 
 ###  **Uso de comandos**  
-Al introducir **/** se habilita una seleción de comandos como si de un menú  *__IntelliSense__* se tratara.
+Al introducir **/** se habilita una seleción de comandos como si de un menú  *__IntelliSense__* se tratara.  
 ![](./docs/assets/commands.gif)
 
 ###  **Notificaciones**  
-Los usuarios son notificados a través de un banner dinámico el acceso o abandono a la sala por parte de otros usuarios. 
-Guarda todos los registros de las actividades de los usuarios.
+Los usuarios son notificados a través de un banner dinámico el acceso o abandono a la sala por parte de otros usuarios.  
 ![](./docs/assets/logs.gif)
 
-###  **Captura de Logs**  
-El servidor es reponsable de tramitar todas las acciones que el cliente demanda.  
-Guarda todos los registros de las actividades de los usuarios.
+###  **Captura de Logs**    
+El servidor es reponsable de tramitar todas las acciones que el cliente demanda.    
+Guarda todos los registros de las actividades de los usuarios.  
 ![](./docs/assets/logs.gif)
 
 ## **Posibles mejoras**
