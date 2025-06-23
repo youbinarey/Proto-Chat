@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import io.github.cdimascio.dotenv.Dotenv;
 import org.mindrot.jbcrypt.BCrypt;
 
 /**
@@ -13,10 +14,11 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 public class DatabaseManager {
 
-    // URL, usuario y contraseña de la base de datos
-    private static final String URL = "jdbc:postgresql://caboose.proxy.rlwy.net:49394/railway";
-    private static final String USER = "postgres";
-    private static final String PASSWORD = "cINodhnXvleKWLCIBwMlLMLkNnAKBRJY";
+    private static final Dotenv dotenv = Dotenv.load();
+
+    private static final String URL = dotenv.get("POSTGRES_URL");
+    private static final String USER = dotenv.get("POSTGRES_USER");
+    private static final String PASSWORD = dotenv.get("POSTGRES_PASSWORD");
 
     private Connection connection;
 
@@ -115,7 +117,7 @@ public class DatabaseManager {
     public static void main(String[] args) {
 
         DatabaseManager dbManager = new DatabaseManager();
-        dbManager.insertUser("Damian", "castelao");
+        dbManager.insertUser("user-demo", "demo");
         dbManager.closeConnection();
     }
 }
