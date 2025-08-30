@@ -166,7 +166,7 @@ Al introducir **/** se habilita una seleción de comandos como si de un menú  *
 
 ###  **Notificaciones**  
 Los usuarios son notificados a través de un banner dinámico el acceso o abandono a la sala por parte de otros usuarios.  
-![](./docs/assets/logs.gif)
+![](./docs/assets/notifications.gif)
 
 ###  **Captura de Logs**    
 El servidor es reponsable de tramitar todas las acciones que el cliente demanda.    
